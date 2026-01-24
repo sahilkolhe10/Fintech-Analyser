@@ -184,9 +184,22 @@ class YahooFinanceService {
 
     // Search for stocks
     async searchStocks(query: string): Promise<SearchResult[]> {
+        // If client-side, use the API proxy to avoid CORS
+        if (typeof window !== 'undefined') {
+            try {
+                const res = await fetch(`/api/market/search?q=${encodeURIComponent(query)}`);
+                if (!res.ok) return [];
+                const data = await res.json();
+                return data.results || [];
+            } catch (error) {
+                console.error('Client Search Error:', error);
+                return [];
+            }
+        }
+
+        // Server-side: call directly
         try {
             const url = `${this.searchUrl}/v1/finance/search`;
-
             const response = await this.client.get(url, {
                 params: {
                     q: query,

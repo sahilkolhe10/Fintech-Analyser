@@ -65,6 +65,21 @@ class GeminiClient {
 
     // Simple text generation
     async generate(prompt: string): Promise<AIResponse> {
+        // Client-side: use API route
+        if (typeof window !== 'undefined') {
+            try {
+                const response = await fetch('/api/ai/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt })
+                });
+                return await response.json();
+            } catch (error) {
+                return { success: false, error: 'AI service unavailable' };
+            }
+        }
+
+        // Server-side: use SDK
         if (!this.isConfigured() || !this.model) {
             return { success: false, error: 'Gemini AI not configured' };
         }

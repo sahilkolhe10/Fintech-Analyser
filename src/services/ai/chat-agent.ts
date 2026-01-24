@@ -32,15 +32,26 @@ class ChatAgent {
     }
 
     async chat(message: string, includeContext = true): Promise<AIResponse> {
-        if (!this.chatSession) this.startNewSession();
-        if (!this.chatSession) return { success: false, error: 'Failed to init chat' };
-        const fullMessage = includeContext && Object.keys(this.context).length > 0
-            ? `${this.buildContextString()}\n\nUSER: ${message}` : message;
+        // Use API Route for secure server-side generation
         try {
-            const result = await this.chatSession.sendMessage(fullMessage);
-            return { success: true, text: result.response.text() };
-        } catch (error: unknown) {
-            return { success: false, error: error instanceof Error ? error.message : 'Chat failed' };
+            const contextString = includeContext && Object.keys(this.context).length > 0
+                ? this.buildContextString() : '';
+
+            const response = await fetch('/api/ai/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    message,
+                    context: contextString
+                })
+            });
+
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Chat Agent Error:', error);
+            // Fallback to local if API fails (unlikely to work without key but harmless)
+            return { success: false, error: 'Chat service unavailable' };
         }
     }
 

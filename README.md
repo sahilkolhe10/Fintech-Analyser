@@ -97,6 +97,9 @@ src/
 **"Index Error" on Expenses?**  
 We've optimized the app to sort client-side, so you shouldn't see this. If you do, check the console for a Firebase link to create an index.
 
+**Search or AI Not Working?**
+Ensure you have set `GEMINI_API_KEY` in your `.env.local` file. The app now uses next.js API routes (`/api/market` and `/api/ai`) to securely handle these requests. If they fail, check your server logs.
+
 **Portfolio Import Failed?**  
 Ensure your Excel sheet has columns: `Symbol`, `Quantity`, and `Buy Price` (or similar variants like 'Qty', 'Price').
 
