@@ -24,8 +24,10 @@ import toast from 'react-hot-toast';
 import {
     Plus, TrendingUp, TrendingDown, Trash2, ExternalLink,
     Search, X, DollarSign, BarChart3, Newspaper,
-    Shield, AlertTriangle, Zap, Target, LineChart, AreaChart, Download, Eye
+    Shield, AlertTriangle, Zap, Target, LineChart, AreaChart, Download, Eye, Network
 } from 'lucide-react';
+import { InteractivePortfolioChart } from '@/components/charts/InteractivePortfolioChart';
+import { MarketCorrelationGraph } from '@/components/charts/MarketCorrelationGraph';
 
 // Simulated current prices
 const CURRENT_PRICES: Record<string, number> = {
@@ -50,46 +52,6 @@ const STOCK_DATA: Record<string, { risk: 'Low' | 'Medium' | 'High'; growth: numb
     'Default': { risk: 'Medium', growth: 10, rec: 'Hold' }
 };
 
-// Simple SVG Line Chart for Projections
-const ProjectionChart = ({ startValue, years, growthRate }: { startValue: number; years: number; growthRate: number }) => {
-    if (startValue === 0) return null;
-    const width = 600;
-    const height = 200;
-    const padding = 20;
-    const baseGrowth = growthRate / 100;
-    const bullGrowth = baseGrowth + 0.05;
-    const bearGrowth = Math.max(0, baseGrowth - 0.05);
-
-    const getPoints = (rate: number) => {
-        return Array.from({ length: years + 1 }).map((_, i) => {
-            const val = startValue * Math.pow(1 + rate, i);
-            const x = (i / years) * (width - 2 * padding) + padding;
-            const maxVal = startValue * Math.pow(1 + bullGrowth, years);
-            const y = height - padding - ((val - startValue) / (maxVal - startValue)) * (height - 2 * padding);
-            return `${x},${y}`;
-        }).join(' ');
-    };
-
-    return (
-        <div className="w-full overflow-hidden">
-            <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-48">
-                <line x1={padding} y1={height - padding} x2={width - padding} y2={height - padding} stroke="#333" strokeWidth="1" />
-                <line x1={padding} y1={padding} x2={padding} y2={height - padding} stroke="#333" strokeWidth="1" />
-                <polyline points={getPoints(bullGrowth)} fill="none" stroke="#10B981" strokeWidth="2" strokeDasharray="4" />
-                <polyline points={getPoints(baseGrowth)} fill="none" stroke="#3B82F6" strokeWidth="3" />
-                <polyline points={getPoints(bearGrowth)} fill="none" stroke="#EF4444" strokeWidth="2" strokeDasharray="4" />
-                <text x={width - padding} y={height - padding + 15} fill="#666" fontSize="10" textAnchor="end">{years} Years</text>
-                <text x={padding} y={height - padding + 15} fill="#666" fontSize="10">Now</text>
-            </svg>
-            <div className="flex justify-center gap-6 mt-2 text-xs">
-                <div className="flex items-center gap-1"><div className="w-3 h-3 bg-green-500 rounded-full"></div> Bull Case</div>
-                <div className="flex items-center gap-1"><div className="w-3 h-3 bg-blue-500 rounded-full"></div> Expected</div>
-                <div className="flex items-center gap-1"><div className="w-3 h-3 bg-red-500 rounded-full"></div> Bear Case</div>
-            </div>
-        </div>
-    );
-};
-
 export default function PortfolioPage() {
     const fadeRef = useFadeIn();
     const staggerRef = useStaggerChildren(0.1);
@@ -99,7 +61,7 @@ export default function PortfolioPage() {
     const [holdings, setHoldings] = useState<Holding[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [showAddModal, setShowAddModal] = useState(false);
-    const [activeTab, setActiveTab] = useState<'holdings' | 'analysis' | 'simulations' | 'watchlist' | 'gainers' | 'news'>('holdings');
+    const [activeTab, setActiveTab] = useState<'holdings' | 'analysis' | 'simulations' | 'correlations' | 'watchlist' | 'gainers' | 'news'>('holdings');
 
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedStock, setSelectedStock] = useState<{ symbol: string; name: string } | null>(null);
@@ -189,10 +151,6 @@ ${holdings.map(h => {
             const stockData = STOCK_DATA[h.symbol] || STOCK_DATA['Default'];
             return `${h.symbol}: ${h.quantity} shares, Risk: ${stockData.risk}, Rec: ${stockData.rec}`;
         }).join('\n')}
-
-RECOMMENDATIONS
----------------
-${riskScore > 60 ? 'Reduce exposure to volatile assets. Consider diversifying.' : 'Maintain current balanced strategy.'}
     `;
 
         const blob = new Blob([report], { type: 'text/plain' });
@@ -266,6 +224,7 @@ ${riskScore > 60 ? 'Reduce exposure to volatile assets. Consider diversifying.' 
             </div>
 
             <div ref={staggerRef} className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                {/* ... Stats Cards (Same as before) ... */}
                 <GlassCard className="p-5">
                     <div className="text-gray-400 text-sm mb-2">Total Value</div>
                     <div className="text-2xl font-bold text-white">{formatCurrency(totalValue, currency)}</div>
@@ -298,6 +257,7 @@ ${riskScore > 60 ? 'Reduce exposure to volatile assets. Consider diversifying.' 
                     { id: 'holdings', label: 'Holdings & Recs', icon: BarChart3 },
                     { id: 'analysis', label: 'Risk & Growth', icon: Shield },
                     { id: 'simulations', label: 'Simulations', icon: AreaChart },
+                    { id: 'correlations', label: 'Market Network', icon: Network }, // New Tab
                     { id: 'watchlist', label: 'Watchlist', icon: Eye },
                     { id: 'gainers', label: 'Gainers', icon: TrendingUp },
                     { id: 'news', label: 'News', icon: Newspaper },
@@ -306,8 +266,8 @@ ${riskScore > 60 ? 'Reduce exposure to volatile assets. Consider diversifying.' 
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id as typeof activeTab)}
                         className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all whitespace-nowrap ${activeTab === tab.id
-                            ? 'bg-primary/20 text-primary'
-                            : 'text-gray-400 hover:text-white hover:bg-white/5'
+                                ? 'bg-primary/20 text-primary'
+                                : 'text-gray-400 hover:text-white hover:bg-white/5'
                             }`}
                     >
                         <tab.icon className="w-4 h-4" />
@@ -395,27 +355,18 @@ ${riskScore > 60 ? 'Reduce exposure to volatile assets. Consider diversifying.' 
                                 <Shield className="w-5 h-5 text-primary" />
                                 <h2 className="text-lg font-semibold text-white">Risk Analysis</h2>
                             </div>
-                            <button
-                                onClick={downloadReport}
-                                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-sm text-primary transition-colors"
-                            >
-                                <Download className="w-4 h-4" />
-                                Download Report
-                            </button>
+                            <button onClick={downloadReport} className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-sm text-primary transition-colors"><Download className="w-4 h-4" /> Download Report</button>
                         </div>
                         {holdings.length === 0 ? <p className="text-gray-400">Add holdings to see risk analysis</p> : (
                             <div className="text-center py-4">
                                 <div className={`text-4xl font-bold ${riskScore > 60 ? 'text-red-400' : 'text-green-400'}`}>{riskLevel}</div>
                                 <div className="text-gray-400 mt-2">Portfolio Risk Score: {riskScore}/100</div>
                                 <div className="mt-4 p-4 bg-white/5 rounded-lg text-sm text-gray-300">
-                                    {riskScore > 60
-                                        ? 'High exposure to volatile assets. Consider diversifying into blue-chip stocks.'
-                                        : 'Balanced portfolio with steady growth potential.'}
+                                    {riskScore > 60 ? 'High exposure to volatile assets. Consider diversifying into blue-chip stocks.' : 'Balanced portfolio with steady growth potential.'}
                                 </div>
                             </div>
                         )}
                     </GlassCard>
-
                     <GlassCard className="p-6">
                         <div className="flex items-center gap-2 mb-4">
                             <LineChart className="w-5 h-5 text-primary" />
@@ -451,13 +402,9 @@ ${riskScore > 60 ? 'Reduce exposure to volatile assets. Consider diversifying.' 
                                 <AreaChart className="w-5 h-5 text-accent" />
                                 Wealth Simulation
                             </h2>
-                            <p className="text-sm text-gray-400">Projected portfolio value over time</p>
+                            <p className="text-sm text-gray-400">Projected portfolio value over time (Interactive)</p>
                         </div>
-                        <select
-                            value={simYears}
-                            onChange={(e) => setSimYears(parseInt(e.target.value))}
-                            className="bg-white/5 border border-white/10 rounded-lg px-3 py-1 text-white text-sm focus:outline-none focus:border-primary"
-                        >
+                        <select value={simYears} onChange={(e) => setSimYears(parseInt(e.target.value))} className="bg-white/5 border border-white/10 rounded-lg px-3 py-1 text-white text-sm focus:outline-none focus:border-primary">
                             <option value={1}>1 Year</option>
                             <option value={3}>3 Years</option>
                             <option value={5}>5 Years</option>
@@ -466,33 +413,31 @@ ${riskScore > 60 ? 'Reduce exposure to volatile assets. Consider diversifying.' 
                     </div>
                     {holdings.length > 0 ? (
                         <div className="bg-black/20 rounded-xl p-4">
-                            <ProjectionChart startValue={totalValue} years={simYears} growthRate={avgGrowth} />
-                            <div className="mt-6 grid grid-cols-3 gap-4 text-center">
-                                <div>
-                                    <div className="text-xs text-green-400 mb-1">Bull Case (+5%)</div>
-                                    <div className="text-lg font-bold text-white">
-                                        {formatCurrency(totalValue * Math.pow(1 + (avgGrowth + 5) / 100, simYears), currency)}
-                                    </div>
-                                </div>
-                                <div>
-                                    <div className="text-xs text-blue-400 mb-1">Expected</div>
-                                    <div className="text-lg font-bold text-white">
-                                        {formatCurrency(totalValue * Math.pow(1 + avgGrowth / 100, simYears), currency)}
-                                    </div>
-                                </div>
-                                <div>
-                                    <div className="text-xs text-red-400 mb-1">Bear Case (-5%)</div>
-                                    <div className="text-lg font-bold text-white">
-                                        {formatCurrency(totalValue * Math.pow(1 + Math.max(0, avgGrowth - 5) / 100, simYears), currency)}
-                                    </div>
-                                </div>
-                            </div>
+                            {/* NEW RECHARTS COMPONENT */}
+                            <InteractivePortfolioChart startValue={totalValue} years={simYears} growthRate={avgGrowth || 8} />
                         </div>
                     ) : (
-                        <div className="text-center py-12 text-gray-400">
-                            Add holdings to run wealth simulations
-                        </div>
+                        <div className="text-center py-12 text-gray-400">Add holdings to run wealth simulations</div>
                     )}
+                </GlassCard>
+            )}
+
+            {/* NEW CORRELATIONS TAB with D3 */}
+            {activeTab === 'correlations' && (
+                <GlassCard className="p-6">
+                    <div className="flex items-center justify-between mb-6">
+                        <div>
+                            <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+                                <Network className="w-5 h-5 text-purple-400" />
+                                Market Network
+                            </h2>
+                            <p className="text-sm text-gray-400">Sector correlations and market structure (Drag to interact)</p>
+                        </div>
+                    </div>
+                    <div className="h-[400px]">
+                        <MarketCorrelationGraph />
+                    </div>
+                    <p className="text-xs text-center text-gray-500 mt-2">D3.js Force Directed Graph Visualization</p>
                 </GlassCard>
             )}
 
@@ -503,8 +448,7 @@ ${riskScore > 60 ? 'Reduce exposure to volatile assets. Consider diversifying.' 
                         {NIFTY_POPULAR_STOCKS.map((stock) => {
                             const price = CURRENT_PRICES[stock.symbol] || 0;
                             return (
-                                <a key={stock.symbol} href={getTradingViewUrl(stock.symbol)} target="_blank" rel="noopener noreferrer"
-                                    className="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all group">
+                                <a key={stock.symbol} href={getTradingViewUrl(stock.symbol)} target="_blank" rel="noopener noreferrer" className="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all group">
                                     <div className="flex items-center justify-between mb-2">
                                         <div className="font-medium text-white">{stock.symbol.replace('.NS', '')}</div>
                                         <ExternalLink className="w-4 h-4 text-gray-500 group-hover:text-primary" />
@@ -524,8 +468,7 @@ ${riskScore > 60 ? 'Reduce exposure to volatile assets. Consider diversifying.' 
                     <h2 className="text-lg font-semibold text-white mb-4">Top Monthly Gainers</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {MONTHLY_GAINERS.map((stock, idx) => (
-                            <a key={stock.symbol} href={getTradingViewUrl(stock.symbol)} target="_blank" rel="noopener noreferrer"
-                                className="flex items-center justify-between p-4 bg-white/5 rounded-xl hover:bg-white/10 group">
+                            <a key={stock.symbol} href={getTradingViewUrl(stock.symbol)} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between p-4 bg-white/5 rounded-xl hover:bg-white/10 group">
                                 <div className="flex items-center gap-4">
                                     <div className="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center text-green-400 font-bold">{idx + 1}</div>
                                     <div>
@@ -552,21 +495,15 @@ ${riskScore > 60 ? 'Reduce exposure to volatile assets. Consider diversifying.' 
                     <div className="space-y-3">
                         {STOCK_NEWS.map((news) => (
                             <div key={news.id} className="flex items-start gap-4 p-4 bg-white/5 rounded-xl">
-                                <div className={`p-2 rounded-lg ${getSentimentColor(news.sentiment)}`}>
-                                    <Newspaper className="w-4 h-4" />
-                                </div>
+                                <div className={`p-2 rounded-lg ${getSentimentColor(news.sentiment)}`}><Newspaper className="w-4 h-4" /></div>
                                 <div className="flex-1">
                                     <div className="flex items-center gap-2 mb-1">
-                                        <a href={getTradingViewUrl(news.symbol)} target="_blank" rel="noopener noreferrer" className="text-primary font-medium hover:underline">
-                                            {news.symbol.replace('.NS', '')}
-                                        </a>
+                                        <a href={getTradingViewUrl(news.symbol)} target="_blank" rel="noopener noreferrer" className="text-primary font-medium hover:underline">{news.symbol.replace('.NS', '')}</a>
                                         <span className={`text-xs px-2 py-0.5 rounded ${getSentimentColor(news.sentiment)}`}>{news.sentiment}</span>
                                     </div>
                                     <p className="text-white">{news.headline}</p>
                                     <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
-                                        <span>{news.source}</span>
-                                        <span>•</span>
-                                        <span>{news.time}</span>
+                                        <span>{news.source}</span><span>•</span><span>{news.time}</span>
                                     </div>
                                 </div>
                             </div>
@@ -578,6 +515,7 @@ ${riskScore > 60 ? 'Reduce exposure to volatile assets. Consider diversifying.' 
             {showAddModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
                     <GlassCard className="w-full max-w-lg p-6 m-4 max-h-[90vh] overflow-y-auto">
+                        {/* ADD HOLDING MODAL CONTENT (Same as before) */}
                         <div className="flex items-center justify-between mb-6">
                             <h2 className="text-xl font-bold text-white">Add Holding</h2>
                             <button onClick={() => { setShowAddModal(false); resetForm(); }} className="text-gray-400 hover:text-white"><X className="w-5 h-5" /></button>

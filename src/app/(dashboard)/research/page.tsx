@@ -11,8 +11,9 @@ import { getTradingViewUrl, NIFTY_POPULAR_STOCKS, MONTHLY_GAINERS } from '@/serv
 import {
     TrendingUp, TrendingDown, BarChart3, Target,
     Shield, AlertCircle, Star, Plus, ExternalLink, X, Search,
-    Coins, Droplets, Flame, AreaChart
+    Coins, Droplets, Flame, AreaChart, LineChart
 } from 'lucide-react';
+import { StockAnalysisChart } from '@/components/charts/StockAnalysisChart';
 
 // Stock categories data
 const AI_BUY_SIGNALS = [
@@ -92,12 +93,13 @@ const COMMODITIES = [
     }
 ];
 
-type ActiveView = 'popular' | 'buySignals' | 'trending' | 'lowRisk' | 'alerts' | 'commodities';
+type ActiveView = 'popular' | 'buySignals' | 'trending' | 'lowRisk' | 'alerts' | 'commodities' | 'analysis';
 
 export default function ResearchPage() {
     const fadeRef = useFadeIn();
     const [activeView, setActiveView] = useState<ActiveView>('popular');
     const [searchQuery, setSearchQuery] = useState('');
+    const [selectedStock, setSelectedStock] = useState<any>(null);
 
     const filteredStocks = NIFTY_POPULAR_STOCKS.filter(s =>
         s.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -118,6 +120,11 @@ export default function ResearchPage() {
             case 'Sell': case 'Strong Sell': return 'text-red-400';
             default: return 'text-yellow-400';
         }
+    };
+
+    const openAnalysis = (stock: any) => {
+        setSelectedStock(stock);
+        setActiveView('analysis');
     };
 
     return (
@@ -187,9 +194,54 @@ export default function ResearchPage() {
 
             {/* Dynamic Content Based on Selection */}
 
+            {/* ANALYSIS VIEW - With Recharts */}
+            {activeView === 'analysis' && selectedStock && (
+                <GlassCard className="p-6">
+                    <div className="flex items-center justify-between mb-6">
+                        <div>
+                            <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+                                <LineChart className="w-5 h-5 text-primary" />
+                                {selectedStock.symbol.replace('.NS', '')} Analysis
+                            </h2>
+                            <p className="text-sm text-gray-400">{selectedStock.name}</p>
+                        </div>
+                        <button onClick={() => setActiveView('popular')} className="text-gray-400 hover:text-white">
+                            <X className="w-5 h-5" />
+                        </button>
+                    </div>
+                    {/* CHARTS */}
+                    <div className="mb-6">
+                        <StockAnalysisChart symbol={selectedStock.symbol} />
+                        <p className="text-center text-gray-400 text-xs mt-2">Price & Volume (Simulated Live Data)</p>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-4 border-t border-white/10 pt-4">
+                        <div className="text-center">
+                            <div className="text-gray-400 text-xs">P/E Ratio</div>
+                            <div className="text-white font-bold">24.5</div>
+                        </div>
+                        <div className="text-center">
+                            <div className="text-gray-400 text-xs">Market Cap</div>
+                            <div className="text-white font-bold">₹12.5T</div>
+                        </div>
+                        <div className="text-center">
+                            <div className="text-gray-400 text-xs">Div Yield</div>
+                            <div className="text-white font-bold">1.2%</div>
+                        </div>
+                    </div>
+                    <div className="mt-4 flex gap-2">
+                        <a href={getTradingViewUrl(selectedStock.symbol)} target="_blank" rel="noopener noreferrer"
+                            className="flex-1 bg-white/5 hover:bg-white/10 text-center py-2 rounded-lg text-sm text-white transition-colors">
+                            View on TradingView
+                        </a>
+                    </div>
+                </GlassCard>
+            )}
+
             {/* Commodities View */}
             {activeView === 'commodities' && (
                 <GlassCard className="p-6">
+                    {/* ... (Existing Commodities Content) ... */}
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-lg font-semibold text-white flex items-center gap-2">
                             <Coins className="w-5 h-5 text-yellow-500" />
@@ -202,6 +254,7 @@ export default function ResearchPage() {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                         {COMMODITIES.map((comm) => (
                             <div key={comm.name} className="p-4 bg-white/5 rounded-xl border border-white/5 hover:border-white/10 transition-all">
+                                {/* ... Same as before ... */}
                                 <div className="flex items-start justify-between mb-4">
                                     <div className="flex items-center gap-3">
                                         <div className={`w-10 h-10 rounded-lg ${comm.bg} flex items-center justify-center`}>
@@ -219,7 +272,6 @@ export default function ResearchPage() {
                                         </div>
                                     </div>
                                 </div>
-
                                 <div className="pt-3 border-t border-white/10">
                                     <div className="flex items-center justify-between mb-2">
                                         <span className="text-xs text-gray-400">Recommendation</span>
@@ -251,27 +303,28 @@ export default function ResearchPage() {
                     </div>
                     <div className="space-y-3">
                         {AI_BUY_SIGNALS.map((stock) => (
-                            <a key={stock.symbol} href={`https://www.tradingview.com/chart/?symbol=NSE:${stock.symbol.replace('.NS', '')}`} target="_blank" rel="noopener noreferrer"
-                                className="flex items-center justify-between p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all group">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500/20 to-green-500/5 flex items-center justify-center">
-                                        <TrendingUp className="w-6 h-6 text-green-400" />
-                                    </div>
-                                    <div>
-                                        <div className="font-medium text-white flex items-center gap-2">
-                                            {stock.symbol.replace('.NS', '')}
-                                            <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100" />
+                            <button key={stock.symbol} onClick={() => openAnalysis(stock)} className="w-full text-left">
+                                <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all group">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500/20 to-green-500/5 flex items-center justify-center">
+                                            <TrendingUp className="w-6 h-6 text-green-400" />
                                         </div>
-                                        <div className="text-sm text-gray-400">{stock.name}</div>
-                                        <div className="text-xs text-gray-500 mt-1">{stock.reason}</div>
+                                        <div>
+                                            <div className="font-medium text-white flex items-center gap-2">
+                                                {stock.symbol.replace('.NS', '')}
+                                                <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100" />
+                                            </div>
+                                            <div className="text-sm text-gray-400">{stock.name}</div>
+                                            <div className="text-xs text-gray-500 mt-1">{stock.reason}</div>
+                                        </div>
+                                    </div>
+                                    <div className="text-right">
+                                        <div className="text-green-400 font-medium">{stock.signal}</div>
+                                        <div className="text-sm text-gray-400">{stock.confidence}% confidence</div>
+                                        <div className="text-white mt-1">₹{stock.price.toLocaleString()}</div>
                                     </div>
                                 </div>
-                                <div className="text-right">
-                                    <div className="text-green-400 font-medium">{stock.signal}</div>
-                                    <div className="text-sm text-gray-400">{stock.confidence}% confidence</div>
-                                    <div className="text-white mt-1">₹{stock.price.toLocaleString()}</div>
-                                </div>
-                            </a>
+                            </button>
                         ))}
                     </div>
                 </GlassCard>
@@ -291,25 +344,26 @@ export default function ResearchPage() {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {MONTHLY_GAINERS.map((stock, idx) => (
-                            <a key={stock.symbol} href={`https://www.tradingview.com/chart/?symbol=NSE:${stock.symbol.replace('.NS', '')}`} target="_blank" rel="noopener noreferrer"
-                                className="flex items-center justify-between p-4 bg-white/5 rounded-xl hover:bg-white/10 group">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center text-green-400 font-bold">
-                                        {idx + 1}
-                                    </div>
-                                    <div>
-                                        <div className="font-medium text-white flex items-center gap-2">
-                                            {stock.symbol.replace('.NS', '')}
-                                            <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100" />
+                            <button key={stock.symbol} onClick={() => openAnalysis(stock)} className="w-full text-left">
+                                <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl hover:bg-white/10 group">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center text-green-400 font-bold">
+                                            {idx + 1}
                                         </div>
-                                        <div className="text-sm text-gray-400">{stock.name}</div>
+                                        <div>
+                                            <div className="font-medium text-white flex items-center gap-2">
+                                                {stock.symbol.replace('.NS', '')}
+                                                <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100" />
+                                            </div>
+                                            <div className="text-sm text-gray-400">{stock.name}</div>
+                                        </div>
+                                    </div>
+                                    <div className="text-right">
+                                        <div className="text-green-400 font-bold">+{stock.change}%</div>
+                                        <div className="text-gray-300 text-sm">₹{stock.price.toLocaleString()}</div>
                                     </div>
                                 </div>
-                                <div className="text-right">
-                                    <div className="text-green-400 font-bold">+{stock.change}%</div>
-                                    <div className="text-gray-300 text-sm">₹{stock.price.toLocaleString()}</div>
-                                </div>
-                            </a>
+                            </button>
                         ))}
                     </div>
                 </GlassCard>
@@ -318,6 +372,7 @@ export default function ResearchPage() {
             {/* Low Risk Picks */}
             {activeView === 'lowRisk' && (
                 <GlassCard className="p-6">
+                    {/* ... (Existing Low Risk with onClick) ... */}
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-lg font-semibold text-white flex items-center gap-2">
                             <Shield className="w-5 h-5 text-green-400" />
@@ -329,26 +384,27 @@ export default function ResearchPage() {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {LOW_RISK_PICKS.map((stock) => (
-                            <a key={stock.symbol} href={`https://www.tradingview.com/chart/?symbol=NSE:${stock.symbol.replace('.NS', '')}`} target="_blank" rel="noopener noreferrer"
-                                className="flex items-center justify-between p-4 bg-white/5 rounded-xl hover:bg-white/10 group">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center">
-                                        <Shield className="w-6 h-6 text-green-400" />
-                                    </div>
-                                    <div>
-                                        <div className="font-medium text-white flex items-center gap-2">
-                                            {stock.symbol.replace('.NS', '')}
-                                            <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100" />
+                            <button key={stock.symbol} onClick={() => openAnalysis(stock)} className="w-full text-left">
+                                <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl hover:bg-white/10 group">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center">
+                                            <Shield className="w-6 h-6 text-green-400" />
                                         </div>
-                                        <div className="text-sm text-gray-400">{stock.name}</div>
+                                        <div>
+                                            <div className="font-medium text-white flex items-center gap-2">
+                                                {stock.symbol.replace('.NS', '')}
+                                                <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100" />
+                                            </div>
+                                            <div className="text-sm text-gray-400">{stock.name}</div>
+                                        </div>
+                                    </div>
+                                    <div className="text-right">
+                                        <div className="text-white font-medium">₹{stock.price.toLocaleString()}</div>
+                                        <div className="text-xs text-gray-400">Beta: {stock.beta}</div>
+                                        <div className="text-xs text-green-400">Div: {stock.dividend}%</div>
                                     </div>
                                 </div>
-                                <div className="text-right">
-                                    <div className="text-white font-medium">₹{stock.price.toLocaleString()}</div>
-                                    <div className="text-xs text-gray-400">Beta: {stock.beta}</div>
-                                    <div className="text-xs text-green-400">Div: {stock.dividend}%</div>
-                                </div>
-                            </a>
+                            </button>
                         ))}
                     </div>
                 </GlassCard>
@@ -390,15 +446,16 @@ export default function ResearchPage() {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         {(searchQuery ? filteredStocks : NIFTY_POPULAR_STOCKS).map((stock) => (
-                            <a key={stock.symbol} href={`https://www.tradingview.com/chart/?symbol=NSE:${stock.symbol.replace('.NS', '')}`} target="_blank" rel="noopener noreferrer"
-                                className="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all group">
-                                <div className="flex items-center justify-between mb-2">
-                                    <div className="font-medium text-white">{stock.symbol.replace('.NS', '')}</div>
-                                    <ExternalLink className="w-4 h-4 text-gray-500 group-hover:text-primary" />
+                            <button key={stock.symbol} onClick={() => openAnalysis(stock)} className="w-full text-left">
+                                <div className="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all group">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <div className="font-medium text-white">{stock.symbol.replace('.NS', '')}</div>
+                                        <ExternalLink className="w-4 h-4 text-gray-500 group-hover:text-primary" />
+                                    </div>
+                                    <div className="text-sm text-gray-400 truncate">{stock.name}</div>
+                                    <div className="text-xs text-primary mt-1">{stock.sector}</div>
                                 </div>
-                                <div className="text-sm text-gray-400 truncate">{stock.name}</div>
-                                <div className="text-xs text-primary mt-1">{stock.sector}</div>
-                            </a>
+                            </button>
                         ))}
                     </div>
                 </GlassCard>

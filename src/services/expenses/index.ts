@@ -119,8 +119,7 @@ export const getExpenses = async (
     try {
         let q = query(
             collection(db, 'expenses'),
-            where('userId', '==', userId),
-            orderBy('date', 'desc')
+            where('userId', '==', userId)
         );
 
         if (startDate && endDate) {
@@ -128,8 +127,7 @@ export const getExpenses = async (
                 collection(db, 'expenses'),
                 where('userId', '==', userId),
                 where('date', '>=', Timestamp.fromDate(startDate)),
-                where('date', '<=', Timestamp.fromDate(endDate)),
-                orderBy('date', 'desc')
+                where('date', '<=', Timestamp.fromDate(endDate))
             );
         }
 
@@ -138,6 +136,9 @@ export const getExpenses = async (
         querySnapshot.forEach((doc) => {
             expenses.push({ id: doc.id, ...doc.data() } as Expense);
         });
+
+        // Sort by date desc (client-side to avoid composite index requirement)
+        expenses.sort((a, b) => b.date.toMillis() - a.date.toMillis());
 
         return { success: true, data: expenses };
     } catch (error) {
