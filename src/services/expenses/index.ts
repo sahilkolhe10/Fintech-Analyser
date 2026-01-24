@@ -170,26 +170,32 @@ export const updateExpense = async (
     }
 };
 
-// Get monthly totals
+// Get monthly totals - Client-side filtering to avoid index issues
 export const getMonthlyTotals = async (
     userId: string,
     year: number,
     month: number
 ): Promise<{ success: boolean; data?: { total: number; byCategory: Record<string, number> }; error?: string }> => {
     try {
-        const startDate = new Date(year, month - 1, 1);
-        const endDate = new Date(year, month, 0, 23, 59, 59);
-
-        const result = await getExpenses(userId, startDate, endDate);
+        // Fetch ALL expenses for the user (reuses the working query without date filters)
+        const result = await getExpenses(userId);
 
         if (!result.success || !result.data) {
             return { success: false, error: result.error };
         }
 
-        const total = result.data.reduce((sum, exp) => sum + exp.amount, 0);
+        const startMonth = month - 1; // JS months are 0-11
+
+        // Filter for specific month/year client-side
+        const monthlyExpenses = result.data.filter(exp => {
+            const d = exp.date.toDate();
+            return d.getFullYear() === year && d.getMonth() === startMonth;
+        });
+
+        const total = monthlyExpenses.reduce((sum, exp) => sum + exp.amount, 0);
         const byCategory: Record<string, number> = {};
 
-        result.data.forEach((exp) => {
+        monthlyExpenses.forEach((exp) => {
             byCategory[exp.category] = (byCategory[exp.category] || 0) + exp.amount;
         });
 

@@ -1,7 +1,7 @@
 'use client';
 
 // Portfolio Page - Complete with Simulations, Risk Analysis, Recommendations & Download
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { AnimatedButton } from '@/components/ui/AnimatedButton';
@@ -24,10 +24,11 @@ import toast from 'react-hot-toast';
 import {
     Plus, TrendingUp, TrendingDown, Trash2, ExternalLink,
     Search, X, DollarSign, BarChart3, Newspaper,
-    Shield, AlertTriangle, Zap, Target, LineChart, AreaChart, Download, Eye, Network
+    Shield, AlertTriangle, Zap, Target, LineChart, AreaChart, Download, Eye, Network, Upload
 } from 'lucide-react';
 import { InteractivePortfolioChart } from '@/components/charts/InteractivePortfolioChart';
 import { MarketCorrelationGraph } from '@/components/charts/MarketCorrelationGraph';
+import { parsePortfolioFile } from '@/lib/import-utils';
 
 // Simulated current prices
 const CURRENT_PRICES: Record<string, number> = {
@@ -57,6 +58,7 @@ export default function PortfolioPage() {
     const staggerRef = useStaggerChildren(0.1);
     const { user, profile } = useAuthStore();
     const { currency } = useCurrencyStore();
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [holdings, setHoldings] = useState<Holding[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -119,6 +121,41 @@ export default function PortfolioPage() {
             loadHoldings();
         } else {
             toast.error('Failed to remove');
+        }
+    };
+
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file || !user) return;
+
+        const toastId = toast.loading('Importing portfolio...');
+        try {
+            const importedData = await parsePortfolioFile(file);
+            if (importedData.length === 0) {
+                toast.error('No valid holdings found check format', { id: toastId });
+                return;
+            }
+
+            let addedCount = 0;
+            for (const item of importedData) {
+                await addHolding({
+                    userId: user.uid,
+                    symbol: item.symbol,
+                    name: item.name || item.symbol,
+                    quantity: item.quantity,
+                    buyPrice: item.buyPrice,
+                    buyDate: Timestamp.now(),
+                });
+                addedCount++;
+            }
+
+            toast.success(`Imported ${addedCount} holdings`, { id: toastId });
+            loadHoldings();
+        } catch (error) {
+            console.error(error);
+            toast.error('Failed to process file', { id: toastId });
+        } finally {
+            if (fileInputRef.current) fileInputRef.current.value = '';
         }
     };
 
@@ -217,10 +254,24 @@ ${holdings.map(h => {
                     <h1 className="text-3xl font-bold text-white">Portfolio</h1>
                     <p className="text-gray-400 mt-1">Manage, analyze and simulate your wealth</p>
                 </div>
-                <AnimatedButton onClick={() => setShowAddModal(true)}>
-                    <Plus className="w-4 h-4" />
-                    Add Holding
-                </AnimatedButton>
+                <div className="flex gap-2">
+                    {/* HIDDEN FILE INPUT */}
+                    <input
+                        type="file"
+                        accept=".csv,.xlsx,.xls"
+                        ref={fileInputRef}
+                        className="hidden"
+                        onChange={handleFileUpload}
+                    />
+                    <AnimatedButton variant="secondary" onClick={() => fileInputRef.current?.click()}>
+                        <Upload className="w-4 h-4" />
+                        Import
+                    </AnimatedButton>
+                    <AnimatedButton onClick={() => setShowAddModal(true)}>
+                        <Plus className="w-4 h-4" />
+                        Add Holding
+                    </AnimatedButton>
+                </div>
             </div>
 
             <div ref={staggerRef} className="grid grid-cols-1 md:grid-cols-5 gap-4">
@@ -282,10 +333,14 @@ ${holdings.map(h => {
                         <div className="text-center py-12">
                             <BarChart3 className="w-12 h-12 text-gray-500 mx-auto mb-4" />
                             <p className="text-gray-400 text-lg">No holdings yet</p>
-                            <AnimatedButton onClick={() => setShowAddModal(true)}>
-                                <Plus className="w-4 h-4" />
-                                Add Your First Holding
-                            </AnimatedButton>
+                            <div className="flex justify-center gap-2 mt-4">
+                                <AnimatedButton variant="secondary" onClick={() => fileInputRef.current?.click()}>
+                                    Import Excel
+                                </AnimatedButton>
+                                <AnimatedButton onClick={() => setShowAddModal(true)}>
+                                    Add Manually
+                                </AnimatedButton>
+                            </div>
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
