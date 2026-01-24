@@ -28,7 +28,7 @@ class GeminiClient {
     private client: GoogleGenerativeAI | null = null;
     private model: GenerativeModel | null = null;
     private apiKey: string;
-    private modelName: string = 'gemini-1.5-flash';
+    private modelName: string = 'gemini-2.5-pro';
 
     constructor() {
         this.apiKey = process.env.GEMINI_API_KEY || '';

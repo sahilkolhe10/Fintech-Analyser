@@ -5,7 +5,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 const apiKey = process.env.GEMINI_API_KEY || '';
 const client = apiKey ? new GoogleGenerativeAI(apiKey) : null;
 // Use gemini-pro as it is widely supported
-const model = client ? client.getGenerativeModel({ model: 'gemini-1.5-flash' }) : null;
+const model = client ? client.getGenerativeModel({ model: 'gemini-2.5-pro' }) : null;
 
 export async function POST(request: NextRequest) {
     if (!client || !model) {
