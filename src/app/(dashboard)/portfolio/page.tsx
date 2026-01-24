@@ -24,7 +24,7 @@ import toast from 'react-hot-toast';
 import {
     Plus, TrendingUp, TrendingDown, Trash2, ExternalLink,
     Search, X, DollarSign, BarChart3, Newspaper,
-    Shield, AlertTriangle, Zap, Target, LineChart, AreaChart, Download
+    Shield, AlertTriangle, Zap, Target, LineChart, AreaChart, Download, Eye
 } from 'lucide-react';
 
 // Simulated current prices
@@ -306,8 +306,8 @@ ${riskScore > 60 ? 'Reduce exposure to volatile assets. Consider diversifying.' 
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id as typeof activeTab)}
                         className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all whitespace-nowrap ${activeTab === tab.id
-                                ? 'bg-primary/20 text-primary'
-                                : 'text-gray-400 hover:text-white hover:bg-white/5'
+                            ? 'bg-primary/20 text-primary'
+                            : 'text-gray-400 hover:text-white hover:bg-white/5'
                             }`}
                     >
                         <tab.icon className="w-4 h-4" />
