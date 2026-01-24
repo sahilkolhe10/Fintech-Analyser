@@ -4,7 +4,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 // Initialize Gemini Server-Side
 const apiKey = process.env.GEMINI_API_KEY || '';
 const client = apiKey ? new GoogleGenerativeAI(apiKey) : null;
-const model = client ? client.getGenerativeModel({ model: 'gemini-pro' }) : null;
+const model = client ? client.getGenerativeModel({ model: 'gemini-1.5-flash' }) : null;
 
 export async function POST(request: NextRequest) {
     if (!client || !model) {
