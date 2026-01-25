@@ -105,4 +105,4 @@ Ensure your Excel sheet has columns: `Symbol`, `Quantity`, and `Buy Price` (or s
 
 ---
 
-*Built with ❤️ by FinManage Team*
+*Built with ❤️ by Detroit Team(Rohit and Tushar)*
