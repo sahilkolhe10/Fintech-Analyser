@@ -20,6 +20,14 @@ gcloud run deploy finmanage \
   --platform managed \
   --region us-central1 \
   --allow-unauthenticated \
-  --set-env-vars GEMINI_API_KEY="$GEMINI_API_KEY",ALPHA_VANTAGE_API_KEY="$ALPHA_VANTAGE_API_KEY"
+  --set-env-vars ZENMUX_API_KEY="$ZENMUX_API_KEY",ZENMUX_MODEL="$ZENMUX_MODEL",GROQ_API_KEY="$GROQ_API_KEY",GROQ_MODEL="$GROQ_MODEL",AI_PROVIDER="$AI_PROVIDER",GEMINI_API_KEY="$GEMINI_API_KEY",GEMINI_MODEL="$GEMINI_MODEL",ALPHA_VANTAGE_API_KEY="$ALPHA_VANTAGE_API_KEY",FIREBASE_SERVICE_ACCOUNT="$FIREBASE_SERVICE_ACCOUNT",TELEGRAM_BOT_TOKEN="$TELEGRAM_BOT_TOKEN",TELEGRAM_WEBHOOK_SECRET="$TELEGRAM_WEBHOOK_SECRET",NEXT_PUBLIC_APP_URL="$NEXT_PUBLIC_APP_URL"
+
+# Optional: deploy Firebase Hosting (khatahouse-sih.web.app → rewrites to Cloud Run)
+if command -v firebase >/dev/null 2>&1 && firebase projects:list >/dev/null 2>&1; then
+  echo "Deploying Firebase Hosting (khatahouse-sih)..."
+  firebase deploy --only hosting:khatahouse-sih
+else
+  echo "Skipping Firebase Hosting deploy (firebase CLI not logged in). Run: firebase login && firebase deploy --only hosting:khatahouse-sih"
+fi
 
 echo "Deployment Complete!"

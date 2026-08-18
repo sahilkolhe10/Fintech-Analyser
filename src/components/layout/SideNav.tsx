@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 import {
     LayoutDashboard, Wallet, TrendingUp, Receipt,
     Bot, Bell, Search, Settings, ChevronLeft,
-    ChevronRight, LogOut
+    ChevronRight, LogOut, Landmark, FileText
 } from 'lucide-react';
 import { useUIStore, useAuthStore } from '@/store';
 import { logOut } from '@/lib/firebase/auth';
@@ -19,6 +19,8 @@ const navItems = [
 
     { icon: Receipt, label: 'Expenses', href: '/expenses' },
     { icon: Bot, label: 'AI Advisor', href: '/ai-advisor' },
+    { icon: Landmark, label: 'AI Council', href: '/council' },
+    { icon: FileText, label: 'Documents', href: '/documents' },
     { icon: Bell, label: 'Alerts', href: '/alerts' },
     { icon: Search, label: 'Research', href: '/research' },
     { icon: Settings, label: 'Settings', href: '/settings' },

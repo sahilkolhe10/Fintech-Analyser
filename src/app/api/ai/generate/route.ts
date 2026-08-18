@@ -1,13 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
-
-// Initialize Gemini Server-Side
-const apiKey = process.env.GEMINI_API_KEY || '';
-const client = apiKey ? new GoogleGenerativeAI(apiKey) : null;
-const model = client ? client.getGenerativeModel({ model: 'gemini-2.5-pro' }) : null;
+import { geminiClient } from '@/services/ai/gemini-client';
 
 export async function POST(request: NextRequest) {
-    if (!client || !model) {
+    if (!geminiClient.isConfigured()) {
         console.error('AI Generate Error: Missing API Key');
         return NextResponse.json({ success: false, error: 'AI Service not configured' }, { status: 500 });
     }
@@ -15,13 +10,16 @@ export async function POST(request: NextRequest) {
     try {
         const { prompt } = await request.json();
 
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const text = response.text();
+        const result = await geminiClient.generate(prompt);
 
-        return NextResponse.json({ success: true, text });
-    } catch (error: any) {
-        console.error('AI Generate API error:', error);
-        return NextResponse.json({ success: false, error: error.message || 'AI generation failed' }, { status: 500 });
+        if (!result.success) {
+            return NextResponse.json({ success: false, error: result.error }, { status: 500 });
+        }
+
+        return NextResponse.json({ success: true, text: result.text });
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'AI generation failed';
+        console.error('AI Generate API error:', errorMessage);
+        return NextResponse.json({ success: false, error: errorMessage }, { status: 500 });
     }
 }

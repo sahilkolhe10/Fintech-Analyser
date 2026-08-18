@@ -1,0 +1,16 @@
+{
+  "hosting": {
+    "site": "khatahouse-sih",
+    "public": "public",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "**",
+        "run": {
+          "serviceId": "finmanage",
+          "region": "us-central1"
+        }
+      }
+    ]
+  }
+}

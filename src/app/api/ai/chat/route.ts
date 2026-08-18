@@ -1,34 +1,44 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
-
-// Initialize Gemini Server-Side
-const apiKey = process.env.GEMINI_API_KEY || '';
-const client = apiKey ? new GoogleGenerativeAI(apiKey) : null;
-// Use gemini-pro as it is widely supported
-const model = client ? client.getGenerativeModel({ model: 'gemini-2.5-pro' }) : null;
+import { runServerChat, runLegacyChat } from '@/server/ai-chat';
+import { getAdminAuth } from '@/lib/firebase/admin';
 
 export async function POST(request: NextRequest) {
-    if (!client || !model) {
-        console.error('AI Configuration Error: Missing API Key on Server');
-        return NextResponse.json({ success: false, error: 'Server Configuration Error: Missing Gemini API Key' }, { status: 500 });
-    }
-
     try {
-        const { message, context, history } = await request.json();
+        const { message, context, history, uid } = await request.json();
 
-        // Construct a stateless prompt
-        const contextString = context || '';
-        const historyString = history ? `\nCHAT HISTORY:\n${history}\n` : '';
-        const systemPrompt = `You are FinManage AI, an expert financial assistant. Be concise, informative, and use the user's currency. This is educational info, not financial advice.`;
-        const fullPrompt = `${systemPrompt}\n\n${contextString}${historyString}\nUSER: ${message}`;
+        if (!message || typeof message !== 'string') {
+            return NextResponse.json({ success: false, error: 'Message required' }, { status: 400 });
+        }
 
-        const result = await model.generateContent(fullPrompt);
-        const response = await result.response;
-        const text = response.text();
+        if (uid && typeof uid === 'string') {
+            // Authenticated: tool-enabled agent (add/delete expenses, budgets, documents)
+            const auth = getAdminAuth();
+            const authHeader = request.headers.get('authorization') || '';
+            const idToken = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : '';
 
-        return NextResponse.json({ success: true, text });
-    } catch (error: any) {
-        console.error('AI Chat API error details:', error);
-        return NextResponse.json({ success: false, error: error.message || 'AI generation failed' }, { status: 500 });
+            if (auth && idToken) {
+                try {
+                    const decoded = await auth.verifyIdToken(idToken);
+                    if (decoded.uid !== uid) {
+                        return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+                    }
+                } catch {
+                    return NextResponse.json({ success: false, error: 'Invalid session token' }, { status: 401 });
+                }
+            }
+
+            const result = await runServerChat({ uid, message, history });
+            return NextResponse.json(result);
+        }
+
+        // Backward-compatible stateless chat (no uid)
+        const result = await runLegacyChat({ message, context, history });
+        return NextResponse.json(result);
+    } catch (error: unknown) {
+        console.error('AI Chat API error:', error);
+        return NextResponse.json({
+            success: false,
+            error: error instanceof Error ? error.message : 'AI generation failed',
+        }, { status: 500 });
     }
 }

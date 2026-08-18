@@ -10,6 +10,7 @@ import { usePortfolioStore, useCurrencyStore, useAuthStore } from '@/store';
 import { getMonthlyTotals, getBudgetSettings } from '@/services/expenses';
 import { Bot, Send, User, Sparkles, RefreshCw, Receipt } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import toast from 'react-hot-toast';
 
 interface Message {
     role: 'user' | 'assistant';
@@ -36,7 +37,11 @@ export default function AIAdvisorPage() {
     const { user } = useAuthStore();
 
     // Expense Data State
-    const [expenseData, setExpenseData] = useState<any>(null);
+    const [expenseData, setExpenseData] = useState<{
+        currentMonthTotal: number;
+        categories: Record<string, number>;
+        budget: { monthlyIncome: number; monthlyBudget: number; currency: string } | null;
+    } | null>(null);
 
     useEffect(() => {
         if (user) {
@@ -47,7 +52,7 @@ export default function AIAdvisorPage() {
 
                 setExpenseData({
                     currentMonthTotal: totals.data?.total || 0,
-                    categories: totals.data?.breakdown || {},
+                    categories: totals.data?.byCategory || {},
                     budget: budget.data || null
                 });
             };
@@ -78,12 +83,26 @@ export default function AIAdvisorPage() {
         setInput('');
         setIsLoading(true);
 
-        const result = await chatAgent.chat(text);
+        const history = messages.slice(-6).map((m) =>
+            `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`
+        ).join('\n');
+
+        const token = user ? await user.getIdToken() : undefined;
+        const result = await chatAgent.chat(text, { uid: user?.uid, token, history });
         setIsLoading(false);
 
         if (result.success && result.text) {
             const assistantMessage: Message = { role: 'assistant', content: result.text, timestamp: new Date() };
             setMessages((prev) => [...prev, assistantMessage]);
+
+            // Surface agent actions (expenses added/deleted) as toasts
+            result.actions?.forEach((action) => {
+                if (action.name === 'add_expense' && action.args.amount) {
+                    toast.success(`Expense ${action.args.amount} added`, { id: 'expense-added' });
+                } else if (action.name === 'delete_expense') {
+                    toast.success('Expense deleted', { id: 'expense-deleted' });
+                }
+            });
         } else {
             const errorMessage: Message = { role: 'assistant', content: "Sorry, I couldn't process your request right now.", timestamp: new Date() };
             setMessages((prev) => [...prev, errorMessage]);
