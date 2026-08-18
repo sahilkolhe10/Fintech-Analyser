@@ -17,6 +17,9 @@ import {
     ConfirmationResult,
 } from 'firebase/auth';
 import { getFirebaseAuth } from './config';
+import { DEMO_USER, type DemoUser } from '@/services/demo';
+import { Timestamp, type UserProfile } from './firestore';
+import { useAuthStore } from '@/store';
 
 // Types for authentication
 export interface AuthResult {
@@ -24,6 +27,33 @@ export interface AuthResult {
     user?: User;
     error?: string;
 }
+
+// Demo sign-in — bypasses Firebase entirely; hydrates the auth store with a
+// local demo user so the UI is explorable without backend credentials.
+export const signInAsDemo = (): { success: boolean; user: DemoUser } => {
+    const profile: UserProfile = {
+        uid: DEMO_USER.uid,
+        email: DEMO_USER.email,
+        displayName: DEMO_USER.displayName,
+        photoURL: DEMO_USER.photoURL,
+        currency: 'INR',
+        preferences: {
+            theme: 'dark',
+            notifications: true,
+            riskTolerance: 'medium',
+        },
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now(),
+    };
+    useAuthStore.getState().setUser(DEMO_USER);
+    useAuthStore.getState().setProfile(profile);
+    useAuthStore.getState().setLoading(false);
+    return { success: true, user: DEMO_USER };
+};
+
+export const signOutDemo = (): void => {
+    useAuthStore.getState().reset();
+};
 
 // Google Auth Provider
 const googleProvider = new GoogleAuthProvider();
@@ -159,6 +189,12 @@ export const verifyPhoneOTP = async (
 
 // Sign Out
 export const logOut = async (): Promise<{ success: boolean; error?: string }> => {
+    const store = useAuthStore.getState();
+    // Demo session: just clear local state
+    if (store.user && 'isDemo' in store.user && store.user.isDemo) {
+        signOutDemo();
+        return { success: true };
+    }
     try {
         const auth = getFirebaseAuth();
         if (!auth) {

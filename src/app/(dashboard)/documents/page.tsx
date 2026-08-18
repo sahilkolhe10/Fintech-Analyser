@@ -6,6 +6,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { useFadeIn } from '@/lib/animations';
 import { useAuthStore } from '@/store';
+import { getAppUserToken } from '@/services/demo';
 import {
     FileText, UploadCloud, Trash2, Loader2, CheckCircle2,
     FileSpreadsheet, Receipt, Sparkles,
@@ -49,7 +50,7 @@ export default function DocumentsPage() {
     const loadDocuments = useCallback(async () => {
         if (!user) return;
         try {
-            const token = await user.getIdToken();
+            const token = await getAppUserToken(user);
             const res = await fetch('/api/ai/documents', {
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -79,7 +80,7 @@ export default function DocumentsPage() {
         const toastId = toast.loading(`Analyzing ${file.name}…`);
 
         try {
-            const token = await user.getIdToken();
+            const token = await getAppUserToken(user);
             const formData = new FormData();
             formData.append('file', file);
             formData.append('importExpenses', String(importExpenses));
@@ -127,7 +128,7 @@ export default function DocumentsPage() {
         if (!user) return;
         const result = await fetch(`/api/ai/documents?docId=${doc.id}`, {
             method: 'DELETE',
-            headers: { Authorization: `Bearer ${await user.getIdToken()}` },
+            headers: { Authorization: `Bearer ${await getAppUserToken(user)}` },
         });
         const data = await result.json();
         if (data.success) {

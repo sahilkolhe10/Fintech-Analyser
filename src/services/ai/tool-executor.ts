@@ -188,6 +188,47 @@ export const buildAgentTools = (): AgentTool[] => [
     },
     {
         definition: {
+            name: 'ml_signal',
+            description: 'Get an ML-model trading signal for a stock (market=nifty500, symbol like RELIANCE) or a crypto pair (market=crypto, symbol like BTC-USD). Returns the predicted direction (BUY/SHORT/HOLD/LONG) with model confidence and current price.',
+            parameters: {
+                type: 'object',
+                properties: {
+                    market: { type: 'string', enum: ['nifty500', 'crypto'], description: 'Market to query: nifty500 (Indian stocks) or crypto' },
+                    symbol: { type: 'string', description: 'Symbol, e.g. RELIANCE or BTC-USD' },
+                },
+                required: ['market', 'symbol'],
+            },
+        },
+        handler: async (args) => {
+            const market = String(args.market || 'nifty500');
+            const symbol = String(args.symbol || '').toUpperCase();
+            const mlUrl = process.env.ML_SERVICE_URL;
+            if (!mlUrl) {
+                return 'ML service is not deployed yet (ML_SERVICE_URL not set).';
+            }
+            try {
+                const url = new URL(`/signals/${market}`, mlUrl);
+                url.searchParams.set('symbol', symbol);
+                const res = await fetch(url, { signal: AbortSignal.timeout(15_000) });
+                const body = await res.json();
+                if (!res.ok) {
+                    const detail = typeof body?.detail === 'string' ? body.detail : `Error ${res.status}`;
+                    return `ML service error: ${detail}`;
+                }
+                const p = body.probabilities ? Object.entries(body.probabilities)
+                    .map(([dir, prob]) => `${dir} ${Math.round(Number(prob) * 100)}%`).join(', ') : '';
+                return [
+                    `ML SIGNAL for ${body.symbol}: ${body.direction} (confidence ${Math.round(body.probability * 100)}%)`,
+                    `Price: ${body.price} at ${body.time}`,
+                    p ? `Probabilities: ${p}` : '',
+                ].filter(Boolean).join('\n');
+            } catch (error: unknown) {
+                return `ERROR: ML service unreachable (${error instanceof Error ? error.message : 'network'})`;
+            }
+        },
+    },
+    {
+        definition: {
             name: 'list_documents',
             description: 'List financial documents the user has uploaded (statements, payslips, bills, receipts) with their summaries.',
             parameters: { type: 'object', properties: {} },

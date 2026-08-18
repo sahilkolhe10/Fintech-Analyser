@@ -1,0 +1,26 @@
+"""FinManage ML service — FastAPI server for live trading signals.
+
+Pipenv-managed. Install:  pipenv install
+Run locally:             pipenv run uvicorn main:app --port 8000
+                          (or `pipenv run python main.py`)
+"""
+
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+fastapi = "*"
+uvicorn = "*"
+pandas = "*"
+numpy = "*"
+scikit-learn = "*"
+pyarrow = "*"          # parquet cache for Binance frames
+xgboost = "*"          # Nifty 500 signal model (cold-start safe without it)
+
+[dev-packages]
+ruff = "*"
+
+[requires]
+python_version = "3.11"

@@ -2,7 +2,6 @@
 
 // Portfolio Page - Complete with Simulations, Risk Analysis, Recommendations & Download
 import { useState, useEffect, useRef } from 'react';
-import Link from 'next/link';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { AnimatedButton } from '@/components/ui/AnimatedButton';
 import { useFadeIn, useStaggerChildren } from '@/lib/animations';
@@ -23,8 +22,8 @@ import { Timestamp } from 'firebase/firestore';
 import toast from 'react-hot-toast';
 import {
     Plus, TrendingUp, TrendingDown, Trash2, ExternalLink,
-    Search, X, DollarSign, BarChart3, Newspaper,
-    Shield, AlertTriangle, Zap, Target, LineChart, AreaChart, Download, Eye, Network, Upload
+    Search, X, BarChart3, Newspaper,
+    Shield, LineChart, AreaChart, Download, Eye, Network, Upload
 } from 'lucide-react';
 import { InteractivePortfolioChart } from '@/components/charts/InteractivePortfolioChart';
 import { MarketCorrelationGraph } from '@/components/charts/MarketCorrelationGraph';
@@ -40,14 +39,14 @@ const CURRENT_PRICES: Record<string, number> = {
 };
 
 // Risk profiles & Recommendations
-const STOCK_DATA: Record<string, { risk: 'Low' | 'Medium' | 'High'; growth: number; rec: 'Buy' | 'Hold' | 'Sell' }> = {
+const STOCK_DATA: Record<string, { risk: 'Low' | 'Medium' | 'High'; growth: number; rec: 'Buy' | 'Hold' | 'Sell' | 'Strong Buy' }> = {
     'RELIANCE.NS': { risk: 'Medium', growth: 12, rec: 'Buy' },
     'TCS.NS': { risk: 'Low', growth: 10, rec: 'Hold' },
     'HDFCBANK.NS': { risk: 'Low', growth: 11, rec: 'Buy' },
     'INFY.NS': { risk: 'Low', growth: 9, rec: 'Hold' },
     'ICICIBANK.NS': { risk: 'Medium', growth: 13, rec: 'Buy' },
     'SBIN.NS': { risk: 'Medium', growth: 14, rec: 'Buy' },
-    'BHARTIARTL.NS': { risk: 'Medium', growth: 15, rec: 'Strong Buy' as any },
+    'BHARTIARTL.NS': { risk: 'Medium', growth: 15, rec: 'Strong Buy' },
     'ITC.NS': { risk: 'Low', growth: 8, rec: 'Hold' },
     'BAJFINANCE.NS': { risk: 'High', growth: 18, rec: 'Buy' },
     'Default': { risk: 'Medium', growth: 10, rec: 'Hold' }
@@ -61,7 +60,6 @@ export default function PortfolioPage() {
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [holdings, setHoldings] = useState<Holding[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
     const [showAddModal, setShowAddModal] = useState(false);
     const [activeTab, setActiveTab] = useState<'holdings' | 'analysis' | 'simulations' | 'correlations' | 'watchlist' | 'gainers' | 'news'>('holdings');
 
@@ -74,11 +72,11 @@ export default function PortfolioPage() {
     useEffect(() => {
         if (!user) return;
         loadHoldings();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user]);
 
     const loadHoldings = async () => {
         if (!user) return;
-        setIsLoading(true);
         try {
             const result = await getHoldings(user.uid);
             if (result.success && result.data) {
@@ -86,8 +84,6 @@ export default function PortfolioPage() {
             }
         } catch (error) {
             console.error('Error loading holdings:', error);
-        } finally {
-            setIsLoading(false);
         }
     };
 

@@ -2,6 +2,7 @@ import { ChatGroq } from '@langchain/groq';
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
 import { ChatOpenAI } from '@langchain/openai';
 import { HumanMessage, SystemMessage, AIMessage, type BaseMessage } from '@langchain/core/messages';
+import { BaseChatModel } from '@langchain/core/language_models/chat_models';
 import { DynamicStructuredTool } from '@langchain/core/tools';
 import { Annotation, StateGraph, START, END } from '@langchain/langgraph';
 import { ToolNode } from '@langchain/langgraph/prebuilt';
@@ -18,7 +19,7 @@ const MessagesAnnotation = Annotation.Root({
     }),
 });
 
-async function runGraph(llm: ChatGroq | ChatGoogleGenerativeAI, label: string) {
+async function runGraph(llm: BaseChatModel, label: string) {
     const tool = new DynamicStructuredTool({
         name: 'add_expense',
         description: 'Record a new expense',
@@ -30,7 +31,7 @@ async function runGraph(llm: ChatGroq | ChatGoogleGenerativeAI, label: string) {
         func: async (args) => `SAVED expense ${args.amount} (${args.category}) - ${args.description}`,
     });
 
-    const modelWithTools = llm.bindTools([tool]);
+    const modelWithTools = llm.bindTools ? llm.bindTools([tool]) : llm;
     const graph = new StateGraph(MessagesAnnotation)
         .addNode('agent', async (state) => ({ messages: [await modelWithTools.invoke(state.messages)] }))
         .addNode('tools', new ToolNode([tool]))

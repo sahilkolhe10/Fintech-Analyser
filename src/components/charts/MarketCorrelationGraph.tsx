@@ -80,15 +80,16 @@ export function MarketCorrelationGraph() {
         const node = svg.append("g")
             .attr("stroke", "#fff")
             .attr("stroke-width", 1.5)
-            .selectAll("circle")
+            .selectAll<SVGCircleElement, Node>("circle")
             .data(graphData.nodes)
             .join("circle")
             .attr("r", d => d.val) // Radius based on value
-            .attr("fill", d => color(String(d.group)))
-            .call(d3.drag<SVGCircleElement, Node>() // Interactive drag
-                .on("start", dragstarted)
-                .on("drag", dragged)
-                .on("end", dragended));
+            .attr("fill", d => color(String(d.group)));
+
+        node.call(d3.drag<SVGCircleElement, Node>()
+            .on("start", dragstarted)
+            .on("drag", dragged)
+            .on("end", dragended));
 
         node.append("title")
             .text(d => d.id);
@@ -121,18 +122,18 @@ export function MarketCorrelationGraph() {
                 .attr("y", d => d.y!);
         });
 
-        function dragstarted(event: any) {
+        function dragstarted(event: d3.D3DragEvent<SVGCircleElement, Node, Node>) {
             if (!event.active) simulation.alphaTarget(0.3).restart();
             event.subject.fx = event.subject.x;
             event.subject.fy = event.subject.y;
         }
 
-        function dragged(event: any) {
+        function dragged(event: d3.D3DragEvent<SVGCircleElement, Node, Node>) {
             event.subject.fx = event.x;
             event.subject.fy = event.y;
         }
 
-        function dragended(event: any) {
+        function dragended(event: d3.D3DragEvent<SVGCircleElement, Node, Node>) {
             if (!event.active) simulation.alphaTarget(0);
             event.subject.fx = null;
             event.subject.fy = null;

@@ -1,7 +1,7 @@
 'use client';
 
 // Animated Particle Background with Three.js
-import { useRef, useMemo } from 'react';
+import { useRef, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Points, PointMaterial } from '@react-three/drei';
 import * as THREE from 'three';
@@ -15,16 +15,17 @@ interface ParticlesProps {
 function Particles({ count = 3000, color = '#8B5CF6', size = 0.003 }: ParticlesProps) {
     const ref = useRef<THREE.Points>(null);
 
-    const positions = useMemo(() => {
-        const positions = new Float32Array(count * 3);
+    // Generate once, outside render (lazy initializer), to keep render pure.
+    const [positions] = useState(() => {
+        const arr = new Float32Array(count * 3);
         for (let i = 0; i < count; i++) {
             const i3 = i * 3;
-            positions[i3] = (Math.random() - 0.5) * 10;
-            positions[i3 + 1] = (Math.random() - 0.5) * 10;
-            positions[i3 + 2] = (Math.random() - 0.5) * 10;
+            arr[i3] = (Math.random() - 0.5) * 10;
+            arr[i3 + 1] = (Math.random() - 0.5) * 10;
+            arr[i3 + 2] = (Math.random() - 0.5) * 10;
         }
-        return positions;
-    }, [count]);
+        return arr;
+    });
 
     useFrame((state) => {
         if (ref.current) {

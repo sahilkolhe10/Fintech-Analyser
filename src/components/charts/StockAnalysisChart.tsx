@@ -9,7 +9,6 @@ import {
     CartesianGrid,
     Tooltip,
     ResponsiveContainer,
-    Cell
 } from 'recharts';
 
 interface StockDataPoint {
@@ -56,34 +55,10 @@ interface StockAnalysisChartProps {
 }
 
 export function StockAnalysisChart({ symbol }: StockAnalysisChartProps) {
+    // Symbol is reserved for live data wiring; chart currently renders
+    // generated mock candles for the demo.
+    void symbol;
     const data = generateMockStockData(60);
-
-    // Custom Candlestick Shape
-    const Candlestick = (props: any) => {
-        const { x, y, width, height, low, high, open, close } = props;
-        const isUp = close > open;
-        const color = isUp ? '#10B981' : '#EF4444';
-        const ratio = Math.abs(high - low) / height;
-
-        // Calculate Y positions relative to the chart area
-        // Recharts passes y as the top of the bar (max value) ??? No, bar logic is tricky.
-        // Easier way: 
-        // We render a Bar for the body (Open-Close range).
-        // We render a Line or ErrorBar for High-Low? No.
-        // Let's us Custom Shape for the entire candle.
-        // Actually, Recharts works best with just data points. Using ComposedChart with Error Bars is complex.
-        // Standard approach in Recharts: 
-        // Use Bar chart where [min, max] is the range.
-        // But we need 4 points.
-
-        // Simplification for Recharts:
-        // Render an "ErrorBar" type logic or just lines.
-
-        // Let's stick to a Close Price Line Chart + Volume Bar for robustness, 
-        // as true Candlestick needing 4 dimensions is tricky in pure Recharts without heavy SVG manipulation.
-        // We will overlay Close Price (Line) and Volume (Bar) for a "TradingView-lite" look.
-        return null;
-    };
 
     return (
         <div className="w-full h-[400px]">

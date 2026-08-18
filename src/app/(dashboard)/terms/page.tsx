@@ -25,7 +25,7 @@ export default function TermsPage() {
 
                 <h2 className="text-xl font-semibold text-white mt-8">4. Changes to Terms</h2>
                 <p>
-                    We reserve the right to modify or replace these Terms at any time. We will try to provide at least 30 days' notice prior to any new terms taking effect.
+                    We reserve the right to modify or replace these Terms at any time. We will try to provide at least 30 days&apos; notice prior to any new terms taking effect.
                 </p>
             </div>
         </div>

@@ -3,7 +3,7 @@
 // 3D Interactive Portfolio Pie Chart
 import { useRef, useState, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Html, OrbitControls } from '@react-three/drei';
+import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 
 interface PieSlice {
@@ -20,7 +20,7 @@ interface SliceProps {
     onHover: (slice: PieSlice | null) => void;
 }
 
-function Slice({ slice, startAngle, endAngle, index, onHover }: SliceProps) {
+function Slice({ slice, startAngle, endAngle, onHover }: SliceProps) {
     const ref = useRef<THREE.Mesh>(null);
     const [hovered, setHovered] = useState(false);
 
@@ -76,13 +76,15 @@ export function Portfolio3DPie({ data, className = '', showLabels = true }: Port
     const total = useMemo(() => data.reduce((sum, d) => sum + d.value, 0), [data]);
 
     const slices = useMemo(() => {
-        let currentAngle = 0;
-        return data.map((slice) => {
-            const startAngle = currentAngle;
-            const angle = (slice.value / total) * Math.PI * 2;
-            currentAngle += angle;
-            return { slice, startAngle, endAngle: currentAngle };
-        });
+        // Pure fold: build each slice from the accumulated angle.
+        const result: { slice: PieSlice; startAngle: number; endAngle: number }[] = [];
+        data.reduce((acc, slice) => {
+            const startAngle = acc;
+            const endAngle = acc + (slice.value / total) * Math.PI * 2;
+            result.push({ slice, startAngle, endAngle });
+            return endAngle;
+        }, 0);
+        return result;
     }, [data, total]);
 
     return (

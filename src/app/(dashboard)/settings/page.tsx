@@ -5,8 +5,9 @@ import { useState, useEffect } from 'react';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { AnimatedButton } from '@/components/ui/AnimatedButton';
 import { useFadeIn } from '@/lib/animations';
-import { useAuthStore, useCurrencyStore, useThemeStore } from '@/store';
+import { useAuthStore, useThemeStore } from '@/store';
 import { updateUserProfile } from '@/lib/firebase/firestore';
+import { getAppUserToken } from '@/services/demo';
 import {
     User, Bell, Shield, DollarSign, Save,
     Send, Copy, CheckCircle2, Loader2,
@@ -16,7 +17,6 @@ import toast from 'react-hot-toast';
 export default function SettingsPage() {
     const fadeRef = useFadeIn();
     const { user, profile, setProfile } = useAuthStore();
-    const { currency, setCurrency } = useCurrencyStore();
     const { theme } = useThemeStore();
 
     const [displayName, setDisplayName] = useState(profile?.displayName || '');
@@ -60,7 +60,7 @@ export default function SettingsPage() {
         if (!user) return;
         setIsGeneratingCode(true);
         try {
-            const token = await user.getIdToken();
+            const token = await getAppUserToken(user);
             const res = await fetch('/api/telegram/link', {
                 method: 'POST',
                 headers: { Authorization: `Bearer ${token}` },
@@ -199,24 +199,11 @@ export default function SettingsPage() {
                 </div>
                 <div className="flex gap-4">
                     <button
-                        onClick={() => setCurrency('INR')}
-                        className={`flex-1 py-4 rounded-xl border transition-all ${currency === 'INR'
-                                ? 'bg-primary/20 border-primary text-white'
-                                : 'bg-white/5 border-white/10 text-gray-400 hover:border-white/20'
-                            }`}
+                        className="flex-1 py-4 rounded-xl border bg-primary/20 border-primary text-white"
+                        disabled
                     >
                         <div className="text-2xl mb-1">₹</div>
                         <div className="font-medium">Indian Rupee</div>
-                    </button>
-                    <button
-                        onClick={() => setCurrency('USD')}
-                        className={`flex-1 py-4 rounded-xl border transition-all ${currency === 'USD'
-                                ? 'bg-primary/20 border-primary text-white'
-                                : 'bg-white/5 border-white/10 text-gray-400 hover:border-white/20'
-                            }`}
-                    >
-                        <div className="text-2xl mb-1">$</div>
-                        <div className="font-medium">US Dollar</div>
                     </button>
                 </div>
             </GlassCard>

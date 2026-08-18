@@ -4,12 +4,13 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { signUpWithEmail, signInWithGoogle } from '@/lib/firebase/auth';
+import { signUpWithEmail, signInWithGoogle, signInAsDemo } from '@/lib/firebase/auth';
 import { AnimatedButton } from '@/components/ui/AnimatedButton';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { ParticleBackground } from '@/components/3d/ParticleBackground';
-import { Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, User, Eye, EyeOff, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { DEMO_USER, DEMO_PASSWORD } from '@/services/demo';
 
 export default function SignUpPage() {
     const router = useRouter();
@@ -27,6 +28,16 @@ export default function SignUpPage() {
         }
         if (password.length < 6) {
             toast.error('Password must be at least 6 characters');
+            return;
+        }
+
+        // Demo credentials → local demo session (no Firebase)
+        if (email.trim().toLowerCase() === DEMO_USER.email && password === DEMO_PASSWORD) {
+            const demoResult = signInAsDemo();
+            if (demoResult.success) {
+                toast.success('Welcome to Demo Mode!');
+                router.push('/');
+            }
             return;
         }
 
@@ -133,6 +144,27 @@ export default function SignUpPage() {
                     </svg>
                     Continue with Google
                 </AnimatedButton>
+
+                {/* Demo Mode */}
+                <div className="my-4">
+                    <AnimatedButton
+                        variant="secondary"
+                        className="w-full !border-primary/40 !text-primary hover:!bg-primary/10"
+                        onClick={() => {
+                            const result = signInAsDemo();
+                            if (result.success) {
+                                toast.success('Welcome to Demo Mode!');
+                                router.push('/');
+                            }
+                        }}
+                    >
+                        <Sparkles className="w-5 h-5" />
+                        Explore Demo Mode
+                    </AnimatedButton>
+                    <p className="text-center text-xs text-gray-500 mt-2">
+                        No account needed — demo user: <span className="text-gray-300 font-mono">{DEMO_USER.email}</span> / <span className="text-gray-300 font-mono">{DEMO_PASSWORD}</span>
+                    </p>
+                </div>
 
                 {/* Terms */}
                 <p className="text-center text-gray-400 text-sm mt-6">

@@ -22,6 +22,9 @@ declare namespace NodeJS {
     ZENMUX_API_KEY?: string;
     ZENMUX_MODEL?: string;
 
+    // ML signals service (ml/ — separate Cloud Run service)
+    ML_SERVICE_URL?: string;
+
     // Firebase Admin (server-side agents — documents, Telegram)
     FIREBASE_SERVICE_ACCOUNT?: string;
     FIREBASE_ADMIN_PROJECT_ID?: string;

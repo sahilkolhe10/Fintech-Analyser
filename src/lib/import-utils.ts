@@ -21,10 +21,13 @@ export const parsePortfolioFile = async (file: File): Promise<ImportedHolding[]>
                 const worksheet = workbook.Sheets[firstSheetName];
 
                 // Convert to JSON
-                const jsonData = utils.sheet_to_json(worksheet) as any[];
+                interface SheetRow {
+                    [key: string]: unknown;
+                }
+                const jsonData = utils.sheet_to_json<SheetRow>(worksheet);
 
                 // Map to holdings
-                const holdings: ImportedHolding[] = jsonData.map((row) => {
+                const mapped = jsonData.map((row): ImportedHolding | null => {
                     // Try to guess columns broadly
                     const symbol = row['Symbol'] || row['Ticker'] || row['Stock'] || row['symbol'];
                     const quantity = row['Quantity'] || row['Qty'] || row['Shares'] || row['quantity'];
@@ -47,7 +50,11 @@ export const parsePortfolioFile = async (file: File): Promise<ImportedHolding[]>
                         buyPrice: Number(buyPrice),
                         name: String(name)
                     };
-                }).filter((h): h is ImportedHolding => h !== null);
+                });
+
+                const holdings: ImportedHolding[] = mapped.filter(
+                    (h): h is ImportedHolding => h !== null
+                );
 
                 resolve(holdings);
             } catch (error) {

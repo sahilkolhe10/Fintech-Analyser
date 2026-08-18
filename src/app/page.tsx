@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { onAuthStateChanged } from 'firebase/auth';
 import { getFirebaseAuth } from '@/lib/firebase/config';
+import { useAuthStore } from '@/store';
 import { ParticleBackground } from '@/components/3d/ParticleBackground';
 
 export default function RootPage() {
@@ -12,6 +13,13 @@ export default function RootPage() {
     const [checking, setChecking] = useState(true);
 
     useEffect(() => {
+        // Demo session (persisted) → straight to dashboard, no Firebase.
+        const demo = useAuthStore.getState().user;
+        if (demo && 'isDemo' in demo && demo.isDemo) {
+            router.push('/dashboard');
+            return;
+        }
+
         const auth = getFirebaseAuth();
 
         if (!auth) {

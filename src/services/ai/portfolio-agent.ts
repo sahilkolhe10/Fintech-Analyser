@@ -210,7 +210,6 @@ Consider: concentration risk, sector diversification, asset type balance, market
         const metrics = this.calculateMetrics(holdings, quotes);
 
         const holdingsData = holdings.map((h) => {
-            const quote = quotes.get(h.symbol);
             const value = metrics.holdingValues.get(h.symbol) || 0;
 
             return {

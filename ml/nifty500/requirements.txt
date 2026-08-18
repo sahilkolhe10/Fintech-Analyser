@@ -1,0 +1,17 @@
+smartapi-python
+pyotp
+pandas
+pyarrow
+requests
+logzero
+websocket-client
+NorenRestApiPy
+feedparser
+google-generativeai
+python-telegram-bot
+python-dotenv
+yfinance
+google-cloud-storage
+xgboost
+scikit-learn
+numpy

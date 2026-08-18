@@ -8,12 +8,19 @@ import {
     deleteDoc,
     query,
     where,
-    orderBy,
     Timestamp,
     getDoc,
     setDoc
 } from 'firebase/firestore';
-import { db } from '@/lib/firebase/config';
+import { getFirebaseDb } from '@/lib/firebase/config';
+import { isDemoSession } from '@/services/demo';
+import { DEMO_BUDGET, DEMO_EXPENSES } from '@/services/demo-data';
+
+const getDb = () => {
+    const db = getFirebaseDb();
+    if (!db) throw new Error('Firestore not configured');
+    return db;
+};
 
 // Types
 export interface Expense {
@@ -55,8 +62,11 @@ export const EXPENSE_CATEGORIES: ExpenseCategory[] = [
 
 // Budget Settings Operations
 export const getBudgetSettings = async (userId: string): Promise<{ success: boolean; data?: BudgetSettings; error?: string }> => {
+    if (isDemoSession()) {
+        return { success: true, data: { ...DEMO_BUDGET } as BudgetSettings };
+    }
     try {
-        const docRef = doc(db, 'budgetSettings', userId);
+        const docRef = doc(getDb(), 'budgetSettings', userId);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
@@ -74,7 +84,7 @@ export const saveBudgetSettings = async (
     settings: Omit<BudgetSettings, 'userId' | 'createdAt' | 'updatedAt'>
 ): Promise<{ success: boolean; error?: string }> => {
     try {
-        const docRef = doc(db, 'budgetSettings', userId);
+        const docRef = doc(getDb(), 'budgetSettings', userId);
         const existing = await getDoc(docRef);
 
         if (existing.exists()) {
@@ -100,7 +110,7 @@ export const saveBudgetSettings = async (
 // Expense Operations
 export const addExpense = async (expense: Omit<Expense, 'id' | 'createdAt'>): Promise<{ success: boolean; id?: string; error?: string }> => {
     try {
-        const docRef = await addDoc(collection(db, 'expenses'), {
+        const docRef = await addDoc(collection(getDb(), 'expenses'), {
             ...expense,
             createdAt: Timestamp.now(),
         });
@@ -116,15 +126,28 @@ export const getExpenses = async (
     startDate?: Date,
     endDate?: Date
 ): Promise<{ success: boolean; data?: Expense[]; error?: string }> => {
+    if (isDemoSession()) {
+        let data = DEMO_EXPENSES as unknown as Expense[];
+        if (startDate && endDate) {
+            const s = startDate.getTime();
+            const e = endDate.getTime();
+            data = data.filter((exp) => {
+                const t = exp.date.toDate().getTime();
+                return t >= s && t <= e;
+            });
+        }
+        data = [...data].sort((a, b) => b.date.toMillis() - a.date.toMillis());
+        return { success: true, data };
+    }
     try {
         let q = query(
-            collection(db, 'expenses'),
+            collection(getDb(), 'expenses'),
             where('userId', '==', userId)
         );
 
         if (startDate && endDate) {
             q = query(
-                collection(db, 'expenses'),
+                collection(getDb(), 'expenses'),
                 where('userId', '==', userId),
                 where('date', '>=', Timestamp.fromDate(startDate)),
                 where('date', '<=', Timestamp.fromDate(endDate))
@@ -149,7 +172,7 @@ export const getExpenses = async (
 
 export const deleteExpense = async (expenseId: string): Promise<{ success: boolean; error?: string }> => {
     try {
-        await deleteDoc(doc(db, 'expenses', expenseId));
+        await deleteDoc(doc(getDb(), 'expenses', expenseId));
         return { success: true };
     } catch (error) {
         console.error('Error deleting expense:', error);
@@ -162,7 +185,7 @@ export const updateExpense = async (
     updates: Partial<Expense>
 ): Promise<{ success: boolean; error?: string }> => {
     try {
-        await updateDoc(doc(db, 'expenses', expenseId), updates);
+        await updateDoc(doc(getDb(), 'expenses', expenseId), updates);
         return { success: true };
     } catch (error) {
         console.error('Error updating expense:', error);

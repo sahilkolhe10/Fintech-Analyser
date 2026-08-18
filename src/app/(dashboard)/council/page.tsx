@@ -6,6 +6,7 @@ import { GlassCard } from '@/components/ui/GlassCard';
 import { AnimatedButton } from '@/components/ui/AnimatedButton';
 import { useFadeIn } from '@/lib/animations';
 import { useAuthStore } from '@/store';
+import { getAppUserToken } from '@/services/demo';
 import {
     Landmark, Scale, TrendingUp, ShieldAlert, FileText, HelpCircle,
     Loader2, Sparkles, RefreshCw, MessageSquareQuote, ScrollText,
@@ -78,7 +79,7 @@ export default function CouncilPage() {
         setResult(null);
 
         try {
-            const token = await user.getIdToken();
+            const token = await getAppUserToken(user);
             const res = await fetch('/api/ai/council', {
                 method: 'POST',
                 headers: {

@@ -3,17 +3,15 @@
 // Research Page - Stock Analysis with Clickable Categories and Commodities
 import { useState } from 'react';
 import { GlassCard } from '@/components/ui/GlassCard';
-import { AnimatedButton } from '@/components/ui/AnimatedButton';
-import { PriceDisplay } from '@/components/ui/PriceDisplay';
 import { useFadeIn } from '@/lib/animations';
-import Link from 'next/link';
-import { getTradingViewUrl, NIFTY_POPULAR_STOCKS, MONTHLY_GAINERS } from '@/services/holdings';
+import { getTradingViewUrl, NIFTY_POPULAR_STOCKS, MONTHLY_GAINERS, type WatchlistItem } from '@/services/holdings';
 import {
-    TrendingUp, TrendingDown, BarChart3, Target,
-    Shield, AlertCircle, Star, Plus, ExternalLink, X, Search,
-    Coins, Droplets, Flame, AreaChart, LineChart
+    TrendingUp, BarChart3, Target,
+    Shield, AlertCircle, ExternalLink, X, Search,
+    Coins, Droplets, Flame, LineChart
 } from 'lucide-react';
 import { StockAnalysisChart } from '@/components/charts/StockAnalysisChart';
+import { MlSignalsPanel } from '@/components/signals/MlSignalsPanel';
 
 // Stock categories data
 const AI_BUY_SIGNALS = [
@@ -99,7 +97,7 @@ export default function ResearchPage() {
     const fadeRef = useFadeIn();
     const [activeView, setActiveView] = useState<ActiveView>('popular');
     const [searchQuery, setSearchQuery] = useState('');
-    const [selectedStock, setSelectedStock] = useState<any>(null);
+    const [selectedStock, setSelectedStock] = useState<WatchlistItem | null>(null);
 
     const filteredStocks = NIFTY_POPULAR_STOCKS.filter(s =>
         s.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -122,7 +120,7 @@ export default function ResearchPage() {
         }
     };
 
-    const openAnalysis = (stock: any) => {
+    const openAnalysis = (stock: WatchlistItem) => {
         setSelectedStock(stock);
         setActiveView('analysis');
     };
@@ -460,6 +458,9 @@ export default function ResearchPage() {
                     </div>
                 </GlassCard>
             )}
+
+            {/* ML Model Signals */}
+            <MlSignalsPanel />
         </div>
     );
 }

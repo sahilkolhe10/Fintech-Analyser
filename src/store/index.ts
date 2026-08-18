@@ -4,27 +4,44 @@ import { persist } from 'zustand/middleware';
 import { User } from 'firebase/auth';
 import { Holding, UserProfile } from '@/lib/firebase/firestore';
 import { StockQuote } from '@/services/market';
+import { DemoUser } from '@/services/demo';
 
-// Auth Store
+// AppUser — a real Firebase user or the local demo user
+export type AppUser = User | DemoUser;
+
+// Auth Store — persisted so a demo session survives page reloads.
+// Note: only the demo user is persisted; real Firebase sessions are
+// re-established by onAuthStateChanged.
 interface AuthState {
-    user: User | null;
+    user: AppUser | null;
     profile: UserProfile | null;
     isLoading: boolean;
-    setUser: (user: User | null) => void;
+    setUser: (user: AppUser | null) => void;
     setProfile: (profile: UserProfile | null) => void;
     setLoading: (loading: boolean) => void;
     reset: () => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-    user: null,
-    profile: null,
-    isLoading: true,
-    setUser: (user) => set({ user }),
-    setProfile: (profile) => set({ profile }),
-    setLoading: (isLoading) => set({ isLoading }),
-    reset: () => set({ user: null, profile: null, isLoading: false }),
-}));
+export const useAuthStore = create<AuthState>()(
+    persist(
+        (set) => ({
+            user: null,
+            profile: null,
+            isLoading: true,
+            setUser: (user) => set({ user }),
+            setProfile: (profile) => set({ profile }),
+            setLoading: (isLoading) => set({ isLoading }),
+            reset: () => set({ user: null, profile: null, isLoading: false }),
+        }),
+        {
+            name: 'finmanage-auth',
+            partialize: (state) => ({
+                user: state.user && 'isDemo' in state.user && state.user.isDemo ? state.user : null,
+                profile: state.user && 'isDemo' in state.user && state.user.isDemo ? state.profile : null,
+            }),
+        }
+    )
+);
 
 // Portfolio Store
 interface PortfolioState {
@@ -40,7 +57,7 @@ interface PortfolioState {
     removeHolding: (id: string) => void;
 }
 
-export const usePortfolioStore = create<PortfolioState>((set, get) => ({
+export const usePortfolioStore = create<PortfolioState>((set) => ({
     holdings: [],
     quotes: new Map(),
     totalValue: 0,
@@ -53,9 +70,9 @@ export const usePortfolioStore = create<PortfolioState>((set, get) => ({
     removeHolding: (id) => set((state) => ({ holdings: state.holdings.filter((h) => h.id !== id) })),
 }));
 
-// Currency Store with persistence
+// Currency Store — INR only (FinManage is an Indian fintech app).
 interface CurrencyState {
-    currency: 'INR' | 'USD';
+    currency: 'INR';
     exchangeRate: number;
     setCurrency: (currency: 'INR' | 'USD') => void;
     setExchangeRate: (rate: number) => void;
@@ -67,12 +84,12 @@ export const useCurrencyStore = create<CurrencyState>()(
         (set, get) => ({
             currency: 'INR',
             exchangeRate: 83.5,
-            setCurrency: (currency) => set({ currency }),
+            // INR is the only supported currency; ignore USD requests.
+            setCurrency: () => set({ currency: 'INR' }),
             setExchangeRate: (exchangeRate) => set({ exchangeRate }),
             convert: (amount, from) => {
-                const { currency, exchangeRate } = get();
-                if (from === currency) return amount;
-                return from === 'USD' ? amount * exchangeRate : amount / exchangeRate;
+                const { exchangeRate } = get();
+                return from === 'USD' ? amount * exchangeRate : amount;
             },
         }),
         { name: 'finmanage-currency' }

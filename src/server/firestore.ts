@@ -194,21 +194,213 @@ export const getServerHoldings = async (uid: string): Promise<{ success: boolean
 };
 
 // ============================================
-// Chat history (users/{uid}/chatHistory)
+// AI chat conversations (users/{uid}/conversations/{conversationId})
+// Messages: users/{uid}/conversations/{conversationId}/messages
 // ============================================
 
-export const saveServerChatMessage = async (uid: string, role: 'user' | 'assistant', content: string): Promise<void> => {
+export interface Conversation {
+    conversationId: string;
+    title: string;
+    summary: string;
+    messageCount: number;
+    lastMessage: string;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
+}
+
+export interface ChatMessageRecord {
+    role: 'user' | 'assistant';
+    content: string;
+    n: number;
+    timestamp: Date;
+}
+
+export const saveServerChatMessage = async (
+    uid: string,
+    role: 'user' | 'assistant',
+    content: string,
+    conversationId?: string
+): Promise<void> => {
     const db = getAdminDb();
     if (!db) return;
 
     try {
-        await db.collection('users').doc(uid).collection('chatHistory').add({
-            role,
-            content,
-            timestamp: FieldValue.serverTimestamp(),
+        if (!conversationId) {
+            // Legacy flat history (pre-conversations data)
+            await db.collection('users').doc(uid).collection('chatHistory').add({
+                role,
+                content,
+                timestamp: FieldValue.serverTimestamp(),
+            });
+            return;
+        }
+
+        await db.runTransaction(async (tx) => {
+            const convRef = db.collection('users').doc(uid).collection('conversations').doc(conversationId);
+            const conv = await tx.get(convRef);
+            if (!conv.exists) return;
+
+            const count = (conv.data()?.messageCount as number) || 0;
+            const n = count + 1;
+
+            tx.set(convRef.collection('messages').doc(), {
+                role,
+                content,
+                n,
+                timestamp: FieldValue.serverTimestamp(),
+            });
+
+            const updates: Record<string, unknown> = {
+                messageCount: n,
+                updatedAt: FieldValue.serverTimestamp(),
+                lastMessage: content.slice(0, 120),
+            };
+            const title = conv.data()?.title as string | undefined;
+            if (role === 'user' && !title && content.trim()) {
+                updates.title = content.trim().slice(0, 60);
+            }
+            tx.update(convRef, updates);
         });
-    } catch {
+    } catch (error) {
         // Best-effort: never break chat over history persistence
+        console.error('saveServerChatMessage failed:', error);
+    }
+};
+
+export const createServerConversation = async (uid: string): Promise<Conversation | null> => {
+    const db = getAdminDb();
+    if (!db) return null;
+
+    try {
+        const ref = await db.collection('users').doc(uid).collection('conversations').add({
+            title: '',
+            summary: '',
+            messageCount: 0,
+            lastMessage: '',
+            createdAt: FieldValue.serverTimestamp(),
+            updatedAt: FieldValue.serverTimestamp(),
+        });
+        return { conversationId: ref.id, title: '', summary: '', messageCount: 0, lastMessage: '', createdAt: Timestamp.now(), updatedAt: Timestamp.now() };
+    } catch (error) {
+        console.error('createServerConversation failed:', error);
+        return null;
+    }
+};
+
+export const getOrCreateConversation = async (uid: string, conversationId?: string): Promise<Conversation | null> => {
+    const db = getAdminDb();
+    if (!db) return null;
+
+    try {
+        const convCol = db.collection('users').doc(uid).collection('conversations');
+
+        if (conversationId) {
+            const snap = await convCol.doc(conversationId).get();
+            if (snap.exists) {
+                const data = snap.data() as Conversation;
+                return { ...(data as Conversation), conversationId: snap.id };
+            }
+        }
+
+        // Fall back to the most recent conversation (e.g. Telegram without ids)
+        const latest = await convCol.orderBy('updatedAt', 'desc').limit(1).get();
+        if (!latest.empty) {
+            const doc = latest.docs[0];
+            return { ...(doc.data() as Conversation), conversationId: doc.id };
+        }
+
+        return await createServerConversation(uid);
+    } catch (error) {
+        console.error('getOrCreateConversation failed:', error);
+        return null;
+    }
+};
+
+export const getServerChatMessages = async (
+    uid: string,
+    conversationId: string,
+    limit = 20
+): Promise<ChatMessageRecord[]> => {
+    const db = getAdminDb();
+    if (!db) return [];
+
+    try {
+        const snap = await db
+            .collection('users').doc(uid).collection('conversations').doc(conversationId)
+            .collection('messages')
+            .orderBy('n', 'desc')
+            .limit(limit)
+            .get();
+
+        return snap.docs
+            .map((doc) => {
+                const data = doc.data();
+                return {
+                    role: data.role as 'user' | 'assistant',
+                    content: String(data.content || ''),
+                    n: Number(data.n || 0),
+                    timestamp: (data.timestamp as Timestamp | undefined)?.toDate() ?? new Date(),
+                };
+            })
+            .sort((a, b) => a.n - b.n);
+    } catch (error) {
+        console.error('getServerChatMessages failed:', error);
+        return [];
+    }
+};
+
+export const listServerConversations = async (uid: string, limit = 50): Promise<Conversation[]> => {
+    const db = getAdminDb();
+    if (!db) return [];
+
+    try {
+        const snap = await db
+            .collection('users').doc(uid).collection('conversations')
+            .orderBy('updatedAt', 'desc')
+            .limit(limit)
+            .get();
+
+        return snap.docs
+            .filter((doc) => (doc.data()?.title as string | undefined)?.trim())
+            .map((doc) => ({ ...(doc.data() as Conversation), conversationId: doc.id }));
+    } catch (error) {
+        console.error('listServerConversations failed:', error);
+        return [];
+    }
+};
+
+export const updateConversationSummary = async (uid: string, conversationId: string, summary: string): Promise<void> => {
+    const db = getAdminDb();
+    if (!db) return;
+
+    try {
+        await db
+            .collection('users').doc(uid).collection('conversations').doc(conversationId)
+            .update({ summary });
+    } catch (error) {
+        console.error('updateConversationSummary failed:', error);
+    }
+};
+
+export const deleteServerConversation = async (uid: string, conversationId: string): Promise<void> => {
+    const db = getAdminDb();
+    if (!db) return;
+
+    try {
+        const convRef = db.collection('users').doc(uid).collection('conversations').doc(conversationId);
+        const messagesRef = convRef.collection('messages');
+
+        // Recursive delete of messages in batches, then the conversation doc
+        while (true) {
+            const batch = db.batch();
+            const snap = await messagesRef.limit(500).get();
+            if (snap.empty) break;
+            snap.docs.forEach((doc) => batch.delete(doc.ref));
+            await batch.commit();
+        }
+        await convRef.delete();
+    } catch (error) {
+        console.error('deleteServerConversation failed:', error);
     }
 };
 

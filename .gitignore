@@ -39,3 +39,17 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# ML service — trained models & market data never committed
+ml/models/*.pkl
+ml/models/*.json
+ml/data/
+ml/nifty500/data/
+ml/nifty500/*.pkl
+ml/nifty500/*.json
+ml/crypto/data/
+ml/crypto/*.pkl
+ml/crypto/*.json
+ml/crypto/backtest_results/
+ml/.venv/
+ml/__pycache__/

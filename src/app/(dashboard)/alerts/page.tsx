@@ -1,11 +1,9 @@
 'use client';
 
 // Alerts Management Page
-import { useState } from 'react';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { AnimatedButton } from '@/components/ui/AnimatedButton';
 import { useFadeIn, useStaggerChildren } from '@/lib/animations';
-import { useCurrencyStore } from '@/store';
 import { formatCurrency } from '@/lib/utils';
 import {
     Bell, Plus, TrendingUp, TrendingDown, Trash2,
@@ -23,9 +21,6 @@ const sampleAlerts = [
 export default function AlertsPage() {
     const fadeRef = useFadeIn();
     const staggerRef = useStaggerChildren(0.1);
-    const { currency } = useCurrencyStore();
-    const [showAddModal, setShowAddModal] = useState(false);
-
     const activeAlerts = sampleAlerts.filter(a => a.status === 'active').length;
     const triggeredAlerts = sampleAlerts.filter(a => a.triggered).length;
 
@@ -52,7 +47,7 @@ export default function AlertsPage() {
                     <h1 className="text-3xl font-bold text-white">Alerts</h1>
                     <p className="text-gray-400 mt-1">Manage price and portfolio alerts</p>
                 </div>
-                <AnimatedButton onClick={() => setShowAddModal(true)}>
+                <AnimatedButton onClick={() => document.getElementById('quick-create')?.scrollIntoView({ behavior: 'smooth' })}>
                     <Plus className="w-4 h-4" />
                     Create Alert
                 </AnimatedButton>
@@ -89,8 +84,8 @@ export default function AlertsPage() {
             </div>
 
             {/* Alert Types Quick Create */}
-            <GlassCard className="p-6">
-                <h2 className="text-lg font-semibold text-white mb-4">Quick Create</h2>
+            <GlassCard className="p-6" >
+                <h2 className="text-lg font-semibold text-white mb-4" id="quick-create">Quick Create</h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {[
                         { icon: TrendingUp, label: 'Price Above', color: '#10B981' },

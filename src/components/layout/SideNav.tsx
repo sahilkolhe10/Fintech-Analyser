@@ -1,12 +1,11 @@
 'use client';
 
 // Sidebar Navigation Component
-import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import {
-    LayoutDashboard, Wallet, TrendingUp, Receipt,
+    LayoutDashboard, Wallet, LineChart, Receipt,
     Bot, Bell, Search, Settings, ChevronLeft,
     ChevronRight, LogOut, Landmark, FileText
 } from 'lucide-react';
@@ -16,7 +15,7 @@ import { logOut } from '@/lib/firebase/auth';
 const navItems = [
     { icon: LayoutDashboard, label: 'Dashboard', href: '/' },
     { icon: Wallet, label: 'Portfolio', href: '/portfolio' },
-
+    { icon: LineChart, label: 'Investment', href: '/investment' },
     { icon: Receipt, label: 'Expenses', href: '/expenses' },
     { icon: Bot, label: 'AI Advisor', href: '/ai-advisor' },
     { icon: Landmark, label: 'AI Council', href: '/council' },

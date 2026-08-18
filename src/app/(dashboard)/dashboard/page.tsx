@@ -11,10 +11,10 @@ import { useFadeIn, useStaggerChildren } from '@/lib/animations';
 import { useAuthStore, useCurrencyStore } from '@/store';
 import { formatCurrency } from '@/lib/utils';
 import { getBudgetSettings, getMonthlyTotals, BudgetSettings } from '@/services/expenses';
-import { getHoldings, Holding, calculatePortfolioTotals } from '@/services/holdings';
+import { getHoldings, calculatePortfolioTotals } from '@/services/holdings';
 import {
     TrendingUp, TrendingDown, Wallet, PieChart,
-    Bot, Bell, ArrowUpRight, Sparkles, Receipt
+    Bot, ArrowUpRight, Sparkles, Receipt
 } from 'lucide-react';
 
 const GlobalMarkets = dynamic(() => import('@/components/3d/GlobalMarkets').then(m => ({ default: m.GlobalMarkets })), { ssr: false });
@@ -52,7 +52,6 @@ export default function DashboardPage() {
     const [portfolioValue, setPortfolioValue] = useState(0);
     const [portfolioReturn, setPortfolioReturn] = useState(0);
     const [portfolioPercent, setPortfolioPercent] = useState(0);
-    const [holdings, setHoldings] = useState<Holding[]>([]);
 
     // Pie Chart Data
     const [pieData, setPieData] = useState<{ label: string; value: number; color: string }[]>([
@@ -76,7 +75,6 @@ export default function DashboardPage() {
                 const holdingsRes = await getHoldings(user.uid);
                 if (holdingsRes.success && holdingsRes.data) {
                     const userHoldings = holdingsRes.data;
-                    setHoldings(userHoldings);
 
                     const priceMap = new Map(Object.entries(CURRENT_PRICES));
                     const { totalValue, totalPnL, pnlPercent } = calculatePortfolioTotals(userHoldings, priceMap);
@@ -114,7 +112,7 @@ export default function DashboardPage() {
                     <h1 className="text-3xl font-bold text-white">
                         Welcome back, <span className="gradient-text">{profile?.displayName || 'Investor'}</span>
                     </h1>
-                    <p className="text-gray-400 mt-1">Here's your financial overview</p>
+                    <p className="text-gray-400 mt-1">Here&apos;s your financial overview</p>
                 </div>
                 <Link href="/ai-advisor">
                     <AnimatedButton variant="primary">

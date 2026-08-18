@@ -12,7 +12,15 @@ import {
     getDoc,
     setDoc
 } from 'firebase/firestore';
-import { db } from '@/lib/firebase/config';
+import { getFirebaseDb } from '@/lib/firebase/config';
+import { isDemoSession } from '@/services/demo';
+import { DEMO_HOLDINGS, DEMO_WATCHLIST } from '@/services/demo-data';
+
+const getDb = () => {
+    const db = getFirebaseDb();
+    if (!db) throw new Error('Firestore not configured');
+    return db;
+};
 
 // Types
 export interface Holding {
@@ -107,7 +115,7 @@ export const getTradingViewUrl = (symbol: string): string => {
 // Holdings CRUD Operations
 export const addHolding = async (holding: Omit<Holding, 'id' | 'createdAt'>): Promise<{ success: boolean; id?: string; error?: string }> => {
     try {
-        const docRef = await addDoc(collection(db, 'holdings'), {
+        const docRef = await addDoc(collection(getDb(), 'holdings'), {
             ...holding,
             createdAt: Timestamp.now(),
         });
@@ -119,9 +127,12 @@ export const addHolding = async (holding: Omit<Holding, 'id' | 'createdAt'>): Pr
 };
 
 export const getHoldings = async (userId: string): Promise<{ success: boolean; data?: Holding[]; error?: string }> => {
+    if (isDemoSession()) {
+        return { success: true, data: DEMO_HOLDINGS as unknown as Holding[] };
+    }
     try {
         const q = query(
-            collection(db, 'holdings'),
+            collection(getDb(), 'holdings'),
             where('userId', '==', userId)
         );
         const querySnapshot = await getDocs(q);
@@ -141,7 +152,7 @@ export const updateHolding = async (
     updates: Partial<Holding>
 ): Promise<{ success: boolean; error?: string }> => {
     try {
-        await updateDoc(doc(db, 'holdings', holdingId), updates);
+        await updateDoc(doc(getDb(), 'holdings', holdingId), updates);
         return { success: true };
     } catch (error) {
         console.error('Error updating holding:', error);
@@ -151,7 +162,7 @@ export const updateHolding = async (
 
 export const deleteHolding = async (holdingId: string): Promise<{ success: boolean; error?: string }> => {
     try {
-        await deleteDoc(doc(db, 'holdings', holdingId));
+        await deleteDoc(doc(getDb(), 'holdings', holdingId));
         return { success: true };
     } catch (error) {
         console.error('Error deleting holding:', error);
@@ -161,8 +172,11 @@ export const deleteHolding = async (holdingId: string): Promise<{ success: boole
 
 // Watchlist Operations
 export const getWatchlist = async (userId: string): Promise<{ success: boolean; data?: WatchlistItem[]; error?: string }> => {
+    if (isDemoSession()) {
+        return { success: true, data: DEMO_WATCHLIST };
+    }
     try {
-        const docRef = doc(db, 'watchlists', userId);
+        const docRef = doc(getDb(), 'watchlists', userId);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
@@ -181,7 +195,7 @@ export const saveWatchlist = async (
     stocks: WatchlistItem[]
 ): Promise<{ success: boolean; error?: string }> => {
     try {
-        await setDoc(doc(db, 'watchlists', userId), { stocks, updatedAt: Timestamp.now() });
+        await setDoc(doc(getDb(), 'watchlists', userId), { stocks, updatedAt: Timestamp.now() });
         return { success: true };
     } catch (error) {
         console.error('Error saving watchlist:', error);

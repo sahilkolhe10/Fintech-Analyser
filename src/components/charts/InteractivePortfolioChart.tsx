@@ -8,7 +8,6 @@ import {
     CartesianGrid,
     Tooltip,
     ResponsiveContainer,
-    ReferenceLine
 } from 'recharts';
 import { useCurrencyStore } from '@/store';
 import { formatCurrency } from '@/lib/utils';
@@ -59,14 +58,14 @@ export function InteractivePortfolioChart({ startValue, years, growthRate }: Int
                     <YAxis
                         stroke="#9CA3AF"
                         tick={{ fill: '#9CA3AF' }}
-                        tickFormatter={(value) => formatCurrency(value, currency, true)}
+                        tickFormatter={(value) => formatCurrency(Number(value), currency)}
                         width={80}
                         tickLine={false}
                     />
                     <Tooltip
                         contentStyle={{ backgroundColor: '#1F2937', borderColor: '#374151', color: '#F3F4F6' }}
                         itemStyle={{ color: '#F3F4F6' }}
-                        formatter={(value: number) => formatCurrency(value, currency)}
+                        formatter={(value) => formatCurrency(Number(value), currency)}
                     />
                     <Area
                         type="monotone"

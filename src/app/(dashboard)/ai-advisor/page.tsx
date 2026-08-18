@@ -8,6 +8,7 @@ import { useFadeIn } from '@/lib/animations';
 import { chatAgent } from '@/services/ai';
 import { usePortfolioStore, useCurrencyStore, useAuthStore } from '@/store';
 import { getMonthlyTotals, getBudgetSettings } from '@/services/expenses';
+import { getAppUserToken } from '@/services/demo';
 import { Bot, Send, User, Sparkles, RefreshCw, Receipt } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
@@ -87,7 +88,7 @@ export default function AIAdvisorPage() {
             `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`
         ).join('\n');
 
-        const token = user ? await user.getIdToken() : undefined;
+        const token = await getAppUserToken(user);
         const result = await chatAgent.chat(text, { uid: user?.uid, token, history });
         setIsLoading(false);
 

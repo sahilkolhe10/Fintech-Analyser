@@ -1,10 +1,14 @@
 // Firebase Configuration for FinManage
-import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
+// Lazy initialization — Firebase is only touched when a real (non-demo)
+// session needs it. This avoids the Firebase Auth iframe + network calls
+// (and errors like auth/configuration-not-found) on every page load when
+// the project config is missing/invalid.
+import { initializeApp, getApps, FirebaseApp, deleteApp } from 'firebase/app';
 import { getAuth, Auth } from 'firebase/auth';
 import { getFirestore, Firestore } from 'firebase/firestore';
 import { getStorage, FirebaseStorage } from 'firebase/storage';
+import { isDemoSession } from '@/services/demo';
 
-// Firebase configuration from environment variables
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
     authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -14,32 +18,80 @@ const firebaseConfig = {
     appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase App (singleton pattern)
-let app: FirebaseApp;
-let auth: Auth;
-let db: Firestore;
-let storage: FirebaseStorage;
+let app: FirebaseApp | null = null;
+let auth: Auth | null = null;
+let db: Firestore | null = null;
+let storage: FirebaseStorage | null = null;
 
-// Initialize on first import
-if (!getApps().length) {
-    app = initializeApp(firebaseConfig);
-} else {
-    app = getApps()[0];
-}
-
-auth = getAuth(app);
-db = getFirestore(app);
-storage = getStorage(app);
-
-// Export instances directly
-export { app, auth, db, storage };
-
-// Legacy getters for backwards compatibility
-export const getFirebaseAuth = (): Auth => auth;
-export const getFirebaseDb = (): Firestore => db;
-export const getFirebaseStorage = (): FirebaseStorage => storage;
-
-// Check if Firebase is configured
-export const isFirebaseConfigured = (): boolean => {
+const hasValidConfig = (): boolean => {
     return Boolean(firebaseConfig.apiKey && firebaseConfig.projectId);
+};
+
+const ensureApp = (): FirebaseApp | null => {
+    if (app) return app;
+    if (!hasValidConfig()) return null;
+    // Skip Firebase entirely during a demo session (no iframe, no network).
+    if (isDemoSession()) return null;
+    try {
+        app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+        return app;
+    } catch {
+        return null;
+    }
+};
+
+// Lazy getters — safe to call anywhere; return null when not configured or
+// when a demo session is active.
+export const getFirebaseAuth = (): Auth | null => {
+    if (auth) return auth;
+    const a = ensureApp();
+    if (!a) return null;
+    try {
+        auth = getAuth(a);
+        return auth;
+    } catch {
+        return null;
+    }
+};
+
+export const getFirebaseDb = (): Firestore | null => {
+    if (db) return db;
+    const a = ensureApp();
+    if (!a) return null;
+    try {
+        db = getFirestore(a);
+        return db;
+    } catch {
+        return null;
+    }
+};
+
+export const getFirebaseStorage = (): FirebaseStorage | null => {
+    if (storage) return storage;
+    const a = ensureApp();
+    if (!a) return null;
+    try {
+        storage = getStorage(a);
+        return storage;
+    } catch {
+        return null;
+    }
+};
+
+// Legacy named exports — kept for compatibility; they now go through the
+// same lazy path. NOTE: importing these no longer triggers Firebase init.
+export { };
+export const isFirebaseConfigured = (): boolean => {
+    return hasValidConfig() && !isDemoSession();
+};
+
+// Test-only helper.
+export const _resetFirebaseForTest = (): void => {
+    if (app) {
+        try { deleteApp(app); } catch { /* noop */ }
+    }
+    app = null;
+    auth = null;
+    db = null;
+    storage = null;
 };

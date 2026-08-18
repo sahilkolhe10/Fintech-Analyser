@@ -61,6 +61,7 @@ export default function ExpensesPage() {
     useEffect(() => {
         if (!user) return;
         loadData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user]);
 
     const loadData = async () => {
@@ -274,7 +275,7 @@ export default function ExpensesPage() {
                     <div className="text-center py-12">
                         <Receipt className="w-12 h-12 text-gray-500 mx-auto mb-4" />
                         <p className="text-gray-400">No expenses yet</p>
-                        <p className="text-gray-500 text-sm">Click "Add Expense" to start tracking</p>
+                        <p className="text-gray-500 text-sm">Click &quot;Add Expense&quot; to start tracking</p>
                     </div>
                 ) : (
                     <div className="space-y-3">

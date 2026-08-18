@@ -139,7 +139,7 @@ Hosting config lives in `firebase.json` (rewrite → `finmanage` in `us-central1
 ```
 src/
 ├── app/                 # Next.js App Router pages
-│   ├── (dashboard)/     # Protected routes (Dashboard, Portfolio, AI Advisor, AI Council, Documents...)
+│   ├── (dashboard)/     # Protected routes (Dashboard, Portfolio, AI Advisor, AI Council, Documents, Research)
 │   ├── api/             # AI chat/generate, documents, council, telegram webhook/link/setup
 │   └── (auth)/          # Login/Signup pages
 ├── components/

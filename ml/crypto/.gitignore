@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Environment
+.env
+.env.local
+
+# Model files (large binaries)
+*.pkl
+trained_model.pkl
+
+# Data files (large)
+data/*.parquet
+data/*.csv
+
+# Backtest results (large outputs)
+backtest_*.csv
+backtest_*.json
+backtest_*.html
+backtest_plot_data.json
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+
+# State files
+paper_trading_state.json
+*.state
