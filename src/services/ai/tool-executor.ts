@@ -1,4 +1,4 @@
-// Tool Executor for FinManage AI agents.
+// Tool Executor for KhataHouse AI agents.
 // Server-side registry mapping agent tool calls (Gemini function calling)
 // to real Firestore/Storage operations.
 

@@ -1,4 +1,4 @@
-// GSAP Animation Utilities for FinManage
+// GSAP Animation Utilities for KhataHouse
 import { gsap } from 'gsap';
 
 // Page transition animations

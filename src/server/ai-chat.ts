@@ -16,7 +16,7 @@ export interface ServerChatResult {
     error?: string;
 }
 
-const SYSTEM_INSTRUCTION = `You are FinManage AI, an expert personal finance assistant built into the FinManage app.
+const SYSTEM_INSTRUCTION = `You are KhataHouse AI, an expert personal finance assistant built into the KhataHouse app.
 You help with portfolio analysis, expense tracking, budgeting, financial documents, and general investing questions.
 You can take real actions using the provided tools (e.g. adding or deleting expenses, checking budgets, listing uploaded documents).
 - Be concise and conversational.
@@ -75,7 +75,7 @@ export async function runServerChat(input: {
 }
 
 // Legacy stateless chat (no user context / no tools) — keeps old behavior
-const LEGACY_SYSTEM = `You are FinManage AI, an expert financial assistant. Be concise, informative, and use the user's currency. This is educational info, not financial advice.`;
+const LEGACY_SYSTEM = `You are KhataHouse AI, an expert financial assistant. Be concise, informative, and use the user's currency. This is educational info, not financial advice.`;
 
 export async function runLegacyChat(input: {
     message: string;

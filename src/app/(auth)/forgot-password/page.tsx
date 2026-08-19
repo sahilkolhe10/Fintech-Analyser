@@ -42,7 +42,7 @@ export default function ForgotPasswordPage() {
                 {/* Logo */}
                 <div className="text-center mb-8">
                     <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-4">
-                        <span className="text-white font-bold text-2xl">F</span>
+                        <span className="text-white font-bold text-2xl">K</span>
                     </div>
                     <h1 className="text-2xl font-bold text-white">Reset Password</h1>
                     <p className="text-gray-400 mt-1">

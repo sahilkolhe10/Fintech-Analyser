@@ -5,7 +5,7 @@ export default function TermsPage() {
             <div className="space-y-4">
                 <p>Last updated: {new Date().toLocaleDateString()}</p>
                 <p>
-                    Please read these Terms of Service carefully before using FinManage.
+                    Please read these Terms of Service carefully before using KhataHouse.
                 </p>
 
                 <h2 className="text-xl font-semibold text-white mt-8">1. Acceptance of Terms</h2>
@@ -15,12 +15,12 @@ export default function TermsPage() {
 
                 <h2 className="text-xl font-semibold text-white mt-8">2. Use of Service</h2>
                 <p>
-                    FinManage provides financial analysis and tracking tools. You agree to use these tools only for lawful purposes and in accordance with these Terms.
+                    KhataHouse provides financial analysis and tracking tools. You agree to use these tools only for lawful purposes and in accordance with these Terms.
                 </p>
 
                 <h2 className="text-xl font-semibold text-white mt-8">3. Financial Disclaimer</h2>
                 <p>
-                    The insights and analysis provided by FinManage are for informational purposes only and do not constitute professional financial advice. Always consult with a qualified financial advisor before making investment decisions.
+                    The insights and analysis provided by KhataHouse are for informational purposes only and do not constitute professional financial advice. Always consult with a qualified financial advisor before making investment decisions.
                 </p>
 
                 <h2 className="text-xl font-semibold text-white mt-8">4. Changes to Terms</h2>

@@ -135,7 +135,7 @@ export default function SettingsPage() {
                     <Send className="w-5 h-5 text-primary" />
                     <div>
                         <h2 className="text-lg font-semibold text-white">Telegram Bot</h2>
-                        <p className="text-sm text-gray-400">Chat with your FinManage AI on Telegram</p>
+                        <p className="text-sm text-gray-400">Chat with your KhataHouse AI on Telegram</p>
                     </div>
                 </div>
 

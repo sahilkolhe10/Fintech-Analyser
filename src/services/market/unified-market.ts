@@ -1,4 +1,4 @@
-// Unified Market Data Service for FinManage
+// Unified Market Data Service for KhataHouse
 // Combines Yahoo Finance and Alpha Vantage with intelligent caching and routing
 
 import { yahooFinance, StockQuote, HistoricalPrice, MarketIndex } from './yahoo-finance';

@@ -1,4 +1,4 @@
-// AI Council Agent for FinManage
+// AI Council Agent for KhataHouse
 // A panel of expert personas debates a financial question, or reviews the
 // user's portfolio (review board). A moderator agent then synthesizes consensus.
 

@@ -1,4 +1,4 @@
-// Document Analysis Agent for FinManage
+// Document Analysis Agent for KhataHouse
 // Extracts financial information from uploaded documents (bank statements,
 // payslips, bills, receipts) using text extraction + Gemini analysis.
 

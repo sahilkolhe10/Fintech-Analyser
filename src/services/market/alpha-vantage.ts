@@ -1,4 +1,4 @@
-// Alpha Vantage API Service for FinManage
+// Alpha Vantage API Service for KhataHouse
 // Provides additional data: technical indicators, forex, and fundamentals
 // API key loaded from environment variables
 

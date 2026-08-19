@@ -101,15 +101,15 @@ cp crypto/trained_model.pkl models/crypto_trained_model.pkl
 ## Deploy to Cloud Run
 
 ```bash
-gcloud builds submit --tag gcr.io/$GCP_PROJECT/finmanage-ml .
-gcloud run deploy finmanage-ml \
-  --image gcr.io/$GCP_PROJECT/finmanage-ml \
+gcloud builds submit --tag gcr.io/$GCP_PROJECT/khatahouse-ml .
+gcloud run deploy khatahouse-ml \
+  --image gcr.io/$GCP_PROJECT/khatahouse-ml \
   --region us-central1 \
   --memory 2Gi --cpu 1 \
   --allow-unauthenticated \
   --timeout 60s
 # then point the web app at it:
-#   ML_SERVICE_URL=https://finmanage-ml-<hash>-uc.a.run.app
+#   ML_SERVICE_URL=https://khatahouse-ml-<hash>-uc.a.run.app
 ```
 
 Memory note: pandas loading of a full NIFTY minute dataset needs ≥ 1.5 GiB

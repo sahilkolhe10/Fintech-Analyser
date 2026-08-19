@@ -1,4 +1,4 @@
-// Risk Assessment Agent for FinManage
+// Risk Assessment Agent for KhataHouse
 // AI-powered portfolio risk analysis and stress testing
 
 import { geminiClient, AIAnalysis } from './gemini-client';

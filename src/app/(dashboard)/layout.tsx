@@ -29,7 +29,7 @@ function DashboardContent({ children }: DashboardLayoutProps) {
             <div className="min-h-screen flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
                     <div className="w-12 h-12 rounded-full border-4 border-primary border-t-transparent animate-spin" />
-                    <p className="text-gray-400">Loading FinManage...</p>
+                    <p className="text-gray-400">Loading KhataHouse...</p>
                 </div>
             </div>
         );

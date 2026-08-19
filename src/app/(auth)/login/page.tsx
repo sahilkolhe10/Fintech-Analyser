@@ -64,7 +64,7 @@ export default function LoginPage() {
         setIsLoading(false);
 
         if (result.success) {
-            toast.success('Welcome to FinManage!');
+            toast.success('Welcome to KhataHouse!');
             router.push('/');
         } else {
             toast.error(result.error || 'Google login failed');
@@ -79,10 +79,10 @@ export default function LoginPage() {
                 {/* Logo */}
                 <div className="text-center mb-8">
                     <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-4">
-                        <span className="text-white font-bold text-2xl">F</span>
+                        <span className="text-white font-bold text-2xl">K</span>
                     </div>
                     <h1 className="text-2xl font-bold text-white">Welcome Back</h1>
-                    <p className="text-gray-400 mt-1">Sign in to your FinManage account</p>
+                    <p className="text-gray-400 mt-1">Sign in to your KhataHouse account</p>
                 </div>
 
                 {/* Form */}

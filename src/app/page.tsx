@@ -47,10 +47,10 @@ export default function RootPage() {
             <ParticleBackground particleCount={1500} />
             <div className="flex flex-col items-center gap-4 z-10">
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center animate-pulse">
-                    <span className="text-white font-bold text-2xl">F</span>
+                    <span className="text-white font-bold text-2xl">K</span>
                 </div>
                 <div className="w-8 h-8 rounded-full border-4 border-primary border-t-transparent animate-spin" />
-                <p className="text-gray-400">Loading FinManage...</p>
+                <p className="text-gray-400">Loading KhataHouse...</p>
             </div>
         </div>
     );

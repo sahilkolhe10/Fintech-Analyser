@@ -5,7 +5,7 @@ export default function PrivacyPage() {
             <div className="space-y-4">
                 <p>Last updated: {new Date().toLocaleDateString()}</p>
                 <p>
-                    At FinManage, we take your privacy seriously. This Privacy Policy explains how we collect, use, and protect your personal information.
+                    At KhataHouse, we take your privacy seriously. This Privacy Policy explains how we collect, use, and protect your personal information.
                 </p>
 
                 <h2 className="text-xl font-semibold text-white mt-8">1. Information We Collect</h2>

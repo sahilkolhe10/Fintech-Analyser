@@ -1,4 +1,4 @@
-// Financial Chat Agent for FinManage
+// Financial Chat Agent for KhataHouse
 // NOTE: imports gemini-client lazily — it pulls server-only LangChain/LangGraph
 // dependencies and must not be bundled into client components.
 import type { AIResponse, AIResponseWithActions, ChatSession } from './gemini-client';
@@ -18,7 +18,7 @@ class ChatAgent {
     private chatSession: ChatSession | null = null;
     private context: ChatContext = {};
 
-    private readonly systemInstruction = `You are FinManage AI, an expert financial assistant. Be concise, informative, use the user's currency. This is educational info, not financial advice.`;
+    private readonly systemInstruction = `You are KhataHouse AI, an expert financial assistant. Be concise, informative, use the user's currency. This is educational info, not financial advice.`;
 
     setContext(context: ChatContext): void { this.context = { ...this.context, ...context }; }
     clearContext(): void { this.context = {}; this.chatSession = null; }

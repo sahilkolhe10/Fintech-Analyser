@@ -190,7 +190,7 @@ ${holdings.map(h => {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `finmanage_report_${date.replace(/\//g, '-')}.txt`;
+        a.download = `khatahouse_report_${date.replace(/\//g, '-')}.txt`;
         a.click();
         URL.revokeObjectURL(url);
         toast.success('Report downloaded!');

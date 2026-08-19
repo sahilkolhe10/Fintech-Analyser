@@ -1,6 +1,6 @@
 'use client';
 
-// ML Signals Panel — live model predictions from the FinManage ML service
+// ML Signals Panel — live model predictions from the KhataHouse ML service
 // (Nifty 500 XGBoost + crypto classifier). Degrades gracefully when the
 // service is not deployed.
 

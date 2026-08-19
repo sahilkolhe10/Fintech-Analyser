@@ -1,4 +1,4 @@
-// Firestore Database Service for FinManage
+// Firestore Database Service for KhataHouse
 // Handles all database operations with typed schemas
 
 import {

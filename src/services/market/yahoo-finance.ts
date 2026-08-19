@@ -1,4 +1,4 @@
-// Yahoo Finance API Service for FinManage
+// Yahoo Finance API Service for KhataHouse
 // Provides real-time stock data, historical prices, and company info
 // Supports both Indian (NSE, BSE) and US markets
 

@@ -1,4 +1,4 @@
-// Investment Research Agent for FinManage
+// Investment Research Agent for KhataHouse
 // AI-powered stock research, comparison, and opportunity finding
 
 import { geminiClient, AIAnalysis } from './gemini-client';

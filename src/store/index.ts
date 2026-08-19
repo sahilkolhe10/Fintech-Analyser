@@ -34,7 +34,7 @@ export const useAuthStore = create<AuthState>()(
             reset: () => set({ user: null, profile: null, isLoading: false }),
         }),
         {
-            name: 'finmanage-auth',
+            name: 'khatahouse-auth',
             partialize: (state) => ({
                 user: state.user && 'isDemo' in state.user && state.user.isDemo ? state.user : null,
                 profile: state.user && 'isDemo' in state.user && state.user.isDemo ? state.profile : null,
@@ -70,7 +70,7 @@ export const usePortfolioStore = create<PortfolioState>((set) => ({
     removeHolding: (id) => set((state) => ({ holdings: state.holdings.filter((h) => h.id !== id) })),
 }));
 
-// Currency Store — INR only (FinManage is an Indian fintech app).
+// Currency Store — INR only (KhataHouse is an Indian fintech app).
 interface CurrencyState {
     currency: 'INR';
     exchangeRate: number;
@@ -92,7 +92,7 @@ export const useCurrencyStore = create<CurrencyState>()(
                 return from === 'USD' ? amount * exchangeRate : amount;
             },
         }),
-        { name: 'finmanage-currency' }
+        { name: 'khatahouse-currency' }
     )
 );
 
@@ -108,7 +108,7 @@ export const useThemeStore = create<ThemeState>()(
             theme: 'dark',
             toggleTheme: () => set((state) => ({ theme: state.theme === 'dark' ? 'light' : 'dark' })),
         }),
-        { name: 'finmanage-theme' }
+        { name: 'khatahouse-theme' }
     )
 );
 

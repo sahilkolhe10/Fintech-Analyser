@@ -13,7 +13,7 @@ export interface DemoUser {
 
 export const DEMO_USER: DemoUser = {
     uid: 'demo-user',
-    email: 'demo@finmanage.app',
+    email: 'demo@khatahouse.app',
     displayName: 'Demo Investor',
     photoURL: undefined,
     isDemo: true,
@@ -25,7 +25,7 @@ export const DEMO_PASSWORD = 'demo1234';
 export const isDemoSession = (): boolean => {
     if (typeof window === 'undefined') return false;
     try {
-        const raw = window.localStorage.getItem('finmanage-auth');
+        const raw = window.localStorage.getItem('khatahouse-auth');
         if (!raw) return false;
         const parsed = JSON.parse(raw);
         const user = parsed?.state?.user;

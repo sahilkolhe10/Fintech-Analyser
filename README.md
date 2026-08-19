@@ -109,7 +109,7 @@
 
 ### ☁️ Deployment (Firebase Hosting → Cloud Run)
 
-The app runs as the `finmanage` Cloud Run service (region `us-central1`). Firebase Hosting site `khatahouse-sih` (`https://khatahouse-sih.web.app`) rewrites all traffic to it for a free custom-free HTTPS domain.
+The app runs as the `khatahouse` Cloud Run service (region `us-central1`). Firebase Hosting site `khatahouse-sih` (`https://khatahouse-sih.web.app`) rewrites all traffic to it for a free custom-free HTTPS domain.
 
 ```bash
 # 1. Firebase Admin credentials (required for document/council/Telegram features)
@@ -130,7 +130,7 @@ firebase login
 firebase deploy --only hosting:khatahouse-sih
 ```
 
-Hosting config lives in `firebase.json` (rewrite → `finmanage` in `us-central1`); project is pinned in `.firebaserc`. Buckets used: `khatahouse.firebasestorage.app` (defaults to `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`).
+Hosting config lives in `firebase.json` (rewrite → `khatahouse` in `us-central1`); project is pinned in `.firebaserc`. Buckets used: `khatahouse.firebasestorage.app` (defaults to `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`).
 
 ---
 

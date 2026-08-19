@@ -1,4 +1,4 @@
-// FinManage AI Client — built on LangChain + LangGraph.
+// KhataHouse AI Client — built on LangChain + LangGraph.
 // Multi-provider: Groq is the default (free + fast), Gemini is the fallback,
 // and Gemini is always preferred for vision/document analysis.
 // Server-only: imports @langchain/* which are not browser-safe.
@@ -307,7 +307,7 @@ The response must be parseable by JSON.parse() directly.`;
         if (llms.length === 0) return null;
         return new ChatSession(
             llms[0],
-            systemInstruction || 'You are FinManage AI, a helpful financial assistant.'
+            systemInstruction || 'You are KhataHouse AI, a helpful financial assistant.'
         );
     }
 

@@ -1,4 +1,4 @@
-// Portfolio Analysis Agent for FinManage
+// Portfolio Analysis Agent for KhataHouse
 // AI-powered portfolio analysis, diversification scoring, and rebalancing suggestions
 
 import { geminiClient, AIAnalysis } from './gemini-client';

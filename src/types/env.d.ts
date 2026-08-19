@@ -1,4 +1,4 @@
-// Environment Types for FinManage
+// Environment Types for KhataHouse
 // This ensures type safety when accessing environment variables
 
 declare namespace NodeJS {

@@ -1,4 +1,4 @@
-// Sentiment Analysis Agent for FinManage
+// Sentiment Analysis Agent for KhataHouse
 // AI-powered market sentiment analysis using news and social signals
 
 import { geminiClient, AIAnalysis } from './gemini-client';

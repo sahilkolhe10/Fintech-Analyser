@@ -9,7 +9,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: process.env.NEXT_PUBLIC_APP_NAME || "FinManage",
+  title: process.env.NEXT_PUBLIC_APP_NAME || "KhataHouse",
   description: "AI-powered personal finance management platform with portfolio tracking, market analysis, and intelligent insights",
   keywords: ["fintech", "finance", "portfolio", "stocks", "AI", "investment"],
 };

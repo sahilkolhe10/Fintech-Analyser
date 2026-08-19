@@ -1,4 +1,4 @@
-// Firebase Authentication Service for FinManage
+// Firebase Authentication Service for KhataHouse
 // Handles all authentication methods: Email, Google, Phone
 
 import {

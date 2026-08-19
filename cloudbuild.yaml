@@ -10,8 +10,8 @@ steps:
     '--build-arg', 'NEXT_PUBLIC_FIREBASE_APP_ID=$_NEXT_PUBLIC_FIREBASE_APP_ID',
     '--build-arg', 'NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=$_NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID',
     '--build-arg', 'NEXT_PUBLIC_APP_NAME=$_NEXT_PUBLIC_APP_NAME',
-    '-t', 'gcr.io/$PROJECT_ID/finmanage',
+    '-t', 'gcr.io/$PROJECT_ID/khatahouse',
     '.'
   ]
 images:
-- 'gcr.io/$PROJECT_ID/finmanage'
+- 'gcr.io/$PROJECT_ID/khatahouse'

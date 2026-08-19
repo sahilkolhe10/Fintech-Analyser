@@ -1,4 +1,4 @@
-// Firebase Configuration for FinManage
+// Firebase Configuration for KhataHouse
 // Lazy initialization — Firebase is only touched when a real (non-demo)
 // session needs it. This avoids the Firebase Auth iframe + network calls
 // (and errors like auth/configuration-not-found) on every page load when

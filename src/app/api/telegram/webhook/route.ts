@@ -6,8 +6,8 @@ import { processDocument } from '@/server/document-processor';
 
 export const maxDuration = 120;
 
-const BOT_HELP = `🤖 FinManage Bot — commands:
-/start <code> — link your FinManage account (get a code from Settings → Link Telegram)
+const BOT_HELP = `🤖 KhataHouse Bot — commands:
+/start <code> — link your KhataHouse account (get a code from Settings → Link Telegram)
 /link — how to link
 /unlink — unlink this chat
 /chat <message> — talk to the AI advisor
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
 
             if (!code) {
                 await sendMessage(chatId,
-                    '👋 Welcome to FinManage Bot!\n\nTo link your FinManage account:\n1. Open the app → Settings → Link Telegram\n2. Send: /start <your 6-digit code>\n\nOr send /help for all commands.'
+                    '👋 Welcome to KhataHouse Bot!\n\nTo link your KhataHouse account:\n1. Open the app → Settings → Link Telegram\n2. Send: /start <your 6-digit code>\n\nOr send /help for all commands.'
                 );
                 return NextResponse.json({ ok: true });
             }
@@ -57,13 +57,13 @@ export async function POST(request: NextRequest) {
             }
 
             await linkTelegramChat(consume.uid, String(chatId));
-            await sendMessage(chatId, '✅ Account linked! You can now chat with your FinManage AI, add expenses, and upload documents.\n\nSend /help for commands.');
+            await sendMessage(chatId, '✅ Account linked! You can now chat with your KhataHouse AI, add expenses, and upload documents.\n\nSend /help for commands.');
             return NextResponse.json({ ok: true });
         }
 
         if (text === '/unlink') {
             await unlinkTelegramChat(String(chatId));
-            await sendMessage(chatId, '🔗 Chat unlinked from FinManage.');
+            await sendMessage(chatId, '🔗 Chat unlinked from KhataHouse.');
             return NextResponse.json({ ok: true });
         }
 
@@ -137,7 +137,7 @@ export async function POST(request: NextRequest) {
 
         // ---- Plain chat / commands ----
         if (!uid) {
-            await sendMessage(chatId, '🔒 This chat is not linked to a FinManage account.\n\nSend /start <code> using the code from Settings → Link Telegram.\n\nOr send /help.');
+            await sendMessage(chatId, '🔒 This chat is not linked to a KhataHouse account.\n\nSend /start <code> using the code from Settings → Link Telegram.\n\nOr send /help.');
             return NextResponse.json({ ok: true });
         }
 
