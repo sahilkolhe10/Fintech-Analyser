@@ -1,59 +1,86 @@
 'use client';
 
 // Top Bar Component
+// Styled per UI redesign strategy/FinManage.dc.html
 import { Bell, User } from 'lucide-react';
 import { useAuthStore } from '@/store';
 import { SearchBar } from '@/components/ui/SearchBar';
 import { marketService } from '@/services/market';
+import { cn } from '@/lib/utils';
+import { useState } from 'react';
 
 export function TopBar() {
     const { user, profile } = useAuthStore();
+    const [currency, setCurrency] = useState<'INR' | 'USD'>('INR');
 
     const handleSearch = async (query: string) => {
         return marketService.searchStocks(query);
     };
 
     return (
-        <header className="fixed top-0 right-0 left-20 lg:left-64 h-16 z-30 bg-[#0F0F1A]/80 backdrop-blur-xl border-b border-white/10">
-            <div className="flex items-center justify-between h-full px-6">
-                {/* Search */}
-                <div className="flex-1 max-w-xl">
-                    <SearchBar
-                        searchFunction={handleSearch}
-                        onSelect={(result) => console.log('Selected:', result)}
-                        placeholder="Search stocks, ETFs..."
-                    />
+        <header
+            className={cn(
+                'fixed top-0 right-0 h-16 z-30 flex items-center gap-4 px-6',
+                'bg-[rgba(28,28,36,0.6)] backdrop-blur-xl',
+                'border-b border-white/[0.07]',
+                'shadow-[0_20px_44px_-32px_rgba(0,0,0,0.95)]',
+                'left-20 lg:left-64'
+            )}
+        >
+            {/* Search */}
+            <div className="flex-1 max-w-[440px] relative">
+                <SearchBar
+                    searchFunction={handleSearch}
+                    onSelect={(result) => console.log('Selected:', result)}
+                    placeholder="Search stocks, ETFs, insights…"
+                />
+            </div>
+
+            <div className="flex-1" />
+
+            {/* Actions */}
+            <div className="flex items-center gap-3">
+                {/* Currency toggle */}
+                <div className="flex items-center gap-0.5 p-[3px] rounded-[10px] bg-[#1c1c24] border border-white/[0.07] shadow-[var(--e2)]">
+                    <button
+                        onClick={() => setCurrency('INR')}
+                        className={cn(
+                            'px-2.5 py-1 rounded-[7px] text-xs font-semibold transition-colors',
+                            currency === 'INR' ? 'bg-primary text-white' : 'text-[#98a1b6] hover:text-white'
+                        )}
+                    >
+                        ₹ INR
+                    </button>
+                    <button
+                        onClick={() => setCurrency('USD')}
+                        className={cn(
+                            'px-2.5 py-1 rounded-[7px] text-xs font-semibold transition-colors',
+                            currency === 'USD' ? 'bg-primary text-white' : 'text-[#98a1b6] hover:text-white'
+                        )}
+                    >
+                        $ USD
+                    </button>
                 </div>
 
-                {/* Actions */}
-                <div className="flex items-center gap-4">
-                    {/* Currency — INR only */}
-                    <div className="flex items-center bg-white/5 rounded-lg p-1">
-                        <button className="px-3 py-1 rounded text-sm font-medium bg-primary text-white" disabled>
-                            ₹ INR
-                        </button>
+                {/* Notifications */}
+                <button className="relative w-[38px] h-[38px] rounded-[10px] bg-[#1c1c24] border border-white/[0.07] hover:bg-white/[0.06] transition-colors flex items-center justify-center">
+                    <Bell className="w-[18px] h-[18px] text-[#98a1b6]" />
+                    <span className="absolute top-[9px] right-[9px] w-[7px] h-[7px] rounded-full bg-[#D8B876] shadow-[0_0_0_2px_#17171d]" />
+                </button>
+
+                {/* User */}
+                <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center overflow-hidden">
+                        {user?.photoURL ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={user.photoURL} alt="" className="w-full h-full rounded-full object-cover" />
+                        ) : (
+                            <User className="w-5 h-5 text-white" />
+                        )}
                     </div>
-
-                    {/* Notifications */}
-                    <button className="relative p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
-                        <Bell className="w-5 h-5 text-gray-400" />
-                        <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
-                    </button>
-
-                    {/* User */}
-                    <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center overflow-hidden">
-                            {user?.photoURL ? (
-                                // eslint-disable-next-line @next/next/no-img-element
-                                <img src={user.photoURL} alt="" className="w-full h-full rounded-full object-cover" />
-                            ) : (
-                                <User className="w-5 h-5 text-white" />
-                            )}
-                        </div>
-                        <div className="hidden lg:block">
-                            <p className="text-sm font-medium text-white">{profile?.displayName || user?.displayName || 'User'}</p>
-                            <p className="text-xs text-gray-400">{user?.email}</p>
-                        </div>
+                    <div className="hidden lg:block leading-tight">
+                        <p className="text-[13px] font-semibold text-white">{profile?.displayName || user?.displayName || 'User'}</p>
+                        <p className="text-[11px] text-[#98a1b6]">{user?.email}</p>
                     </div>
                 </div>
             </div>

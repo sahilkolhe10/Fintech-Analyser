@@ -83,3 +83,78 @@ export const DEMO_WATCHLIST = [
     { symbol: 'AXISBANK.NS', name: 'Axis Bank', sector: 'Banking' },
     { symbol: 'TITAN.NS', name: 'Titan Company', sector: 'Consumer' },
 ];
+
+// ---- Loans --------------------------------------------------------------
+
+export interface DemoLoan {
+    id: string;
+    userId: string;
+    name: string;
+    type: 'personal' | 'home' | 'car' | 'education' | 'credit_card' | 'other';
+    lender: string;
+    principal: number;
+    outstanding: number;
+    emi: number;
+    interestRate: number;
+    totalTenureMonths: number;
+    remainingTenureMonths: number;
+    nextDueDate: Timestamp;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
+}
+
+const inDays = (n: number): Timestamp =>
+    Timestamp.fromDate(new Date(Date.now() + n * 24 * 60 * 60 * 1000));
+
+export const DEMO_LOANS: DemoLoan[] = [
+    {
+        id: 'demo-loan-1',
+        userId: 'demo-user',
+        name: 'Car loan',
+        type: 'car',
+        lender: 'HDFC Bank',
+        principal: 600000,
+        outstanding: 421500,
+        emi: 12150,
+        interestRate: 9.2,
+        totalTenureMonths: 60,
+        remainingTenureMonths: 38,
+        nextDueDate: inDays(5),
+        createdAt: now,
+        updatedAt: now,
+    },
+    {
+        id: 'demo-loan-2',
+        userId: 'demo-user',
+        name: 'Personal loan',
+        type: 'personal',
+        lender: 'AU Small Finance Bank',
+        principal: 200000,
+        outstanding: 96500,
+        emi: 6450,
+        interestRate: 13.5,
+        totalTenureMonths: 36,
+        remainingTenureMonths: 16,
+        nextDueDate: inDays(12),
+        createdAt: now,
+        updatedAt: now,
+    },
+    {
+        id: 'demo-loan-3',
+        userId: 'demo-user',
+        name: 'Credit card dues',
+        type: 'credit_card',
+        lender: 'SBI Card',
+        principal: 85000,
+        outstanding: 32400,
+        emi: 0,
+        interestRate: 42.0,
+        totalTenureMonths: 1,
+        remainingTenureMonths: 1,
+        nextDueDate: inDays(3),
+        createdAt: now,
+        updatedAt: now,
+    },
+];
+
+export const DEMO_CIBIL = 742;

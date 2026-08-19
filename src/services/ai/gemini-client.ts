@@ -19,13 +19,13 @@ import { ToolNode } from '@langchain/langgraph/prebuilt';
 import { z, type ZodTypeAny } from 'zod';
 
 type ChatModel = ChatGoogleGenerativeAI | ChatGroq | ChatOpenAI;
-type ProviderKey = 'zenmux' | 'groq' | 'gemini';
+type ProviderKey = 'hetzner' | 'groq' | 'gemini';
 
-const DEFAULT_PROVIDER: ProviderKey = 'zenmux';
+const DEFAULT_PROVIDER: ProviderKey = 'hetzner';
 const DEFAULT_MODEL = 'gemini-2.5-flash';
 const DEFAULT_GROQ_MODEL = 'openai/gpt-oss-120b';
-const ZENMUX_BASE_URL = 'https://zenmux.ai/api/v1';
-const ZENMUX_MODEL = 'deepseek/deepseek-v4-flash-free';
+const HETZNER_BASE_URL = 'https://inference.hetzner.com/api/v1';
+const HETZNER_MODEL = 'Qwen3.8-27B';
 
 // ============================================
 // Types
@@ -148,24 +148,24 @@ export class ChatSession {
 class GeminiClient {
     private geminiLlm: ChatGoogleGenerativeAI | null = null;
     private groqLlm: ChatGroq | null = null;
-    private zenmuxLlm: ChatOpenAI | null = null;
+    private hetznerLlm: ChatOpenAI | null = null;
     private provider: ProviderKey;
     private geminiApiKey: string;
     private groqApiKey: string;
-    private zenmuxApiKey: string;
+    private hetznerApiKey: string;
     private modelName: string = DEFAULT_MODEL;
     private groqModelName: string = DEFAULT_GROQ_MODEL;
-    private zenmuxModel: string = ZENMUX_MODEL;
+    private hetznerModel: string = HETZNER_MODEL;
 
     constructor() {
         this.geminiApiKey = process.env.GEMINI_API_KEY || '';
         this.groqApiKey = process.env.GROQ_API_KEY || '';
-        this.zenmuxApiKey = process.env.ZENMUX_API_KEY || '';
+        this.hetznerApiKey = process.env.HETZNER_API_KEY || '';
         const configured = process.env.AI_PROVIDER;
         this.provider = configured === 'groq' || configured === 'gemini' ? configured : DEFAULT_PROVIDER;
         this.groqModelName = process.env.GROQ_MODEL || DEFAULT_GROQ_MODEL;
         this.modelName = process.env.GEMINI_MODEL || DEFAULT_MODEL;
-        this.zenmuxModel = process.env.ZENMUX_MODEL || ZENMUX_MODEL;
+        this.hetznerModel = process.env.HETZNER_MODEL || HETZNER_MODEL;
         this.initialize();
     }
 
@@ -189,21 +189,21 @@ class GeminiClient {
             this.groqLlm = null;
         }
 
-        if (this.zenmuxApiKey) {
-            this.zenmuxLlm = new ChatOpenAI({
-                apiKey: this.zenmuxApiKey,
-                model: this.zenmuxModel,
-                configuration: { baseURL: ZENMUX_BASE_URL },
+        if (this.hetznerApiKey) {
+            this.hetznerLlm = new ChatOpenAI({
+                apiKey: this.hetznerApiKey,
+                model: this.hetznerModel,
+                configuration: { baseURL: HETZNER_BASE_URL },
             });
         } else {
-            this.zenmuxLlm = null;
+            this.hetznerLlm = null;
         }
     }
 
     // Check if any provider is configured
     isConfigured(): boolean {
-        if (!this.geminiLlm && !this.groqLlm && !this.zenmuxLlm) {
-            console.warn('AI: no API key configured (set ZENMUX_API_KEY, GROQ_API_KEY and/or GEMINI_API_KEY)');
+        if (!this.geminiLlm && !this.groqLlm && !this.hetznerLlm) {
+            console.warn('AI: no API key configured (set HETZNER_API_KEY, GROQ_API_KEY and/or GEMINI_API_KEY)');
             return false;
         }
         return true;
@@ -215,20 +215,20 @@ class GeminiClient {
         this.initialize();
     }
 
-    // Providers in preference order. Default: ZenMux → Groq → Gemini.
+    // Providers in preference order. Default: Hetzner → Groq → Gemini.
     // AI_PROVIDER=groq|gemini reorders; Gemini is always preferred first
     // for vision/document tasks.
     private orderedLlms(preferred?: ProviderKey): ChatModel[] {
         let order: (ChatModel | null)[];
         switch (preferred ?? this.provider) {
             case 'gemini':
-                order = [this.geminiLlm, this.groqLlm, this.zenmuxLlm];
+                order = [this.geminiLlm, this.groqLlm, this.hetznerLlm];
                 break;
             case 'groq':
-                order = [this.groqLlm, this.geminiLlm, this.zenmuxLlm];
+                order = [this.groqLlm, this.geminiLlm, this.hetznerLlm];
                 break;
             default:
-                order = [this.zenmuxLlm, this.groqLlm, this.geminiLlm];
+                order = [this.hetznerLlm, this.groqLlm, this.geminiLlm];
                 break;
         }
         return order.filter((llm): llm is ChatModel => llm !== null);
@@ -249,7 +249,7 @@ class GeminiClient {
                 return await run(llm);
             } catch (error) {
                 lastError = error;
-                const name = llm === this.zenmuxLlm ? 'zenmux' : llm === this.groqLlm ? 'groq' : 'gemini';
+                const name = llm === this.hetznerLlm ? 'hetzner' : llm === this.groqLlm ? 'groq' : 'gemini';
                 console.error(
                     `AI provider (${name}) failed:`,
                     error instanceof Error ? error.message : error
@@ -275,7 +275,10 @@ class GeminiClient {
     }
 
     // Generate with structured output (JSON)
-    async generateJSON<T>(prompt: string): Promise<AIAnalysis<T>> {
+    // `preferred` overrides the provider order for this call (falls back to
+    // the remaining providers on failure). Used e.g. by the council agent,
+    // which prefers fast providers for its parallel member calls.
+    async generateJSON<T>(prompt: string, preferred?: ProviderKey): Promise<AIAnalysis<T>> {
         try {
             const jsonPrompt = `${prompt}
 
@@ -285,7 +288,7 @@ The response must be parseable by JSON.parse() directly.`;
             const text = await this.withFallback(async (llm) => {
                 const result = await llm.invoke(jsonPrompt);
                 return extractText(result.content).trim();
-            });
+            }, preferred);
 
             // Clean up potential markdown code blocks
             const clean = text.startsWith('```')

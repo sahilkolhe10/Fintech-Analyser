@@ -55,7 +55,7 @@
   - `recharts` for financial charts
   - `d3` for network graphs
   - `xlsx` for file imports
-- **AI**: LLM-agnostic via **LangChain** + agents orchestrated with **LangGraph** state machines (ReAct tool-calling loops). Provider chain: **ZenMux** (`deepseek/deepseek-v4-flash-free`, default) → **Groq** (`openai/gpt-oss-120b`) → **Gemini** (`gemini-2.5-flash`), with automatic failover. Gemini always leads for document/PDF analysis
+- **AI**: LLM-agnostic via **LangChain** + agents orchestrated with **LangGraph** state machines (ReAct tool-calling loops). Provider chain: **Hetzner** (`Qwen3.8-27B`, default) → **Groq** (`openai/gpt-oss-120b`) → **Gemini** (`gemini-2.5-flash`), with automatic failover. Gemini always leads for document/PDF analysis
 
 ---
 
@@ -81,15 +81,15 @@
    NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=...
    NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=...
    NEXT_PUBLIC_FIREBASE_APP_ID=...
-   NEXT_PUBLIC_APP_URL=...          # your deployed HTTPS URL
-   ZENMUX_API_KEY=...              # default provider (DeepSeek via ZenMux)
-   GROQ_API_KEY=...                # optional fallback (free at console.groq.com)
-   GEMINI_API_KEY=...              # optional fallback + required for PDF/doc analysis
-   AI_PROVIDER=zenmux              # 'zenmux' (default), 'groq', or 'gemini'
-   # Server agents (documents / council / Telegram / tool calling):
-   FIREBASE_SERVICE_ACCOUNT='{...}' # JSON service account (or GOOGLE_APPLICATION_CREDENTIALS)
-   TELEGRAM_BOT_TOKEN=...           # optional — enables the Telegram bot
-   TELEGRAM_WEBHOOK_SECRET=...      # optional — guards /api/telegram/setup
+NEXT_PUBLIC_APP_URL=...          # your deployed HTTPS URL
+    HETZNER_API_KEY=...           # default provider (OpenAI-compatible gateway)
+    GROQ_API_KEY=...                # optional fallback (free at console.groq.com)
+    GEMINI_API_KEY=...              # optional fallback + required for PDF/doc analysis
+    AI_PROVIDER=hetzner           # 'hetzner' (default), 'groq', or 'gemini'
+    # Server agents (documents / council / Telegram / tool calling):
+    FIREBASE_SERVICE_ACCOUNT='{...}' # JSON service account (or GOOGLE_APPLICATION_CREDENTIALS)
+    TELEGRAM_BOT_TOKEN=...           # optional — enables the Telegram bot
+    TELEGRAM_WEBHOOK_SECRET=...      # optional — guards /api/telegram/setup
    ```
 
 4. **Run Locally**

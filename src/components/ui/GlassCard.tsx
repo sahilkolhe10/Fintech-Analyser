@@ -1,6 +1,7 @@
 'use client';
 
-// Glassmorphism Card Component
+// Design Card Component
+// Styled per UI redesign strategy/FinManage.dc.html
 import { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 
@@ -18,10 +19,10 @@ export function GlassCard({ children, className, hover = true, glow = false, onC
             onClick={onClick}
             className={cn(
                 'relative overflow-hidden rounded-2xl backdrop-blur-xl',
-                'bg-gradient-to-br from-white/10 to-white/5',
-                'border border-white/10',
-                'shadow-xl shadow-black/20',
-                hover && 'transition-all duration-300 hover:scale-[1.02] hover:border-white/20 hover:shadow-2xl cursor-pointer',
+                'bg-[linear-gradient(168deg,rgba(255,255,255,0.05),rgba(255,255,255,0)_45%),var(--panel,var(--bg-card))]',
+                'border border-white/[0.07]',
+                'shadow-[0_1px_0_rgba(255,255,255,0.06)_inset,0_3px_6px_-3px_rgba(0,0,0,0.6),0_16px_34px_-18px_rgba(0,0,0,0.75)]',
+                hover && 'transition-all duration-300 hover:border-white/[0.14] hover:shadow-[0_1px_0_rgba(255,255,255,0.1)_inset,0_6px_12px_-4px_rgba(0,0,0,0.55),0_34px_64px_-22px_rgba(0,0,0,0.85)]',
                 glow && 'animate-glow',
                 className
             )}

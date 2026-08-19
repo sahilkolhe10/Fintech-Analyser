@@ -404,3 +404,100 @@ export const deleteServerConversation = async (uid: string, conversationId: stri
     }
 };
 
+// ============================================
+// Per-user Telegram bots
+// users/{uid}/telegramBot — the user's own bot token (optional; a global
+// TELEGRAM_BOT_TOKEN bot is also supported). Storing the token lets each
+// user run their own bot and link their own chats.
+// ============================================
+
+export interface UserTelegramBot {
+    uid: string;
+    botToken: string;         // full token: "123456:ABC..."
+    botId: string;            // numeric bot id (from the token prefix)
+    username?: string;        // e.g. "my_khata_bot"
+    webhookPath: string;      // "/api/telegram/webhook/<botId>"
+    linkedChatId?: string;    // chat linked to this user via this bot
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
+}
+
+export const getTelegramBotKey = (token: string): string => {
+    const id = token.split(':')[0];
+    return id || 'unknown';
+};
+
+export const saveUserTelegramBot = async (
+    uid: string,
+    botToken: string,
+    username?: string
+): Promise<{ success: boolean; botId?: string; webhookPath?: string; error?: string }> => {
+    const db = getAdminDb();
+    if (!db) return { success: false, error: 'Firebase Admin not configured' };
+
+    const botId = getTelegramBotKey(botToken);
+    const webhookPath = `/api/telegram/webhook/${botId}`;
+
+    try {
+        await db.collection('users').doc(uid).collection('telegramBot').doc('self').set({
+            uid,
+            botToken,
+            botId,
+            username: username || '',
+            webhookPath,
+            updatedAt: FieldValue.serverTimestamp(),
+            createdAt: FieldValue.serverTimestamp(),
+        });
+        return { success: true, botId, webhookPath };
+    } catch (error: unknown) {
+        return { success: false, error: error instanceof Error ? error.message : 'Failed to save bot' };
+    }
+};
+
+export const getUserTelegramBot = async (uid: string): Promise<{ success: boolean; data?: UserTelegramBot; error?: string }> => {
+    const db = getAdminDb();
+    if (!db) return { success: false, error: 'Firebase Admin not configured' };
+
+    try {
+        const snap = await db.collection('users').doc(uid).collection('telegramBot').doc('self').get();
+        if (!snap.exists) return { success: true, data: undefined };
+        return { success: true, data: snap.data() as UserTelegramBot };
+    } catch (error: unknown) {
+        return { success: false, error: error instanceof Error ? error.message : 'Failed to load bot' };
+    }
+};
+
+export const deleteUserTelegramBot = async (uid: string): Promise<{ success: boolean; error?: string }> => {
+    const db = getAdminDb();
+    if (!db) return { success: false, error: 'Firebase Admin not configured' };
+
+    try {
+        await db.collection('users').doc(uid).collection('telegramBot').doc('self').delete();
+        return { success: true };
+    } catch (error: unknown) {
+        return { success: false, error: error instanceof Error ? error.message : 'Failed to delete bot' };
+    }
+};
+
+// Resolve a botId (from the webhook path) to the owning user + token.
+export const getBotOwnerByBotId = async (botId: string): Promise<{ uid?: string; botToken?: string; error?: string }> => {
+    const db = getAdminDb();
+    if (!db) return { error: 'Firebase Admin not configured' };
+
+    try {
+        // Query all users' telegramBot/self docs for a matching botId.
+        const users = await db.collection('users').get();
+        for (const userDoc of users.docs) {
+            const snap = await userDoc.ref.collection('telegramBot').doc('self').get();
+            if (!snap.exists) continue;
+            const data = snap.data() as UserTelegramBot;
+            if (data.botId === botId) {
+                return { uid: data.uid, botToken: data.botToken };
+            }
+        }
+        return { error: 'Bot not found' };
+    } catch (error: unknown) {
+        return { error: error instanceof Error ? error.message : 'Failed to resolve bot' };
+    }
+};
+

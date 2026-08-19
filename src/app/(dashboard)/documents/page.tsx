@@ -28,6 +28,15 @@ interface StoredDoc {
 }
 
 const ACCEPT = '.pdf,.png,.jpg,.jpeg,.webp,.xlsx,.xls,.csv';
+const STATEMENT_ACCEPT = '.pdf,.xlsx,.xls,.csv';
+
+interface StatementSummary {
+    parsed: number;
+    skipped: number;
+    duplicates: number;
+    imported: number;
+    totalAmount: number;
+}
 
 export default function DocumentsPage() {
     const fadeRef = useFadeIn();
@@ -46,6 +55,9 @@ export default function DocumentsPage() {
     } | null>(null);
     const [isDragging, setIsDragging] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const statementInputRef = useRef<HTMLInputElement>(null);
+    const [isImportingStatement, setIsImportingStatement] = useState(false);
+    const [statementSummary, setStatementSummary] = useState<StatementSummary | null>(null);
 
     const loadDocuments = useCallback(async () => {
         if (!user) return;
@@ -121,6 +133,55 @@ export default function DocumentsPage() {
         } finally {
             setIsUploading(false);
             if (fileInputRef.current) fileInputRef.current.value = '';
+        }
+    };
+
+    const importStatement = async (file: File) => {
+        if (!user) {
+            toast.error('Sign in to import a statement');
+            return;
+        }
+
+        setIsImportingStatement(true);
+        setStatementSummary(null);
+        const toastId = toast.loading(`Parsing ${file.name}…`);
+
+        try {
+            const token = await getAppUserToken(user);
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const res = await fetch('/api/ai/statements', {
+                method: 'POST',
+                headers: { Authorization: `Bearer ${token}` },
+                body: formData,
+            });
+
+            const data = await res.json();
+
+            if (!res.ok || !data.success) {
+                toast.error(data.error || 'Import failed', { id: toastId });
+                return;
+            }
+
+            const summary: StatementSummary = data.summary;
+            setStatementSummary(summary);
+            toast.success(
+                summary.imported > 0
+                    ? `Imported ${summary.imported} expenses (₹${summary.totalAmount.toLocaleString('en-IN')})`
+                    : summary.duplicates > 0
+                        ? 'All transactions were already in your ledger'
+                        : 'Statement parsed — no new expenses to import',
+                { id: toastId }
+            );
+
+            loadDocuments();
+        } catch (error) {
+            console.error('Statement import error:', error);
+            toast.error('Import failed', { id: toastId });
+        } finally {
+            setIsImportingStatement(false);
+            if (statementInputRef.current) statementInputRef.current.value = '';
         }
     };
 
@@ -210,6 +271,82 @@ export default function DocumentsPage() {
                     </label>
                 </div>
 
+            </GlassCard>
+
+            {/* Bank statement ingestion */}
+            <GlassCard className="p-6 border-primary/30">
+                <div className="flex items-center gap-3 mb-3">
+                    <div className="w-9 h-9 rounded-xl bg-primary/15 flex items-center justify-center">
+                        <Receipt className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                        <h2 className="text-lg font-semibold text-white">Import bank statement</h2>
+                        <p className="text-sm text-gray-400">
+                            Upload a PDF or Excel statement — the AI agent extracts transactions and adds them to your expenses
+                        </p>
+                    </div>
+                </div>
+
+                <div
+                    onClick={() => statementInputRef.current?.click()}
+                    onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+                    onDragLeave={() => setIsDragging(false)}
+                    onDrop={(e) => {
+                        e.preventDefault();
+                        setIsDragging(false);
+                        const file = e.dataTransfer.files?.[0];
+                        if (file) importStatement(file);
+                    }}
+                    className={cn(
+                        'border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all',
+                        isImportingStatement
+                            ? 'border-primary bg-primary/10'
+                            : isDragging
+                                ? 'border-primary bg-primary/10'
+                                : 'border-white/15 hover:border-primary/60 hover:bg-white/5'
+                    )}
+                >
+                    <input
+                        ref={statementInputRef}
+                        type="file"
+                        accept={STATEMENT_ACCEPT}
+                        className="hidden"
+                        onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) importStatement(file);
+                        }}
+                    />
+                    {isImportingStatement ? (
+                        <Loader2 className="w-8 h-8 text-primary animate-spin mx-auto mb-3" />
+                    ) : (
+                        <Receipt className="w-8 h-8 text-primary mx-auto mb-3" />
+                    )}
+                    <h3 className="text-base font-semibold text-white mb-1">
+                        {isImportingStatement ? 'Parsing & importing…' : 'Drop your statement here or click to upload'}
+                    </h3>
+                    <p className="text-gray-400 text-sm">PDF · XLSX · XLS · CSV — the agent categorizes each transaction automatically</p>
+                </div>
+
+                {statementSummary && !isImportingStatement && (
+                    <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <div className="bg-emerald-500/10 rounded-xl px-4 py-3 text-center">
+                            <p className="text-2xl font-bold text-emerald-400">{statementSummary.imported}</p>
+                            <p className="text-xs text-gray-400">imported</p>
+                        </div>
+                        <div className="bg-white/5 rounded-xl px-4 py-3 text-center">
+                            <p className="text-2xl font-bold text-white">₹{statementSummary.totalAmount.toLocaleString('en-IN')}</p>
+                            <p className="text-xs text-gray-400">total</p>
+                        </div>
+                        <div className="bg-white/5 rounded-xl px-4 py-3 text-center">
+                            <p className="text-2xl font-bold text-white">{statementSummary.duplicates}</p>
+                            <p className="text-xs text-gray-400">duplicates</p>
+                        </div>
+                        <div className="bg-white/5 rounded-xl px-4 py-3 text-center">
+                            <p className="text-2xl font-bold text-white">{statementSummary.skipped}</p>
+                            <p className="text-xs text-gray-400">income skipped</p>
+                        </div>
+                    </div>
+                )}
             </GlassCard>
 
             {/* Analysis result */}

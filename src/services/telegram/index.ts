@@ -1,13 +1,16 @@
-// Telegram Bot API client (plain fetch, no heavy deps)
+// Telegram Bot API client (plain fetch, no heavy deps).
+// Supports both the global server bot (TELEGRAM_BOT_TOKEN) and per-user bots
+// (a user's own token, stored in Firestore). Every call takes an optional
+// token so the webhook can serve many bots from one route.
 
 const TELEGRAM_API = 'https://api.telegram.org/bot';
 
-export function getBotToken(): string {
+export function getGlobalBotToken(): string {
     return process.env.TELEGRAM_BOT_TOKEN || '';
 }
 
-export function isBotConfigured(): boolean {
-    return Boolean(getBotToken());
+export function isBotConfigured(token?: string): boolean {
+    return Boolean((token ?? getGlobalBotToken()).trim());
 }
 
 interface TelegramResponse<T = unknown> {
@@ -16,11 +19,15 @@ interface TelegramResponse<T = unknown> {
     description?: string;
 }
 
-async function tgCall<T = unknown>(method: string, params: Record<string, unknown> = {}): Promise<TelegramResponse<T>> {
-    const token = getBotToken();
-    if (!token) return { ok: false, description: 'Bot token not configured' };
+async function tgCall<T = unknown>(
+    method: string,
+    params: Record<string, unknown> = {},
+    token?: string
+): Promise<TelegramResponse<T>> {
+    const botToken = (token ?? getGlobalBotToken()).trim();
+    if (!botToken) return { ok: false, description: 'Bot token not configured' };
 
-    const res = await fetch(`${TELEGRAM_API}${token}/${method}`, {
+    const res = await fetch(`${TELEGRAM_API}${botToken}/${method}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(params),
@@ -55,12 +62,13 @@ export interface TgUpdate {
     message?: TgMessage;
 }
 
-export const getMe = () => tgCall<TgUser>('getMe');
+export const getMe = (token?: string) => tgCall<TgUser>('getMe', {}, token);
 
 export const sendMessage = async (
     chatId: number | string,
     text: string,
-    opts: { disableWebPagePreview?: boolean } = {}
+    opts: { disableWebPagePreview?: boolean } = {},
+    token?: string
 ): Promise<boolean> => {
     const truncated = text.length > 4000 ? `${text.slice(0, 3900)}\n\n...(truncated)` : text;
     const res = await tgCall('sendMessage', {
@@ -68,32 +76,45 @@ export const sendMessage = async (
         text: truncated,
         disable_web_page_preview: true,
         ...opts,
-    });
+    }, token);
     if (!res.ok) {
         console.error('Telegram sendMessage failed:', res.description);
     }
     return res.ok;
 };
 
-export const sendChatAction = async (chatId: number | string, action: 'typing' | 'upload_document'): Promise<void> => {
-    await tgCall('sendChatAction', { chat_id: chatId, action });
+export const sendChatAction = async (
+    chatId: number | string,
+    action: 'typing' | 'upload_document',
+    token?: string
+): Promise<void> => {
+    await tgCall('sendChatAction', { chat_id: chatId, action }, token);
 };
 
-export const setWebhook = async (url: string): Promise<{ ok: boolean; description?: string }> => {
-    const res = await tgCall('setWebhook', { url });
+export const setWebhook = async (
+    url: string,
+    token?: string
+): Promise<{ ok: boolean; description?: string }> => {
+    const res = await tgCall('setWebhook', { url }, token);
     return { ok: res.ok, description: res.description };
 };
 
-export const getFile = async (fileId: string): Promise<{ file_path?: string; error?: string }> => {
-    const res = await tgCall<{ file_path: string }>('getFile', { file_id: fileId });
+export const getFile = async (
+    fileId: string,
+    token?: string
+): Promise<{ file_path?: string; error?: string }> => {
+    const res = await tgCall<{ file_path: string }>('getFile', { file_id: fileId }, token);
     if (!res.ok || !res.result) return { error: res.description || 'getFile failed' };
     return { file_path: res.result.file_path };
 };
 
-export const downloadFile = async (filePath: string): Promise<{ buffer?: Buffer; error?: string }> => {
-    const token = getBotToken();
+export const downloadFile = async (
+    filePath: string,
+    token?: string
+): Promise<{ buffer?: Buffer; error?: string }> => {
+    const botToken = (token ?? getGlobalBotToken()).trim();
     try {
-        const res = await fetch(`${TELEGRAM_API}${token}/${filePath}`);
+        const res = await fetch(`${TELEGRAM_API}${botToken}/${filePath}`);
         if (!res.ok) return { error: `Download failed (${res.status})` };
         return { buffer: Buffer.from(await res.arrayBuffer()) };
     } catch (error: unknown) {

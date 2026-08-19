@@ -12,15 +12,15 @@ declare namespace NodeJS {
     NEXT_PUBLIC_FIREBASE_APP_ID: string;
 
     // AI Configuration
-    // Provider order: AI_PROVIDER=zenmux (default) → groq → gemini.
-    // Gemini is always preferred for document/vision analysis.
+    // Default provider: Hetzner (OpenAI-compatible). Groq & Gemini are
+    // automatic fallbacks; Gemini is always preferred for document/vision.
     GEMINI_API_KEY: string;
     GEMINI_MODEL?: string;
     GROQ_API_KEY?: string;
-    AI_PROVIDER?: 'zenmux' | 'groq' | 'gemini';
+    AI_PROVIDER?: 'hetzner' | 'groq' | 'gemini';
     GROQ_MODEL?: string;
-    ZENMUX_API_KEY?: string;
-    ZENMUX_MODEL?: string;
+    HETZNER_API_KEY?: string;
+    HETZNER_MODEL?: string;
 
     // ML signals service (ml/ — separate Cloud Run service)
     ML_SERVICE_URL?: string;

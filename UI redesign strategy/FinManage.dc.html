@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;height:100%}
+  body{background:#17171d;font-family:'Geist',system-ui,-apple-system,sans-serif;letter-spacing:-.011em;-webkit-font-smoothing:antialiased}
+  a{color:#D8B876;text-decoration:none}
+  a:hover{color:#E8CB94}
+  ::-webkit-scrollbar{width:9px;height:9px}
+  ::-webkit-scrollbar-thumb{background:rgba(180,137,74,.35);border-radius:5px;border:2px solid transparent;background-clip:padding-box}
+  ::-webkit-scrollbar-thumb:hover{background:rgba(180,137,74,.6);background-clip:padding-box}
+  ::-webkit-scrollbar-track{background:transparent}
+  .nsb::-webkit-scrollbar{display:none}
+  input,button,select,textarea{font-family:inherit}
+  input:focus,button:focus{outline:none}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes bd{0%,80%,100%{transform:scale(.5);opacity:.4}40%{transform:scale(1);opacity:1}}
+  @keyframes fu{from{opacity:0;transform:perspective(1100px) translateY(18px) rotateX(-7deg)}to{opacity:1;transform:perspective(1100px) translateY(0) rotateX(0)}}
+  @keyframes dash{to{stroke-dashoffset:0}}
+  .fu{animation:fu .5s cubic-bezier(.22,.61,.36,1) both}
+  .tn{font-variant-numeric:tabular-nums}
+</style>
+</helmet>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-dash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></symbol>
+<symbol id="i-wallet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></symbol>
+<symbol id="i-receipt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 6v2m0 8v2"/></symbol>
+<symbol id="i-bot" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2m16 0h2M15 13v2M9 13v2"/></symbol>
+<symbol id="i-landmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+<symbol id="i-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8m8 4H8m2-8H8"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+<symbol id="i-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M4.2 4.2l2.1 2.1m11.4 11.4 2.1 2.1M2 12h3m14 0h3M4.2 19.8l2.1-2.1m11.4-11.4 2.1-2.1"/></symbol>
+<symbol id="i-tu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></symbol>
+<symbol id="i-td" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5v14"/></symbol>
+<symbol id="i-sparkles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.94 14.06A2 2 0 0 0 8.5 12.6L3.3 11.3a.5.5 0 0 1 0-.96l5.2-1.3A2 2 0 0 0 9.94 7.6l1.3-5.2a.5.5 0 0 1 .96 0l1.3 5.2a2 2 0 0 0 1.44 1.44l5.2 1.3a.5.5 0 0 1 0 .96l-5.2 1.3a2 2 0 0 0-1.44 1.44l-1.3 5.2a.5.5 0 0 1-.96 0z"/><path d="M20 3v4M22 5h-4M4 17v2M5 18H3"/></symbol>
+<symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.54 21.69a.5.5 0 0 0 .94-.03l6.5-19a.5.5 0 0 0-.64-.63l-19 6.5a.5.5 0 0 0-.02.94l7.93 3.18a2 2 0 0 1 1.11 1.11z"/><path d="m21.85 2.15-10.94 10.94"/></symbol>
+<symbol id="i-upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+<symbol id="i-aur" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></symbol>
+<symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></symbol>
+<symbol id="i-cube" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.3 7 12 12 20.7 7"/><line x1="12" x2="12" y1="22" y2="12"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></symbol>
+<symbol id="i-network" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3M12 12V8"/></symbol>
+<symbol id="i-area" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M7 15l4-4 3 3 5-6"/></symbol>
+<symbol id="i-bars" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="7"/><rect x="13" y="6" width="3" height="11"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-news" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-4 0V9h4"/><path d="M18 14h-8m8-4h-8m4 8h-4"/></symbol>
+<symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></symbol>
+<symbol id="i-scale" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10M12 3v18M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></symbol>
+<symbol id="i-msg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></symbol>
+<symbol id="i-scroll" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17V5a2 2 0 0 0-2-2H4"/><path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3"/></symbol>
+<symbol id="i-help" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></symbol>
+<symbol id="i-utensils" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h1a2 2 0 0 0 2-2V2"/><path d="M6 2v20M18 15V2a5 5 0 0 0-3 5v6c0 1.1.9 2 2 2h1Zm0 0v7"/></symbol>
+<symbol id="i-car" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></symbol>
+<symbol id="i-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></symbol>
+<symbol id="i-game" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" x2="10" y1="12" y2="12"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="15" x2="15.01" y1="13" y2="13"/><line x1="18" x2="18.01" y1="11" y2="11"/><rect width="20" height="12" x="2" y="6" rx="2"/></symbol>
+<symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></symbol>
+<symbol id="i-piggy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4c1-.5 1.7-1 2-2h2v-4h-2c0-1-.5-1.5-1-2V5z"/><path d="M2 9v1c0 1.1.9 2 2 2h1M16 11h.01"/></symbol>
+</defs></svg>
+
+<div class="stage" onMouseMove="{{ onStageMove }}" onMouseLeave="{{ onStageLeave }}" style="height:100vh;width:100%;overflow:hidden;background:#131318;perspective:2600px;perspective-origin:50% 42%;display:flex;align-items:center;justify-content:center;transition:background .7s ease">
+<div class="root" style="--bg:#17171d;--panel:#1c1c24;--panel2:#22222b;--line:rgba(255,255,255,.07);--line2:rgba(255,255,255,.14);--violet:#B4894A;--violetl:#D8B876;--cyan:#9AA0AF;--green:#34d399;--red:#f87171;--amber:#fbbf24;--tp:#f4f5fb;--ts:#98a1b6;--tt:#5d6580;--e1:0 1px 0 rgba(255,255,255,.05) inset,0 2px 5px -2px rgba(0,0,0,.55);--e2:0 1px 0 rgba(255,255,255,.06) inset,0 3px 6px -3px rgba(0,0,0,.6),0 16px 34px -18px rgba(0,0,0,.75);--e3:0 1px 0 rgba(255,255,255,.1) inset,0 6px 12px -4px rgba(0,0,0,.55),0 34px 64px -22px rgba(0,0,0,.85);display:flex;height:100vh;width:100%;overflow:hidden;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.4,0,.2,1),width .7s cubic-bezier(.4,0,.2,1),height .7s cubic-bezier(.4,0,.2,1),border-radius .7s,box-shadow .7s;background:radial-gradient(ellipse 70% 55% at 18% -8%,rgba(180,137,74,.10),transparent),radial-gradient(ellipse 55% 45% at 100% 0%,rgba(34,211,238,.06),transparent),linear-gradient(180deg,var(--bg),#0c0c16);color:var(--tp)">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside style="width:238px;flex:none;display:flex;flex-direction:column;padding:16px 14px;border-right:1px solid var(--line);background:rgba(26,26,33,.6);backdrop-filter:blur(12px);position:relative;z-index:6;box-shadow:28px 0 64px -34px rgba(0,0,0,.95);transition:transform .7s cubic-bezier(.4,0,.2,1)">
+    <div style="display:flex;align-items:center;gap:11px;padding:6px 6px 4px">
+      <div style="width:34px;height:34px;border-radius:11px;background:var(--violet);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px -4px rgba(180,137,74,.6);font-weight:800;font-size:16px;color:#fff">₣</div>
+      <div style="display:flex;flex-direction:column;line-height:1.1">
+        <span style="font-size:15.5px;font-weight:700;letter-spacing:-.02em">Khatabook</span>
+        <span style="font-size:10px;color:var(--tt);font-weight:500;letter-spacing:.02em">Wealth OS</span>
+      </div>
+    </div>
+
+    <nav class="nsb" style="flex:1;overflow-y:auto;margin-top:18px;display:flex;flex-direction:column;gap:18px">
+      <div>
+        <div style="padding:0 10px 7px;font-size:10px;font-weight:700;letter-spacing:.13em;color:var(--tt);text-transform:uppercase">Overview</div>
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <sc-for list="{{ navMain }}" as="it" hint-placeholder-count="3">
+            <div onClick="{{ it.go }}" style="position:relative;display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:11px;cursor:pointer;background:{{ it.bg }};transition:background .15s">
+              <sc-if value="{{ it.active }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;left:0;top:50%;transform:translateY(-50%);width:3px;height:16px;border-radius:3px;background:var(--violetl)"></span></sc-if>
+              <svg style="width:18px;height:18px;color:{{ it.ic }}"><use href="{{ it.icon }}"></use></svg>
+              <span style="font-size:13.5px;font-weight:{{ it.fw }};color:{{ it.fg }};white-space:nowrap">{{ it.label }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div>
+        <div style="padding:0 10px 7px;font-size:10px;font-weight:700;letter-spacing:.13em;color:var(--tt);text-transform:uppercase">Intelligence</div>
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <sc-for list="{{ navIntel }}" as="it" hint-placeholder-count="3">
+            <div onClick="{{ it.go }}" style="position:relative;display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:11px;cursor:pointer;background:{{ it.bg }};transition:background .15s">
+              <sc-if value="{{ it.active }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;left:0;top:50%;transform:translateY(-50%);width:3px;height:16px;border-radius:3px;background:var(--violetl)"></span></sc-if>
+              <svg style="width:18px;height:18px;color:{{ it.ic }}"><use href="{{ it.icon }}"></use></svg>
+              <span style="font-size:13.5px;font-weight:{{ it.fw }};color:{{ it.fg }};white-space:nowrap">{{ it.label }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div>
+        <div style="padding:0 10px 7px;font-size:10px;font-weight:700;letter-spacing:.13em;color:var(--tt);text-transform:uppercase">Manage</div>
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <sc-for list="{{ navManage }}" as="it" hint-placeholder-count="3">
+            <div onClick="{{ it.go }}" style="position:relative;display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:11px;cursor:pointer;background:{{ it.bg }};transition:background .15s">
+              <sc-if value="{{ it.active }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;left:0;top:50%;transform:translateY(-50%);width:3px;height:16px;border-radius:3px;background:var(--violetl)"></span></sc-if>
+              <svg style="width:18px;height:18px;color:{{ it.ic }}"><use href="{{ it.icon }}"></use></svg>
+              <span style="font-size:13.5px;font-weight:{{ it.fw }};color:{{ it.fg }};white-space:nowrap">{{ it.label }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </nav>
+
+    <div style="border-top:1px solid var(--line);padding-top:10px;display:flex;align-items:center;gap:10px">
+      <div style="width:34px;height:34px;border-radius:50%;background:var(--violet);display:flex;align-items:center;justify-content:center;flex:none;ring:1px"><svg style="width:16px;height:16px;color:#fff"><use href="#i-user"></use></svg></div>
+      <div style="min-width:0;line-height:1.25">
+        <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Rohit Swami</div>
+        <div style="font-size:11px;color:var(--tt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">rohit@detroit.dev</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+    <!-- TOPBAR -->
+    <header style="height:62px;flex:none;display:flex;align-items:center;gap:16px;padding:0 26px;border-bottom:1px solid var(--line);background:rgba(28,28,36,.6);backdrop-filter:blur(14px);z-index:5;box-shadow:0 20px 44px -32px rgba(0,0,0,.95)">
+      <div style="flex:1;max-width:440px;position:relative;display:flex;align-items:center">
+        <svg style="width:16px;height:16px;color:var(--tt);position:absolute;left:13px;pointer-events:none"><use href="#i-search"></use></svg>
+        <input placeholder="Search stocks, ETFs, insights…" style="width:100%;background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:11px;padding:9px 12px 9px 36px;color:var(--tp);font-size:13px" />
+        <span style="position:absolute;right:11px;font-size:11px;color:var(--tt);border:1px solid var(--line);border-radius:6px;padding:2px 6px;font-family:'Geist Mono',monospace">⌘K</span>
+      </div>
+      <div style="flex:1"></div>
+      <div style="display:flex;align-items:center;gap:2px;background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:10px;padding:3px">
+        <button onClick="{{ setINR }}" style="padding:5px 11px;border-radius:7px;border:none;cursor:pointer;font-size:12px;font-weight:600;background:{{ inrBg }};color:{{ inrFg }}">₹ INR</button>
+        <button onClick="{{ setUSD }}" style="padding:5px 11px;border-radius:7px;border:none;cursor:pointer;font-size:12px;font-weight:600;background:{{ usdBg }};color:{{ usdFg }}">$ USD</button>
+      </div>
+      <button onClick="{{ toggleIso }}" title="Perspective view" style="width:38px;height:38px;border-radius:10px;background:{{ isoBg }};border:1px solid {{ isoBd }};cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .25s,border-color .25s"><svg style="width:18px;height:18px;color:{{ isoFg }}"><use href="#i-cube"></use></svg></button>
+      <button style="position:relative;width:38px;height:38px;border-radius:10px;background:var(--panel);border:1px solid var(--line);cursor:pointer;display:flex;align-items:center;justify-content:center"><svg style="width:18px;height:18px;color:var(--ts)"><use href="#i-bell"></use></svg><span style="position:absolute;top:9px;right:9px;width:7px;height:7px;border-radius:50%;background:var(--violetl);box-shadow:0 0 0 2px var(--bg)"></span></button>
+    </header>
+
+    <!-- SCROLL AREA -->
+    <main class="nsb" style="flex:1;overflow-y:auto;padding:26px 26px 40px;perspective:1600px;perspective-origin:50% 30%">
+
+      <!-- ===================== DASHBOARD ===================== -->
+      <sc-if value="{{ isDash }}" hint-placeholder-val="{{ true }}">
+      <div class="fu" style="max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:18px">
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap">
+          <div>
+            <h1 style="margin:0;font-size:25px;font-weight:700;letter-spacing:-.03em">Good afternoon, <span style="background:var(--violetl);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">Rohit</span></h1>
+            <p style="margin:5px 0 0;color:var(--ts);font-size:13.5px">Here's how your money is doing — Tuesday, 19 Aug</p>
+          </div>
+          <button onClick="{{ goAdvisor }}" style="display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:11px;border:none;cursor:pointer;background:var(--violet);color:#fff;font-size:13px;font-weight:600;box-shadow:0 8px 22px -8px rgba(180,137,74,.55)"><svg style="width:16px;height:16px"><use href="#i-sparkles"></use></svg>Ask the AI Advisor</button>
+        </div>
+
+        <!-- KPI ROW -->
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;perspective:1000px">
+          <div style="background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:16px;padding:17px;transform:translateZ(0);transition:transform .3s cubic-bezier(.2,.7,.3,1),box-shadow .3s,border-color .3s" style-hover="transform:translateZ(30px) rotateX(4deg);box-shadow:var(--e3);border-color:var(--line2)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span style="font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--tt)">Portfolio Value</span><div style="width:30px;height:30px;border-radius:9px;background:rgba(180,137,74,.14);display:flex;align-items:center;justify-content:center"><svg style="width:15px;height:15px;color:var(--violetl)"><use href="#i-wallet"></use></svg></div></div>
+            <div class="tn" style="font-size:26px;font-weight:700;letter-spacing:-.02em">{{ k.value }}</div>
+            <div style="display:flex;align-items:center;gap:5px;margin-top:7px;font-size:12.5px;font-weight:600;color:var(--green)"><svg style="width:14px;height:14px"><use href="#i-tu"></use></svg>{{ k.pnlPct }} · {{ k.pnl }}</div>
+          </div>
+          <div style="background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:16px;padding:17px;transform:translateZ(0);transition:transform .3s cubic-bezier(.2,.7,.3,1),box-shadow .3s,border-color .3s" style-hover="transform:translateZ(30px) rotateX(4deg);box-shadow:var(--e3);border-color:var(--line2)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span style="font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--tt)">Monthly Income</span><div style="width:30px;height:30px;border-radius:9px;background:rgba(52,211,153,.14);display:flex;align-items:center;justify-content:center"><svg style="width:15px;height:15px;color:var(--green)"><use href="#i-tu"></use></svg></div></div>
+            <div class="tn" style="font-size:26px;font-weight:700;letter-spacing:-.02em;color:var(--green)">{{ k.income }}</div>
+            <div style="margin-top:7px;font-size:12.5px;color:var(--ts)">Recurring · this month</div>
+          </div>
+          <div style="background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:16px;padding:17px;transform:translateZ(0);transition:transform .3s cubic-bezier(.2,.7,.3,1),box-shadow .3s,border-color .3s" style-hover="transform:translateZ(30px) rotateX(4deg);box-shadow:var(--e3);border-color:var(--line2)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span style="font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--tt)">Spent This Month</span><div style="width:30px;height:30px;border-radius:9px;background:rgba(34,211,238,.14);display:flex;align-items:center;justify-content:center"><svg style="width:15px;height:15px;color:var(--cyan)"><use href="#i-receipt"></use></svg></div></div>
+            <div class="tn" style="font-size:26px;font-weight:700;letter-spacing:-.02em">{{ k.spent }}</div>
+            <div style="margin-top:7px;font-size:12.5px;color:var(--ts)">of {{ k.budget }} budget</div>
+          </div>
+          <div style="background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:16px;padding:17px;transform:translateZ(0);transition:transform .3s cubic-bezier(.2,.7,.3,1),box-shadow .3s,border-color .3s" style-hover="transform:translateZ(30px) rotateX(4deg);box-shadow:var(--e3);border-color:var(--line2)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span style="font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--tt)">Budget Left</span><div style="width:30px;height:30px;border-radius:9px;background:rgba(52,211,153,.14);display:flex;align-items:center;justify-content:center"><svg style="width:15px;height:15px;color:var(--green)"><use href="#i-piggy"></use></svg></div></div>
+            <div class="tn" style="font-size:26px;font-weight:700;letter-spacing:-.02em;color:var(--green)">{{ k.remaining }}</div>
+            <div style="margin-top:7px;font-size:12.5px;color:var(--ts)">left to spend</div>
+          </div>
+        </div>
+
+        <!-- CHART + AI -->
+        <div style="display:grid;grid-template-columns:1.9fr 1fr;gap:16px">
+          <div style="background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:18px;padding:20px">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+              <div>
+                <div style="font-size:12px;color:var(--tt);font-weight:600;letter-spacing:.04em;text-transform:uppercase">Portfolio Performance</div>
+                <div class="tn" style="font-size:23px;font-weight:700;margin-top:5px">{{ k.value }} <span style="font-size:13px;color:var(--green);font-weight:600">{{ k.pnlPct }}</span></div>
+              </div>
+              <div style="display:flex;gap:3px;background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:3px">
+                <span style="font-size:11.5px;font-weight:600;color:var(--tt);padding:4px 9px;border-radius:6px">1M</span>
+                <span style="font-size:11.5px;font-weight:600;color:var(--tt);padding:4px 9px;border-radius:6px">3M</span>
+                <span style="font-size:11.5px;font-weight:600;color:var(--tt);padding:4px 9px;border-radius:6px">6M</span>
+                <span style="font-size:11.5px;font-weight:600;color:#fff;padding:4px 9px;border-radius:6px;background:var(--violet)">1Y</span>
+              </div>
+            </div>
+            <svg viewBox="0 0 700 232" preserveAspectRatio="none" style="width:100%;height:232px;display:block">
+              <defs>
+                <linearGradient id="eqfill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#B4894A" stop-opacity="0.34"/><stop offset="1" stop-color="#B4894A" stop-opacity="0"/></linearGradient>
+                <linearGradient id="eqline" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#B4894A"/><stop offset="1" stop-color="#B4894A"/></linearGradient>
+              </defs>
+              <line x1="0" y1="58" x2="700" y2="58" stroke="rgba(255,255,255,.05)"/><line x1="0" y1="116" x2="700" y2="116" stroke="rgba(255,255,255,.05)"/><line x1="0" y1="174" x2="700" y2="174" stroke="rgba(255,255,255,.05)"/>
+              <path d="{{ ch.eqArea }}" fill="url(#eqfill)"/>
+              <path d="{{ ch.eq }}" fill="none" stroke="url(#eqline)" stroke-width="2.5" stroke-linecap="round" style="filter:drop-shadow(0 7px 9px rgba(0,0,0,.55))"/>
+              <circle cx="{{ ch.eqLastX }}" cy="{{ ch.eqLastY }}" r="4.5" fill="#B4894A" stroke="#17171d" stroke-width="2"/>
+            </svg>
+            <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:11px;color:var(--tt)"><span>Sep</span><span>Nov</span><span>Jan</span><span>Mar</span><span>May</span><span>Jul</span></div>
+          </div>
+
+          <div style="background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:18px;padding:20px;display:flex;flex-direction:column">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px"><div style="width:26px;height:26px;border-radius:8px;background:rgba(180,137,74,.14);display:flex;align-items:center;justify-content:center"><svg style="width:15px;height:15px;color:var(--violetl)"><use href="#i-bot"></use></svg></div><span style="font-size:14px;font-weight:600">AI Insight</span></div>
+            <p style="margin:0 0 14px;font-size:13px;line-height:1.6;color:var(--ts)">Markets are steady. Your book is IT-heavy — trimming Reliance and adding a small hedge would lower concentration risk.</p>
+            <div style="display:flex;flex-direction:column;gap:9px">
+              <div style="padding:11px 13px;background:var(--panel2);border-radius:11px;border-left:2px solid var(--green)"><div style="font-size:11px;color:var(--green);font-weight:600;margin-bottom:2px">Opportunity</div><div style="font-size:12.5px">Bank stocks holding strong support.</div></div>
+              <div style="padding:11px 13px;background:var(--panel2);border-radius:11px;border-left:2px solid var(--amber)"><div style="font-size:11px;color:var(--amber);font-weight:600;margin-bottom:2px">Caution</div><div style="font-size:12.5px">Tech volatility expected this week.</div></div>
+            </div>
+            <button onClick="{{ goAdvisor }}" style="margin-top:auto;padding:10px;border-radius:11px;border:1px solid var(--line2);background:var(--panel2);color:var(--tp);font-size:13px;font-weight:600;cursor:pointer">Open AI Advisor</button>
+          </div>
+        </div>
+
+        <!-- ALLOCATION + INDICES -->
+        <div style="display:grid;grid-template-columns:1fr 1.9fr;gap:16px">
+          <div style="background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:18px;padding:20px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><span style="font-size:14px;font-weight:600">Allocation</span><span onClick="{{ goPortfolio }}" style="font-size:12px;color:var(--violetl);cursor:pointer;display:flex;align-items:center;gap:3px">Details<svg style="width:12px;height:12px"><use href="#i-aur"></use></svg></span></div>
+            <div style="display:flex;align-items:center;gap:16px">
+              <div style="flex:none;width:146px;display:flex;flex-direction:column;align-items:center;gap:8px">
+                <div style="width:140px;height:118px;perspective:540px;display:flex;align-items:center;justify-content:center">
+                  <div style="position:relative;width:140px;height:140px;transform-style:preserve-3d;transform:rotateX(58deg);filter:drop-shadow(0 24px 20px rgba(0,0,0,.6))">
+                    <sc-for list="{{ ch.donutLayers }}" as="L" hint-placeholder-count="8">
+                      <svg viewBox="0 0 140 140" style="position:absolute;left:0;top:0;width:140px;height:140px;transform:translateZ({{ L.z }}px)">
+                        <g transform="rotate(-90 70 70)">
+                          <sc-for list="{{ L.segs }}" as="s" hint-placeholder-count="6"><circle cx="70" cy="70" r="52" fill="none" stroke="{{ s.color }}" stroke-width="17" stroke-dasharray="{{ s.dash }}" stroke-dashoffset="{{ s.off }}"></circle></sc-for>
+                        </g>
+                      </svg>
+                    </sc-for>
+                  </div>
+                </div>
+                <div style="text-align:center;line-height:1.2"><div class="tn" style="font-size:15px;font-weight:700">6</div><div style="font-size:9.5px;color:var(--ts)">holdings</div></div>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;gap:7px">
+                <sc-for list="{{ ch.legend }}" as="s" hint-placeholder-count="6">
+                  <div style="display:flex;align-items:center;gap:8px;font-size:12px"><span style="width:9px;height:9px;border-radius:3px;background:{{ s.color }};flex:none"></span><span style="flex:1;color:var(--ts)">{{ s.label }}</span><span class="tn" style="font-weight:600">{{ s.pct }}</span></div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+
+          <div style="background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:18px;padding:20px">
+            <span style="font-size:14px;font-weight:600">Market Indices</span>
+            <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:11px;margin-top:14px;perspective:900px">
+              <sc-for list="{{ ch.indices }}" as="ix" hint-placeholder-count="5">
+                <div style="background:linear-gradient(170deg,rgba(255,255,255,.045),rgba(255,255,255,0) 50%),var(--panel2);box-shadow:var(--e1);border:1px solid var(--line);border-radius:13px;padding:12px 12px 8px;transform:translateZ(0);transition:transform .3s cubic-bezier(.2,.7,.3,1),box-shadow .3s,border-color .3s" style-hover="transform:translateZ(18px) rotateX(3deg);box-shadow:var(--e3);border-color:var(--line2)">
+                  <div style="font-size:11px;color:var(--ts);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ ix.name }}</div>
+                  <div class="tn" style="font-size:14.5px;font-weight:700;margin-top:3px">{{ ix.price }}</div>
+                  <div class="tn" style="font-size:11.5px;font-weight:600;color:{{ ix.color }};margin-bottom:5px">{{ ix.chgStr }}</div>
+                  <svg viewBox="0 0 88 34" preserveAspectRatio="none" style="width:100%;height:26px"><path d="{{ ix.sparkD }}" fill="none" stroke="{{ ix.color }}" stroke-width="2" stroke-linecap="round"/></svg>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+        <div style="background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:18px;padding:20px;display:flex;gap:22px;flex-wrap:wrap">
+          <div style="flex:1 1 300px;min-width:0;display:flex;flex-direction:column">
+            <div style="display:flex;align-items:baseline;justify-content:space-between">
+              <span style="font-size:14px;font-weight:600">Global Markets</span>
+              <span style="font-size:10.5px;color:var(--tt);font-family:'Geist Mono',monospace">drag to rotate</span>
+            </div>
+            <div style="height:292px;margin-top:8px;position:relative">
+              <x-import component-from-global-scope="market-globe" from="./market-globe.js" autorotate="{{ globeAuto }}" hint-size="100%,100%"></x-import>
+            </div>
+          </div>
+          <div style="flex:1 1 232px;min-width:232px;display:flex;flex-direction:column;gap:9px;justify-content:center">
+              <div style="display:flex;align-items:center;gap:11px;padding:11px 13px;background:linear-gradient(170deg,rgba(255,255,255,.045),rgba(255,255,255,0) 50%),var(--panel2);box-shadow:var(--e1);border:1px solid var(--line);border-radius:12px">
+                <span style="width:7px;height:7px;border-radius:50%;flex:none;background:#34d399;box-shadow:0 0 0 3px rgba(52,211,153,.16)"></span>
+                <div style="flex:1;min-width:0"><div style="font-size:12.5px;font-weight:600">Mumbai · NSE</div><div style="font-size:10.5px;color:var(--tt)">Open · closes 15:30 IST</div></div>
+                <span class="tn" style="font-size:12px;font-weight:600;color:var(--green)">+0.56%</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:11px;padding:11px 13px;background:linear-gradient(170deg,rgba(255,255,255,.045),rgba(255,255,255,0) 50%),var(--panel2);box-shadow:var(--e1);border:1px solid var(--line);border-radius:12px">
+                <span style="width:7px;height:7px;border-radius:50%;flex:none;background:#34d399;box-shadow:0 0 0 3px rgba(52,211,153,.16)"></span>
+                <div style="flex:1;min-width:0"><div style="font-size:12.5px;font-weight:600">London · LSE</div><div style="font-size:10.5px;color:var(--tt)">Open · closes 21:30 IST</div></div>
+                <span class="tn" style="font-size:12px;font-weight:600;color:var(--green)">+0.18%</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:11px;padding:11px 13px;background:linear-gradient(170deg,rgba(255,255,255,.045),rgba(255,255,255,0) 50%),var(--panel2);box-shadow:var(--e1);border:1px solid var(--line);border-radius:12px">
+                <span style="width:7px;height:7px;border-radius:50%;flex:none;background:#fbbf24;box-shadow:0 0 0 3px rgba(251,191,36,.16)"></span>
+                <div style="flex:1;min-width:0"><div style="font-size:12.5px;font-weight:600">New York · NYSE</div><div style="font-size:10.5px;color:var(--tt)">Pre-open · opens 19:00 IST</div></div>
+                <span class="tn" style="font-size:12px;font-weight:600;color:var(--red)">−0.12%</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:11px;padding:11px 13px;background:linear-gradient(170deg,rgba(255,255,255,.045),rgba(255,255,255,0) 50%),var(--panel2);box-shadow:var(--e1);border:1px solid var(--line);border-radius:12px">
+                <span style="width:7px;height:7px;border-radius:50%;flex:none;background:#78829b;box-shadow:0 0 0 3px rgba(120,130,155,.14)"></span>
+                <div style="flex:1;min-width:0"><div style="font-size:12.5px;font-weight:600">Tokyo · TSE</div><div style="font-size:10.5px;color:var(--tt)">Closed · settled 11:30 IST</div></div>
+                <span class="tn" style="font-size:12px;font-weight:600;color:var(--ts)">+0.31%</span>
+              </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ===================== PORTFOLIO ===================== -->
+      <sc-if value="{{ isPf }}" hint-placeholder-val="{{ false }}">
+      <div class="fu" style="max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:18px">
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap">
+          <div><h1 style="margin:0;font-size:25px;font-weight:700;letter-spacing:-.03em">Portfolio</h1><p style="margin:5px 0 0;color:var(--ts);font-size:13.5px">Manage, analyze and simulate your wealth</p></div>
+          <div style="display:flex;gap:9px">
+            <button style="display:flex;align-items:center;gap:7px;padding:10px 15px;border-radius:11px;border:1px solid var(--line2);background:var(--panel2);color:var(--tp);font-size:13px;font-weight:600;cursor:pointer"><svg style="width:15px;height:15px"><use href="#i-upload"></use></svg>Import</button>
+            <button onClick="{{ openHolding }}" style="display:flex;align-items:center;gap:7px;padding:10px 15px;border-radius:11px;border:none;background:var(--violet);color:#fff;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 8px 22px -8px rgba(180,137,74,.55)"><svg style="width:15px;height:15px"><use href="#i-plus"></use></svg>Add Holding</button>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:13px;perspective:1000px">
+          <div style="background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:15px;padding:15px;transform:translateZ(0);transition:transform .3s cubic-bezier(.2,.7,.3,1),box-shadow .3s,border-color .3s" style-hover="transform:translateZ(24px) rotateX(3.5deg);box-shadow:var(--e3);border-color:var(--line2)"><div style="font-size:10.5px;color:var(--tt);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Total Value</div><div class="tn" style="font-size:20px;font-weight:700">{{ k.value }}</div></div>
+          <div style="background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:15px;padding:15px;transform:translateZ(0);transition:transform .3s cubic-bezier(.2,.7,.3,1),box-shadow .3s,border-color .3s" style-hover="transform:translateZ(24px) rotateX(3.5deg);box-shadow:var(--e3);border-color:var(--line2)"><div style="font-size:10.5px;color:var(--tt);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Invested</div><div class="tn" style="font-size:20px;font-weight:700">{{ k.cost }}</div></div>
+          <div style="background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:15px;padding:15px;transform:translateZ(0);transition:transform .3s cubic-bezier(.2,.7,.3,1),box-shadow .3s,border-color .3s" style-hover="transform:translateZ(24px) rotateX(3.5deg);box-shadow:var(--e3);border-color:var(--line2)"><div style="font-size:10.5px;color:var(--tt);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Total P&amp;L</div><div class="tn" style="font-size:20px;font-weight:700;color:var(--green)">{{ k.pnl }}</div></div>
+          <div style="background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:15px;padding:15px;transform:translateZ(0);transition:transform .3s cubic-bezier(.2,.7,.3,1),box-shadow .3s,border-color .3s" style-hover="transform:translateZ(24px) rotateX(3.5deg);box-shadow:var(--e3);border-color:var(--line2)"><div style="font-size:10.5px;color:var(--tt);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Return</div><div class="tn" style="font-size:20px;font-weight:700;color:var(--green);display:flex;align-items:center;gap:5px"><svg style="width:15px;height:15px"><use href="#i-tu"></use></svg>{{ k.pnlPct }}</div></div>
+          <div style="background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:15px;padding:15px;transform:translateZ(0);transition:transform .3s cubic-bezier(.2,.7,.3,1),box-shadow .3s,border-color .3s" style-hover="transform:translateZ(24px) rotateX(3.5deg);box-shadow:var(--e3);border-color:var(--line2)"><div style="font-size:10.5px;color:var(--tt);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Risk Level</div><div style="font-size:17px;font-weight:700;color:{{ risk.color }}">{{ risk.level }}</div></div>
+        </div>
+
+        <div style="display:flex;gap:2px;border-bottom:1px solid var(--line)">
+          <sc-for list="{{ pfTabs }}" as="t" hint-placeholder-count="5">
+            <div onClick="{{ t.go }}" style="position:relative;display:flex;align-items:center;gap:7px;padding:11px 15px;font-size:13px;font-weight:600;cursor:pointer;color:{{ t.fg }};white-space:nowrap"><svg style="width:15px;height:15px"><use href="{{ t.icon }}"></use></svg>{{ t.label }}<sc-if value="{{ t.active }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--violetl);border-radius:2px"></span></sc-if></div>
+          </sc-for>
+        </div>
+
+        <!-- holdings tab -->
+        <sc-if value="{{ pfHoldings }}" hint-placeholder-val="{{ true }}">
+        <div style="background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:16px;padding:6px 20px 8px">
+          <table style="width:100%;border-collapse:collapse">
+            <thead><tr style="text-align:left;color:var(--tt);font-size:11px;text-transform:uppercase;letter-spacing:.05em">
+              <th style="padding:14px 8px;font-weight:600">Stock</th><th style="padding:14px 8px;font-weight:600">Qty</th><th style="padding:14px 8px;font-weight:600">Buy</th><th style="padding:14px 8px;font-weight:600">Current</th><th style="padding:14px 8px;font-weight:600">Value</th><th style="padding:14px 8px;font-weight:600">P&amp;L</th><th style="padding:14px 8px;font-weight:600">Rec</th><th></th>
+            </tr></thead>
+            <tbody>
+              <sc-for list="{{ pf.holdings }}" as="h" hint-placeholder-count="6">
+                <tr style="border-top:1px solid var(--line)">
+                  <td style="padding:13px 8px"><div style="font-weight:600;font-size:13.5px">{{ h.symbol }}</div><div style="font-size:11.5px;color:var(--tt)">{{ h.name }}</div></td>
+                  <td class="tn" style="padding:13px 8px;font-size:13px">{{ h.qty }}</td>
+                  <td class="tn" style="padding:13px 8px;font-size:13px;color:var(--ts)">{{ h.buyStr }}</td>
+                  <td class="tn" style="padding:13px 8px;font-size:13px">{{ h.curStr }}</td>
+                  <td class="tn" style="padding:13px 8px;font-size:13px;font-weight:600">{{ h.valueStr }}</td>
+                  <td class="tn" style="padding:13px 8px;font-size:13px;font-weight:600;color:{{ h.pnlColor }}">{{ h.pnlStr }} <span style="font-size:11px;opacity:.8">({{ h.pctStr }})</span></td>
+                  <td style="padding:13px 8px"><span style="font-size:11px;font-weight:600;padding:3px 9px;border-radius:7px;color:{{ h.recFg }};background:{{ h.recBg }};border:1px solid {{ h.recBd }}">{{ h.rec }}</span></td>
+                  <td style="padding:13px 8px;text-align:right"><svg style="width:15px;height:15px;color:var(--tt);cursor:pointer"><use href="#i-aur"></use></svg></td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+        </sc-if>
+
+        <!-- analysis tab -->
+        <sc-if value="{{ pfAnalysis }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div style="background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:16px;padding:22px">
+            <div style="display:flex;align-items:center;gap:9px;margin-bottom:18px"><svg style="width:18px;height:18px;color:var(--violetl)"><use href="#i-shield"></use></svg><span style="font-size:15px;font-weight:600">Risk Analysis</span></div>
+            <div style="text-align:center;padding:6px 0 14px"><div style="font-size:30px;font-weight:800;color:{{ risk.color }}">{{ risk.level }}</div><div style="font-size:13px;color:var(--ts);margin-top:4px">Risk score {{ risk.score }}/100</div></div>
+            <svg viewBox="0 0 300 12" style="width:100%;height:12px"><defs><linearGradient id="riskg" x1="0" x2="1"><stop offset="0" stop-color="#34d399"/><stop offset="0.5" stop-color="#fbbf24"/><stop offset="1" stop-color="#f87171"/></linearGradient></defs><rect x="0" y="3" width="300" height="6" rx="3" fill="url(#riskg)" opacity="0.85"/><circle cx="{{ risk.markerX }}" cy="6" r="7" fill="#fff" stroke="#17171d" stroke-width="2"/></svg>
+            <div style="margin-top:16px;padding:13px 15px;background:var(--panel2);border-radius:12px;font-size:13px;line-height:1.55;color:var(--ts)">{{ risk.note }}</div>
+          </div>
+          <div style="background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:16px;padding:22px">
+            <div style="display:flex;align-items:center;gap:9px;margin-bottom:18px"><svg style="width:18px;height:18px;color:var(--cyan)"><use href="#i-area"></use></svg><span style="font-size:15px;font-weight:600">Projected Growth</span></div>
+            <div style="text-align:center;padding:6px 0 16px"><div style="font-size:13px;color:var(--ts)">Expected annual growth</div><div class="tn" style="font-size:30px;font-weight:800;color:var(--green);margin-top:4px">{{ risk.growthStr }}</div></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <div style="padding:14px;background:var(--panel2);border-radius:12px;text-align:center"><div style="font-size:11.5px;color:var(--tt)">1 Year</div><div class="tn" style="font-size:16px;font-weight:700;margin-top:4px">{{ pf.proj1 }}</div></div>
+              <div style="padding:14px;background:var(--panel2);border-radius:12px;text-align:center"><div style="font-size:11.5px;color:var(--tt)">5 Year</div><div class="tn" style="font-size:16px;font-weight:700;margin-top:4px">{{ pf.proj5 }}</div></div>
+            </div>
+          </div>
+        </div>
+        </sc-if>
+
+        <!-- simulations tab -->
+        <sc-if value="{{ pfSim }}" hint-placeholder-val="{{ false }}">
+        <div style="background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:16px;padding:22px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">
+            <div><div style="display:flex;align-items:center;gap:9px"><svg style="width:18px;height:18px;color:var(--cyan)"><use href="#i-area"></use></svg><span style="font-size:15px;font-weight:600">Wealth Simulation</span></div><p style="margin:6px 0 0;font-size:13px;color:var(--ts)">Projected portfolio value at {{ risk.growthStr }} annual growth</p></div>
+            <div style="display:flex;gap:3px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:3px">
+              <sc-for list="{{ simTabs }}" as="s" hint-placeholder-count="4"><span onClick="{{ s.go }}" style="font-size:12px;font-weight:600;padding:6px 12px;border-radius:7px;cursor:pointer;color:{{ s.fg }};background:{{ s.bg }}">{{ s.label }}</span></sc-for>
+            </div>
+          </div>
+          <div style="background:var(--panel2);border-radius:14px;padding:18px 18px 8px">
+            <div class="tn" style="font-size:22px;font-weight:700;margin-bottom:12px">{{ pf.simEnd }} <span style="font-size:13px;color:var(--green);font-weight:600">projected value</span></div>
+            <svg viewBox="0 0 680 210" preserveAspectRatio="none" style="width:100%;height:210px">
+              <defs><linearGradient id="simfill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9AA0AF" stop-opacity="0.32"/><stop offset="1" stop-color="#9AA0AF" stop-opacity="0"/></linearGradient></defs>
+              <path d="{{ pf.simArea }}" fill="url(#simfill)"/>
+              <path d="{{ pf.simLine }}" fill="none" stroke="#9AA0AF" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+        </sc-if>
+
+        <!-- watchlist / network / gainers / news fallback -->
+        <sc-if value="{{ pfOther }}" hint-placeholder-val="{{ false }}">
+        <div style="background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:16px;padding:54px;text-align:center">
+          <svg style="width:34px;height:34px;color:var(--tt);margin-bottom:12px"><use href="{{ pf.otherIcon }}"></use></svg>
+          <div style="font-size:16px;font-weight:600">{{ pf.otherTitle }}</div>
+          <p style="margin:7px auto 0;max-width:360px;font-size:13px;color:var(--ts);line-height:1.55">{{ pf.otherDesc }}</p>
+        </div>
+        </sc-if>
+      </div>
+      </sc-if>
+
+      <!-- ===================== EXPENSES ===================== -->
+      <sc-if value="{{ isEx }}" hint-placeholder-val="{{ false }}">
+      <div class="fu" style="max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:18px">
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap">
+          <div><h1 style="margin:0;font-size:25px;font-weight:700;letter-spacing:-.03em">Expenses</h1><p style="margin:5px 0 0;color:var(--ts);font-size:13.5px">Track and manage your spending</p></div>
+          <div style="display:flex;gap:9px">
+            <button style="display:flex;align-items:center;gap:7px;padding:10px 15px;border-radius:11px;border:1px solid var(--line2);background:var(--panel2);color:var(--tp);font-size:13px;font-weight:600;cursor:pointer"><svg style="width:15px;height:15px"><use href="#i-piggy"></use></svg>Set Budget</button>
+            <button onClick="{{ openExpense }}" style="display:flex;align-items:center;gap:7px;padding:10px 15px;border-radius:11px;border:none;background:var(--violet);color:#fff;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 8px 22px -8px rgba(180,137,74,.55)"><svg style="width:15px;height:15px"><use href="#i-plus"></use></svg>Add Expense</button>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;perspective:1000px">
+          <div style="background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:16px;padding:17px;transform:translateZ(0);transition:transform .3s cubic-bezier(.2,.7,.3,1),box-shadow .3s,border-color .3s" style-hover="transform:translateZ(30px) rotateX(4deg);box-shadow:var(--e3);border-color:var(--line2)"><div style="display:flex;justify-content:space-between;margin-bottom:11px"><span style="font-size:11px;color:var(--tt);font-weight:600;text-transform:uppercase;letter-spacing:.05em">Income</span><svg style="width:16px;height:16px;color:var(--green)"><use href="#i-tu"></use></svg></div><div class="tn" style="font-size:23px;font-weight:700;color:var(--green)">{{ k.income }}</div></div>
+          <div style="background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:16px;padding:17px;transform:translateZ(0);transition:transform .3s cubic-bezier(.2,.7,.3,1),box-shadow .3s,border-color .3s" style-hover="transform:translateZ(30px) rotateX(4deg);box-shadow:var(--e3);border-color:var(--line2)"><div style="display:flex;justify-content:space-between;margin-bottom:11px"><span style="font-size:11px;color:var(--tt);font-weight:600;text-transform:uppercase;letter-spacing:.05em">Budget</span><svg style="width:16px;height:16px;color:var(--violetl)"><use href="#i-wallet"></use></svg></div><div class="tn" style="font-size:23px;font-weight:700">{{ k.budget }}</div></div>
+          <div style="background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:16px;padding:17px;transform:translateZ(0);transition:transform .3s cubic-bezier(.2,.7,.3,1),box-shadow .3s,border-color .3s" style-hover="transform:translateZ(30px) rotateX(4deg);box-shadow:var(--e3);border-color:var(--line2)">
+            <div style="display:flex;justify-content:space-between;margin-bottom:11px"><span style="font-size:11px;color:var(--tt);font-weight:600;text-transform:uppercase;letter-spacing:.05em">Spent</span><svg style="width:16px;height:16px;color:var(--cyan)"><use href="#i-receipt"></use></svg></div>
+            <div class="tn" style="font-size:23px;font-weight:700">{{ k.spent }}</div>
+            <div style="margin-top:10px;height:6px;border-radius:3px;background:#1a1a21;box-shadow:inset 0 1px 3px rgba(0,0,0,.7);overflow:hidden"><div style="height:100%;border-radius:3px;width:{{ ex.usedW }};background:var(--violet);box-shadow:inset 0 1px 0 rgba(255,255,255,.32)"></div></div>
+            <div style="font-size:11px;color:var(--tt);margin-top:6px">{{ ex.usedPct }} of budget</div>
+          </div>
+          <div style="background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:16px;padding:17px;transform:translateZ(0);transition:transform .3s cubic-bezier(.2,.7,.3,1),box-shadow .3s,border-color .3s" style-hover="transform:translateZ(30px) rotateX(4deg);box-shadow:var(--e3);border-color:var(--line2)"><div style="display:flex;justify-content:space-between;margin-bottom:11px"><span style="font-size:11px;color:var(--tt);font-weight:600;text-transform:uppercase;letter-spacing:.05em">Remaining</span><svg style="width:16px;height:16px;color:var(--green)"><use href="#i-tu"></use></svg></div><div class="tn" style="font-size:23px;font-weight:700;color:var(--green)">{{ k.remaining }}</div><div style="font-size:11.5px;color:var(--ts);margin-top:6px">left to spend</div></div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:16px">
+          <div style="background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:18px;padding:20px">
+            <span style="font-size:14px;font-weight:600">Spending by Category</span>
+            <div style="display:flex;flex-direction:column;gap:14px;margin-top:16px">
+              <sc-for list="{{ ex.cats }}" as="c" hint-placeholder-count="5">
+                <div>
+                  <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><div style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:{{ c.bg }}"><svg style="width:15px;height:15px;color:{{ c.color }}"><use href="{{ c.icon }}"></use></svg></div><span style="flex:1;font-size:13px;font-weight:500">{{ c.name }}</span><span class="tn" style="font-size:13px;font-weight:600">{{ c.amtStr }}</span><span class="tn" style="font-size:11.5px;color:var(--tt);width:38px;text-align:right">{{ c.pctStr }}</span></div>
+                  <div style="height:6px;border-radius:3px;background:#1a1a21;box-shadow:inset 0 1px 3px rgba(0,0,0,.7);overflow:hidden"><div style="height:100%;border-radius:3px;width:{{ c.barW }};background:{{ c.color }};box-shadow:inset 0 1px 0 rgba(255,255,255,.32),0 0 10px -2px rgba(0,0,0,.4)"></div></div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:18px;padding:20px;display:flex;flex-direction:column;align-items:center;justify-content:center">
+            <span style="align-self:flex-start;font-size:14px;font-weight:600">Budget Used</span>
+            <svg viewBox="0 0 140 140" style="width:168px;height:168px;margin:14px 0">
+              <circle cx="70" cy="70" r="56" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="14"/>
+              <circle cx="70" cy="70" r="56" fill="none" stroke="url(#eqline)" stroke-width="14" stroke-linecap="round" stroke-dasharray="{{ ex.ringDash }}" stroke-dashoffset="{{ ex.ringOff }}" transform="rotate(-90 70 70)"/>
+              <text x="70" y="66" text-anchor="middle" fill="#f4f5fb" font-size="27" font-weight="800" font-family="Geist">{{ ex.usedPct }}</text>
+              <text x="70" y="86" text-anchor="middle" fill="#98a1b6" font-size="10.5" font-family="Geist">of budget spent</text>
+            </svg>
+            <div style="font-size:13px;color:var(--ts);text-align:center">{{ k.remaining }} left · {{ ex.daysLeft }} days to month end</div>
+          </div>
+        </div>
+
+        <div style="background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:18px;padding:20px">
+          <span style="font-size:14px;font-weight:600">Recent Expenses</span>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
+            <sc-for list="{{ ex.recent }}" as="e" hint-placeholder-count="6">
+              <div style="display:flex;align-items:center;gap:13px;padding:12px 14px;background:var(--panel2);border-radius:13px">
+                <div style="width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none;background:{{ e.bg }}"><svg style="width:17px;height:17px;color:{{ e.color }}"><use href="{{ e.icon }}"></use></svg></div>
+                <div style="flex:1;min-width:0"><div style="font-size:13.5px;font-weight:500">{{ e.desc }}</div><div style="font-size:11.5px;color:var(--tt)">{{ e.cat }} · {{ e.date }}</div></div>
+                <div class="tn" style="font-size:14px;font-weight:600">−{{ e.amtStr }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ===================== AI ADVISOR ===================== -->
+      <sc-if value="{{ isAi }}" hint-placeholder-val="{{ false }}">
+      <div class="fu" style="max-width:940px;margin:0 auto;height:calc(100vh - 130px);display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div style="display:flex;align-items:center;gap:12px"><div style="width:38px;height:38px;border-radius:12px;background:rgba(180,137,74,.14);display:flex;align-items:center;justify-content:center"><svg style="width:20px;height:20px;color:var(--violetl)"><use href="#i-bot"></use></svg></div><div><h1 style="margin:0;font-size:20px;font-weight:700;letter-spacing:-.02em">AI Financial Advisor</h1><p style="margin:3px 0 0;font-size:12.5px;color:var(--ts)">Your personal wealth &amp; expense analyst</p></div></div>
+          <button onClick="{{ clearChat }}" style="display:flex;align-items:center;gap:7px;padding:9px 14px;border-radius:11px;border:1px solid var(--line2);background:var(--panel2);color:var(--tp);font-size:12.5px;font-weight:600;cursor:pointer"><svg style="width:14px;height:14px"><use href="#i-refresh"></use></svg>New Chat</button>
+        </div>
+
+        <div style="flex:1;min-height:0;background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:18px;display:flex;flex-direction:column;overflow:hidden">
+          <div class="nsb" style="flex:1;overflow-y:auto;padding:22px;display:flex;flex-direction:column;gap:16px">
+            <sc-if value="{{ ai.empty }}" hint-placeholder-val="{{ true }}">
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+                <div style="width:60px;height:60px;border-radius:18px;background:var(--violet);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px -8px rgba(180,137,74,.55);margin-bottom:20px"><svg style="width:30px;height:30px;color:#fff"><use href="#i-sparkles"></use></svg></div>
+                <h2 style="margin:0;font-size:19px;font-weight:700">How can I help you today?</h2>
+                <p style="margin:8px 0 22px;max-width:420px;font-size:13.5px;color:var(--ts);line-height:1.6">I can analyze your portfolio, track spending habits, surface market insights, and help you save more.</p>
+                <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:9px;max-width:560px">
+                  <sc-for list="{{ ai.prompts }}" as="p" hint-placeholder-count="5"><button onClick="{{ p.go }}" style="padding:9px 15px;border-radius:22px;border:1px solid var(--line2);background:var(--panel2);color:var(--ts);font-size:12.5px;font-weight:500;cursor:pointer">{{ p.text }}</button></sc-for>
+                </div>
+              </div>
+            </sc-if>
+            <sc-for list="{{ ai.messages }}" as="m" hint-placeholder-count="0">
+              <div style="display:flex;gap:11px;flex-direction:{{ m.dir }}">
+                <div style="width:32px;height:32px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;background:{{ m.avatarBg }}"><svg style="width:16px;height:16px;color:#fff"><use href="{{ m.avatar }}"></use></svg></div>
+                <div style="max-width:74%;padding:12px 15px;border-radius:16px;font-size:13.5px;line-height:1.6;background:{{ m.bubbleBg }};border:1px solid {{ m.bubbleBd }};color:{{ m.textColor }};white-space:pre-wrap">{{ m.content }}</div>
+              </div>
+            </sc-for>
+            <sc-if value="{{ ai.loading }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;gap:11px"><div style="width:32px;height:32px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;background:var(--violet)"><svg style="width:16px;height:16px;color:#fff"><use href="#i-bot"></use></svg></div><div style="padding:14px 16px;border-radius:16px;background:var(--panel2);display:flex;gap:5px"><span style="width:7px;height:7px;border-radius:50%;background:var(--violetl);animation:bd 1.2s infinite"></span><span style="width:7px;height:7px;border-radius:50%;background:var(--violetl);animation:bd 1.2s infinite .2s"></span><span style="width:7px;height:7px;border-radius:50%;background:var(--violetl);animation:bd 1.2s infinite .4s"></span></div></div>
+            </sc-if>
+          </div>
+          <div style="border-top:1px solid var(--line);padding:14px;display:flex;gap:11px">
+            <input value="{{ ai.input }}" onInput="{{ onChatInput }}" onKeyDown="{{ onChatKey }}" placeholder="Ask about your portfolio or spending…" style="flex:1;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px 15px;color:var(--tp);font-size:13.5px" />
+            <button onClick="{{ sendChat }}" style="width:46px;flex:none;border-radius:12px;border:none;background:var(--violet);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center"><svg style="width:17px;height:17px"><use href="#i-send"></use></svg></button>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ===================== AI COUNCIL ===================== -->
+      <sc-if value="{{ isCo }}" hint-placeholder-val="{{ false }}">
+      <div class="fu" style="max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:18px">
+        <div style="display:flex;align-items:center;gap:12px"><div style="width:38px;height:38px;border-radius:12px;background:rgba(180,137,74,.14);display:flex;align-items:center;justify-content:center"><svg style="width:20px;height:20px;color:var(--violetl)"><use href="#i-landmark"></use></svg></div><div><h1 style="margin:0;font-size:20px;font-weight:700;letter-spacing:-.02em">AI Council</h1><p style="margin:3px 0 0;font-size:12.5px;color:var(--ts)">Five expert personas debate your question, moderated for a final verdict</p></div></div>
+
+        <div style="display:flex;gap:3px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:4px;width:fit-content">
+          <button onClick="{{ coDebate }}" style="display:flex;align-items:center;gap:7px;padding:9px 16px;border-radius:9px;border:none;cursor:pointer;font-size:13px;font-weight:600;color:{{ co.debateFg }};background:{{ co.debateBg }}"><svg style="width:15px;height:15px"><use href="#i-msg"></use></svg>Expert Debate</button>
+          <button onClick="{{ coReview }}" style="display:flex;align-items:center;gap:7px;padding:9px 16px;border-radius:9px;border:none;cursor:pointer;font-size:13px;font-weight:600;color:{{ co.reviewFg }};background:{{ co.reviewBg }}"><svg style="width:15px;height:15px"><use href="#i-scroll"></use></svg>Portfolio Review</button>
+        </div>
+
+        <div style="background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:16px;padding:22px">
+          <sc-if value="{{ co.isDebate }}" hint-placeholder-val="{{ true }}">
+            <h2 style="margin:0;font-size:16px;font-weight:600">Ask the council</h2>
+            <p style="margin:6px 0 15px;font-size:13px;color:var(--ts)">The council automatically gets your portfolio &amp; spending context.</p>
+            <div style="display:flex;gap:10px">
+              <input value="{{ co.question }}" onInput="{{ onCoInput }}" placeholder="e.g. Should I invest more in mutual funds this year?" style="flex:1;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px 15px;color:var(--tp);font-size:13.5px" />
+              <button onClick="{{ coRun }}" style="display:flex;align-items:center;gap:7px;padding:12px 18px;border-radius:12px;border:none;background:var(--violet);color:#fff;font-size:13px;font-weight:600;cursor:pointer"><svg style="width:16px;height:16px"><use href="#i-sparkles"></use></svg>Convene</button>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:14px">
+              <sc-for list="{{ co.suggestions }}" as="q" hint-placeholder-count="3"><button onClick="{{ q.go }}" style="padding:7px 13px;border-radius:20px;border:1px solid var(--line2);background:var(--panel2);color:var(--ts);font-size:12px;cursor:pointer">{{ q.text }}</button></sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ co.isReview }}" hint-placeholder-val="{{ false }}">
+            <h2 style="margin:0;font-size:16px;font-weight:600">Portfolio review board</h2>
+            <p style="margin:6px 0 15px;font-size:13px;color:var(--ts)">All five members grade your portfolio health, risk, allocations and spending, then the moderator delivers a combined verdict.</p>
+            <button onClick="{{ coRun }}" style="display:flex;align-items:center;gap:7px;padding:12px 18px;border-radius:12px;border:none;background:var(--violet);color:#fff;font-size:13px;font-weight:600;cursor:pointer"><svg style="width:16px;height:16px"><use href="#i-refresh"></use></svg>Run Portfolio Review</button>
+          </sc-if>
+        </div>
+
+        <sc-if value="{{ co.loading }}" hint-placeholder-val="{{ false }}">
+          <div style="background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:16px;padding:40px;text-align:center">
+            <div style="width:56px;height:56px;border-radius:50%;background:var(--violet);display:flex;align-items:center;justify-content:center;margin:0 auto 16px"><svg style="width:26px;height:26px;color:#fff;animation:spin 3s linear infinite"><use href="#i-landmark"></use></svg></div>
+            <h3 style="margin:0;font-size:16px;font-weight:600">Council in session…</h3>
+            <p style="margin:8px auto 0;max-width:380px;font-size:13px;color:var(--ts)">Five experts are deliberating in parallel. This usually takes about a minute.</p>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ co.hasResult }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div style="background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:14px;padding:18px"><div style="font-size:12px;color:var(--tt);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px">The question</div><div style="font-size:15px;font-weight:500">{{ co.result.question }}</div></div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+              <sc-for list="{{ co.result.members }}" as="m" hint-placeholder-count="5">
+                <div style="background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:15px;padding:17px">
+                  <div style="display:flex;align-items:center;gap:10px;margin-bottom:13px"><div style="width:34px;height:34px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;background:{{ m.color }}"><svg style="width:16px;height:16px;color:#fff"><use href="{{ m.icon }}"></use></svg></div><div><div style="font-size:13px;font-weight:600">{{ m.name }}</div><div style="font-size:11px;color:var(--tt)">{{ m.role }}</div></div></div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span style="font-size:13px;font-weight:600;color:{{ m.posColor }}">{{ m.position }}</span><span style="font-size:11px;color:var(--tt)">conf {{ m.conf }}%</span></div>
+                  <div style="height:5px;border-radius:3px;background:#1a1a21;box-shadow:inset 0 1px 3px rgba(0,0,0,.7);overflow:hidden;margin-bottom:11px"><div style="height:100%;border-radius:3px;width:{{ m.confW }};background:{{ m.confColor }}"></div></div>
+                  <p style="margin:0 0 10px;font-size:12.5px;line-height:1.55;color:var(--ts)">{{ m.reasoning }}</p>
+                  <p style="margin:0;padding-top:10px;border-top:1px solid var(--line);font-size:12.5px;color:var(--violetl)"><span style="font-weight:600">Rec:</span> {{ m.rec }}</p>
+                </div>
+              </sc-for>
+            </div>
+            <div style="background:linear-gradient(160deg,rgba(180,137,74,.10),var(--panel));border:1px solid rgba(180,137,74,.32);border-radius:16px;padding:22px">
+              <div style="display:flex;align-items:center;gap:9px;margin-bottom:13px"><svg style="width:18px;height:18px;color:var(--violetl)"><use href="#i-sparkles"></use></svg><span style="font-size:16px;font-weight:700">Moderator's Verdict</span></div>
+              <p style="margin:0 0 18px;font-size:14px;line-height:1.65;color:var(--tp)">{{ co.result.verdict }}</p>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+                <div><div style="font-size:12.5px;font-weight:600;color:var(--green);margin-bottom:8px">Consensus</div><div style="display:flex;flex-direction:column;gap:7px"><sc-for list="{{ co.result.consensus }}" as="c" hint-placeholder-count="3"><div style="display:flex;gap:8px;font-size:12.5px;color:var(--ts);line-height:1.5"><svg style="width:15px;height:15px;color:var(--green);flex:none;margin-top:1px"><use href="#i-check"></use></svg>{{ c.text }}</div></sc-for></div></div>
+                <div><div style="font-size:12.5px;font-weight:600;color:var(--amber);margin-bottom:8px">Disagreements</div><div style="display:flex;flex-direction:column;gap:7px"><sc-for list="{{ co.result.disagreements }}" as="d" hint-placeholder-count="2"><div style="display:flex;gap:8px;font-size:12.5px;color:var(--ts);line-height:1.5"><svg style="width:15px;height:15px;color:var(--amber);flex:none;margin-top:1px"><use href="#i-help"></use></svg><span><strong style="color:var(--tp)">{{ d.topic }}:</strong> {{ d.detail }}</span></div></sc-for></div></div>
+              </div>
+              <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--line)"><div style="font-size:12.5px;font-weight:600;color:var(--violetl);margin-bottom:8px">Top actions for you</div><div style="display:flex;flex-direction:column;gap:7px"><sc-for list="{{ co.result.actions }}" as="a" hint-placeholder-count="3"><div style="display:flex;gap:9px;font-size:12.5px;color:var(--ts);line-height:1.5"><span style="color:var(--violetl);font-weight:700;flex:none">{{ a.n }}</span>{{ a.text }}</div></sc-for></div></div>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+      </sc-if>
+
+      <!-- ===================== PLACEHOLDER (research/documents/alerts/settings) ===================== -->
+      <sc-if value="{{ isStub }}" hint-placeholder-val="{{ false }}">
+      <div class="fu" style="max-width:1180px;margin:0 auto">
+        <h1 style="margin:0 0 22px;font-size:25px;font-weight:700;letter-spacing:-.03em">{{ stub.title }}</h1>
+        <div style="background:linear-gradient(168deg,rgba(255,255,255,.05),rgba(255,255,255,0) 45%),var(--panel);box-shadow:var(--e2);border:1px solid var(--line);border-radius:18px;padding:64px;text-align:center">
+          <div style="width:56px;height:56px;border-radius:16px;background:var(--panel2);display:flex;align-items:center;justify-content:center;margin:0 auto 16px"><svg style="width:26px;height:26px;color:var(--violetl)"><use href="{{ stub.icon }}"></use></svg></div>
+          <div style="font-size:17px;font-weight:600">{{ stub.title }} — in the redesign backlog</div>
+          <p style="margin:8px auto 0;max-width:400px;font-size:13.5px;color:var(--ts);line-height:1.6">{{ stub.desc }}</p>
+        </div>
+      </div>
+      </sc-if>
+
+    </main>
+  </div>
+
+  <!-- ===================== ADD EXPENSE MODAL ===================== -->
+  <sc-if value="{{ showExpense }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeExpense }}" style="position:fixed;inset:0;z-index:50;background:rgba(4,4,10,.66);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;padding:20px">
+    <div onClick="{{ stop }}" class="fu" style="width:100%;max-width:440px;background:var(--panel);border:1px solid var(--line2);border-radius:20px;padding:24px;box-shadow:0 30px 70px -20px rgba(0,0,0,.8)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px"><h2 style="margin:0;font-size:18px;font-weight:700">Add Expense</h2><button onClick="{{ closeExpense }}" style="width:32px;height:32px;border-radius:9px;border:none;background:var(--panel2);cursor:pointer;display:flex;align-items:center;justify-content:center"><svg style="width:16px;height:16px;color:var(--ts)"><use href="#i-x"></use></svg></button></div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div><label style="display:block;font-size:12.5px;color:var(--ts);margin-bottom:7px">Amount</label><input value="{{ form.amount }}" onInput="{{ onAmount }}" type="number" placeholder="500" style="width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px 15px;color:var(--tp);font-size:14px" /></div>
+        <div><label style="display:block;font-size:12.5px;color:var(--ts);margin-bottom:7px">Category</label><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px"><sc-for list="{{ form.cats }}" as="c" hint-placeholder-count="6"><button onClick="{{ c.go }}" style="padding:11px 6px;border-radius:11px;cursor:pointer;text-align:center;background:{{ c.bg }};border:1px solid {{ c.bd }}"><svg style="width:17px;height:17px;color:{{ c.color }}"><use href="{{ c.icon }}"></use></svg><div style="font-size:11px;color:var(--ts);margin-top:4px">{{ c.name }}</div></button></sc-for></div></div>
+        <div><label style="display:block;font-size:12.5px;color:var(--ts);margin-bottom:7px">Description</label><input value="{{ form.desc }}" onInput="{{ onDesc }}" placeholder="What did you spend on?" style="width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px 15px;color:var(--tp);font-size:14px" /></div>
+        <button onClick="{{ addExpense }}" style="margin-top:4px;padding:13px;border-radius:12px;border:none;background:var(--violet);color:#fff;font-size:14px;font-weight:600;cursor:pointer">Add Expense</button>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ===================== ADD HOLDING MODAL ===================== -->
+  <sc-if value="{{ showHolding }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeHolding }}" style="position:fixed;inset:0;z-index:50;background:rgba(4,4,10,.66);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;padding:20px">
+    <div onClick="{{ stop }}" class="fu" style="width:100%;max-width:440px;background:var(--panel);border:1px solid var(--line2);border-radius:20px;padding:24px;box-shadow:0 30px 70px -20px rgba(0,0,0,.8)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px"><h2 style="margin:0;font-size:18px;font-weight:700">Add Holding</h2><button onClick="{{ closeHolding }}" style="width:32px;height:32px;border-radius:9px;border:none;background:var(--panel2);cursor:pointer;display:flex;align-items:center;justify-content:center"><svg style="width:16px;height:16px;color:var(--ts)"><use href="#i-x"></use></svg></button></div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div><label style="display:block;font-size:12.5px;color:var(--ts);margin-bottom:7px">Search stock</label><div style="position:relative;display:flex;align-items:center"><svg style="width:16px;height:16px;color:var(--tt);position:absolute;left:13px"><use href="#i-search"></use></svg><input placeholder="RELIANCE, TCS, INFY…" style="width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px 15px 12px 38px;color:var(--tp);font-size:14px" /></div></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div><label style="display:block;font-size:12.5px;color:var(--ts);margin-bottom:7px">Quantity</label><input type="number" placeholder="10" style="width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px 15px;color:var(--tp);font-size:14px" /></div><div><label style="display:block;font-size:12.5px;color:var(--ts);margin-bottom:7px">Buy price</label><input type="number" placeholder="2100" style="width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px 15px;color:var(--tp);font-size:14px" /></div></div>
+        <button onClick="{{ closeHolding }}" style="margin-top:4px;padding:13px;border-radius:12px;border:none;background:var(--violet);color:#fff;font-size:14px;font-weight:600;cursor:pointer">Add Holding</button>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:&quot;820px&quot;},&quot;startInPerspective&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;3D&quot;},&quot;globeAutorotate&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;3D&quot;}}">
+class Component extends DCLogic {
+  state = {
+    screen: 'dashboard', iso: false, currency: 'INR', pfTab: 'holdings', simYears: 5,
+    showExpense: false, showHolding: false,
+    fAmount: '', fCat: 'Food', fDesc: '',
+    spent: 47600,
+    catAmt: { Housing: 18000, Food: 12400, Shopping: 8200, Transport: 5400, Entertainment: 3600 },
+    recent: [
+      { desc: 'Grocery run — More Supermarket', cat: 'Food', amt: 2450, date: 'Aug 17' },
+      { desc: 'Uber to airport', cat: 'Transport', amt: 680, date: 'Aug 16' },
+      { desc: 'Amazon — wireless headphones', cat: 'Shopping', amt: 3299, date: 'Aug 15' },
+      { desc: 'Movie night — PVR', cat: 'Entertainment', amt: 900, date: 'Aug 12' },
+      { desc: 'Electricity bill', cat: 'Housing', amt: 1840, date: 'Aug 08' },
+      { desc: 'Rent — August', cat: 'Housing', amt: 18000, date: 'Aug 03' },
+    ],
+    messages: [], chatInput: '', chatLoading: false,
+    coMode: 'debate', coQuestion: '', coLoading: false, coResult: null,
+  };
+
+  budget = { income: 120000, budget: 60000 };
+
+  holdings = [
+    { symbol: 'RELIANCE', name: 'Reliance Industries', qty: 40, buy: 2100, cur: 2580, growth: 12, rec: 'Buy' },
+    { symbol: 'INFY', name: 'Infosys', qty: 50, buy: 1400, cur: 1480, growth: 9, rec: 'Hold' },
+    { symbol: 'TCS', name: 'Tata Consultancy', qty: 15, buy: 3600, cur: 3950, growth: 10, rec: 'Hold' },
+    { symbol: 'HDFCBANK', name: 'HDFC Bank', qty: 30, buy: 1550, cur: 1720, growth: 11, rec: 'Buy' },
+    { symbol: 'ICICIBANK', name: 'ICICI Bank', qty: 45, buy: 900, cur: 1050, growth: 13, rec: 'Buy' },
+    { symbol: 'BHARTIARTL', name: 'Bharti Airtel', qty: 25, buy: 1050, cur: 1280, growth: 15, rec: 'Strong Buy' },
+  ];
+
+  equity = [298, 305, 301, 313, 322, 318, 331, 340, 336, 349, 358, 367.3].map(v => v * 1000);
+
+  indices = [
+    { name: 'NIFTY 50', price: 22450, chg: 0.56, ccy: 'INR', spark: [10, 12, 11, 14, 13, 16, 15, 18, 17, 20, 22, 24] },
+    { name: 'SENSEX', price: 74230, chg: 0.51, ccy: 'INR', spark: [12, 13, 12, 15, 16, 15, 18, 19, 18, 21, 22, 24] },
+    { name: 'DOW', price: 38520, chg: -0.12, ccy: 'USD', spark: [24, 22, 23, 21, 22, 19, 20, 18, 19, 17, 16, 15] },
+    { name: 'S&P 500', price: 5095, chg: 0.24, ccy: 'USD', spark: [14, 15, 14, 16, 15, 17, 16, 18, 19, 18, 20, 21] },
+    { name: 'NASDAQ', price: 16245, chg: 0.53, ccy: 'USD', spark: [12, 14, 13, 15, 17, 16, 19, 18, 21, 20, 23, 25] },
+  ];
+
+  catMeta = {
+    Food: { color: '#34d399', icon: '#i-utensils' }, Transport: { color: '#fbbf24', icon: '#i-car' },
+    Shopping: { color: '#B4894A', icon: '#i-bag' }, Entertainment: { color: '#f87171', icon: '#i-game' },
+    Housing: { color: '#9AA0AF', icon: '#i-home' }, Utilities: { color: '#f97316', icon: '#i-receipt' },
+  };
+
+  // ---------- perspective mode ----------
+  componentDidMount() { if (this.props.startInPerspective) this.setState({ iso: true }, () => this.applyIso()); }
+  toggleIso = () => this.setState({ iso: !this.state.iso }, () => this.applyIso());
+  els() {
+    const r = document.querySelector('.root');
+    return { r, st: document.querySelector('.stage'), sd: r && r.querySelector('aside') };
+  }
+  tilt(ry, rx) {
+    const r = document.querySelector('.root');
+    if (r) r.style.transform = `rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) rotateZ(.5deg) scale(.94)`;
+  }
+  applyIso() {
+    const { r, st, sd } = this.els();
+    if (!r) return;
+    r.style.transitionDuration = '.7s';
+    if (this.state.iso) {
+      r.style.width = '90%'; r.style.height = '86vh'; r.style.borderRadius = '20px';
+      r.style.boxShadow = '0 0 0 1px rgba(255,255,255,.07),0 90px 130px -50px rgba(0,0,0,.95)';
+      if (st) st.style.background = 'radial-gradient(ellipse 70% 55% at 50% 118%,rgba(180,137,74,.14),transparent),#131318';
+      if (sd) sd.style.transform = 'translateZ(70px)';
+      this.tilt(-15, 10);
+    } else {
+      r.style.width = '100%'; r.style.height = '100vh'; r.style.borderRadius = '0';
+      r.style.boxShadow = 'none'; r.style.transform = 'none';
+      if (st) st.style.background = '#131318';
+      if (sd) sd.style.transform = 'none';
+    }
+  }
+  onStageMove = (e) => {
+    if (!this.state.iso) return;
+    const { r, st } = this.els();
+    if (!st || !r) return;
+    const b = st.getBoundingClientRect();
+    const nx = (e.clientX - b.left) / b.width - .5, ny = (e.clientY - b.top) / b.height - .5;
+    r.style.transitionDuration = '.2s';
+    this.tilt(-15 + nx * 15, 10 - ny * 11);
+  };
+  onStageLeave = () => {
+    if (!this.state.iso) return;
+    const { r } = this.els();
+    if (r) r.style.transitionDuration = '.7s';
+    this.tilt(-15, 10);
+  };
+
+  // ---------- currency ----------
+  rate() { return this.state.currency === 'USD' ? 1 / 83 : 1; }
+  money(inr, dec) {
+    const v = inr * this.rate();
+    const loc = this.state.currency === 'USD' ? 'en-US' : 'en-IN';
+    const sym = this.state.currency === 'USD' ? '$' : '₹';
+    return sym + v.toLocaleString(loc, { maximumFractionDigits: dec ?? 0, minimumFractionDigits: 0 });
+  }
+
+  // ---------- geometry ----------
+  line(vals, w, h, py) {
+    const n = vals.length, mn = Math.min(...vals), mx = Math.max(...vals), rng = (mx - mn) || 1;
+    const pts = vals.map((v, i) => [(i / (n - 1)) * w, h - py - ((v - mn) / rng) * (h - 2 * py)]);
+    let d = `M ${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`;
+    for (let i = 1; i < pts.length; i++) {
+      const [x0, y0] = pts[i - 1], [x1, y1] = pts[i], cx = (x0 + x1) / 2;
+      d += ` C ${cx.toFixed(1)} ${y0.toFixed(1)} ${cx.toFixed(1)} ${y1.toFixed(1)} ${x1.toFixed(1)} ${y1.toFixed(1)}`;
+    }
+    return { d, pts };
+  }
+  shade(hex, f) {
+    const n = parseInt(hex.slice(1), 16);
+    return `rgb(${Math.round(((n >> 16) & 255) * f)},${Math.round(((n >> 8) & 255) * f)},${Math.round((n & 255) * f)})`;
+  }
+  donut(segs, r, sw) {
+    const C = 2 * Math.PI * r; let acc = 0;
+    return segs.map(s => {
+      const dash = s.frac * C;
+      const seg = { color: s.color, dash: `${dash.toFixed(1)} ${(C - dash).toFixed(1)}`, off: (-acc * C).toFixed(1) };
+      acc += s.frac; return seg;
+    });
+  }
+
+  // ---------- handlers ----------
+  go = (s) => () => this.setState({ screen: s });
+  setCcy = (c) => () => this.setState({ currency: c });
+  setTab = (t) => () => this.setState({ pfTab: t });
+  setSim = (y) => () => this.setState({ simYears: y });
+  stop = (e) => e.stopPropagation();
+  openExpense = () => this.setState({ showExpense: true });
+  closeExpense = () => this.setState({ showExpense: false });
+  openHolding = () => this.setState({ showHolding: true });
+  closeHolding = () => this.setState({ showHolding: false });
+  onAmount = (e) => this.setState({ fAmount: e.target.value });
+  onDesc = (e) => this.setState({ fDesc: e.target.value });
+  setFCat = (c) => () => this.setState({ fCat: c });
+  addExpense = () => {
+    const amt = parseFloat(this.state.fAmount);
+    if (!amt || amt <= 0) return;
+    const cat = this.state.fCat, desc = this.state.fDesc || cat + ' expense';
+    const catAmt = { ...this.state.catAmt, [cat]: (this.state.catAmt[cat] || 0) + amt };
+    this.setState({
+      showExpense: false, fAmount: '', fDesc: '', fCat: 'Food',
+      spent: this.state.spent + amt, catAmt,
+      recent: [{ desc, cat, amt, date: 'Today' }, ...this.state.recent],
+    });
+  };
+
+  onChatInput = (e) => this.setState({ chatInput: e.target.value });
+  onChatKey = (e) => { if (e.key === 'Enter') this.sendChat(); };
+  sendChat = () => {
+    const text = this.state.chatInput.trim();
+    if (!text || this.state.chatLoading) return;
+    this.send(text);
+  };
+  quick = (t) => () => { if (!this.state.chatLoading) this.send(t); };
+  send = (text) => {
+    this.setState({ messages: [...this.state.messages, { role: 'user', content: text }], chatInput: '', chatLoading: true });
+    clearTimeout(this._ct);
+    this._ct = setTimeout(() => {
+      this.setState({ messages: [...this.state.messages, { role: 'assistant', content: this.reply(text) }], chatLoading: false });
+    }, 850);
+  };
+  reply = (t) => {
+    const q = t.toLowerCase();
+    const m = (v) => this.money(v);
+    if (q.includes('portfolio') || q.includes('holding'))
+      return `Your portfolio is worth ${m(367300)} with an unrealised gain of ${m(46050)} (+14.3%). It's concentrated in large-cap Indian equities — Reliance alone is ~28% of the book. Growth is healthy, but you hold no hedges. Consider trimming Reliance and adding a small defensive sleeve.`;
+    if (q.includes('spend') || q.includes('save') || q.includes('budget') || q.includes('money'))
+      return `You've spent ${m(47600)} of your ${m(60000)} budget this month (79%). Housing and Food are your biggest lines. Three quick wins: cap discretionary Shopping at ${m(5000)}, automate a ${m(15000)} SIP on payday, and park idle cash in a liquid fund earning ~7%.`;
+    if (q.includes('stock') || q.includes('buy'))
+      return `Given your risk profile, Bharti Airtel (Strong Buy, +15% est.) and ICICI Bank (Buy, +13%) screen well. Both add diversification away from your IT-heavy holdings.`;
+    if (q.includes('p/e') || q.includes('pe ratio') || q.includes('ratio'))
+      return `The P/E ratio is share price divided by earnings per share. A high P/E means investors expect strong future growth; a low P/E can signal a bargain — or a struggling business. Always compare within the same sector.`;
+    return `I can analyse your portfolio, review your spending, suggest stocks, or explain any financial concept. Try one of the quick prompts, or ask me anything.`;
+  };
+  clearChat = () => this.setState({ messages: [], chatInput: '' });
+
+  setCoMode = (m) => () => this.setState({ coMode: m, coResult: null });
+  onCoInput = (e) => this.setState({ coQuestion: e.target.value });
+  coRun = () => {
+    if (this.state.coLoading) return;
+    const q = this.state.coMode === 'review'
+      ? 'Full portfolio & spending review'
+      : (this.state.coQuestion.trim() || 'Should I invest in gold right now?');
+    this.setState({ coLoading: true, coResult: null });
+    clearTimeout(this._cc);
+    this._cc = setTimeout(() => this.setState({ coLoading: false, coResult: this.council(this.state.coMode, q) }), 1100);
+  };
+  coAsk = (q) => () => { this.setState({ coQuestion: q }); setTimeout(() => this.coRun(), 0); };
+
+  council(mode, q) {
+    const members = [
+      { id: 'value', name: 'The Value Investor', role: 'Margin of safety', color: '#B4894A', icon: '#i-landmark', position: 'Cautious', conf: 62, reasoning: 'Gold pays no yield and looks fairly priced after its run. I would rather keep cash ready for genuine bargains.', rec: 'Cap gold at 5–8% of the book.' },
+      { id: 'growth', name: 'The Growth Analyst', role: 'Compounding & momentum', color: '#9AA0AF', icon: '#i-tu', position: 'Underweight', conf: 55, reasoning: 'Your equities compound at ~13%. Diverting capital to gold now dilutes that growth engine.', rec: 'Keep new money flowing into quality equities.' },
+      { id: 'risk', name: 'The Risk Manager', role: 'Drawdown control', color: '#fbbf24', icon: '#i-shield', position: 'Supportive', conf: 74, reasoning: 'A small gold sleeve is a real hedge — it holds up when equities sell off. Your book is 100% equity today.', rec: 'Add a 7–10% gold hedge via a low-cost ETF.' },
+      { id: 'tax', name: 'The Tax Advisor', role: 'After-tax returns', color: '#34d399', icon: '#i-scale', position: 'Neutral', conf: 60, reasoning: 'Sovereign Gold Bonds avoid capital-gains tax if held to maturity — a big edge over ETFs and physical gold.', rec: 'Prefer SGBs over ETFs for the tax break.' },
+      { id: 'contra', name: 'The Contrarian', role: 'Against the crowd', color: '#f87171', icon: '#i-help', position: 'Contrarian buy', conf: 48, reasoning: 'Everyone loves equities right now — exactly when a boring hedge earns its keep.', rec: 'Start a small position before the crowd rotates.' },
+    ];
+    if (mode === 'review') {
+      return {
+        question: q, members,
+        verdict: 'Your portfolio scores well on growth and quality but flags on concentration — Reliance is ~28% and the book is 100% equity. Spending is disciplined at 79% of budget. The board recommends trimming your largest position and adding a small defensive sleeve.',
+        consensus: ['Quality large-cap holdings with healthy +14% returns', 'Spending is well within budget this month', 'No debt or high-cost liabilities dragging returns'],
+        disagreements: [{ topic: 'Concentration', detail: 'Risk Manager wants Reliance under 20%; Growth is comfortable holding winners.' }, { topic: 'Cash', detail: 'Value wants a cash buffer; Growth says stay fully invested.' }],
+        actions: ['Trim Reliance to ~20% of the portfolio', 'Add a 7% gold or debt hedge for balance', 'Keep the monthly SIP running on autopilot'],
+      };
+    }
+    return {
+      question: q, members,
+      verdict: 'A modest gold allocation is reasonable as a hedge, not a growth bet. The panel converges on 7–10% via tax-efficient Sovereign Gold Bonds, funded gradually rather than in one lump.',
+      consensus: ['Gold is a hedge, not a return driver', 'Keep any allocation small (≈5–10%)', 'Your portfolio is 100% equity today — some diversification helps'],
+      disagreements: [{ topic: 'Size', detail: 'Risk Manager wants 7–10%; Value & Growth prefer ≤5%.' }, { topic: 'Timing', detail: 'Contrarian says start now; Growth says only with spare cash.' }],
+      actions: ['Open a position of ~7% via Sovereign Gold Bonds', 'Fund it over 3 months, not all at once', 'Re-review after your next equity purchase'],
+    };
+  }
+
+  // ---------- nav helper ----------
+  navItem(id, label, icon) {
+    const active = this.state.screen === id;
+    return {
+      id, label, icon, active,
+      go: this.go(id),
+      bg: active ? 'rgba(255,255,255,.06)' : 'transparent',
+      fg: active ? '#f4f5fb' : '#98a1b6',
+      ic: active ? '#D8B876' : '#5d6580',
+      fw: active ? 600 : 500,
+    };
+  }
+  pfTab(id, label, icon) {
+    const active = this.state.pfTab === id;
+    return { id, label, icon, active, go: this.setTab(id), fg: active ? '#f4f5fb' : '#5d6580' };
+  }
+
+  renderVals() {
+    const S = this.state, m = (v, d) => this.money(v, d);
+
+    // portfolio calc
+    const H = this.holdings.map(h => {
+      const value = h.qty * h.cur, cost = h.qty * h.buy, pnl = value - cost, pct = (h.cur - h.buy) / h.buy * 100, up = pnl >= 0;
+      const recMap = {
+        'Buy': ['#34d399', 'rgba(52,211,153,.12)', 'rgba(52,211,153,.3)'],
+        'Strong Buy': ['#34d399', 'rgba(52,211,153,.12)', 'rgba(52,211,153,.3)'],
+        'Hold': ['#fbbf24', 'rgba(251,191,36,.12)', 'rgba(251,191,36,.3)'],
+        'Sell': ['#f87171', 'rgba(248,113,113,.12)', 'rgba(248,113,113,.3)'],
+      };
+      const rc = recMap[h.rec] || recMap['Hold'];
+      return {
+        ...h, valueStr: m(value), buyStr: m(h.buy), curStr: m(h.cur),
+        pnlStr: (up ? '+' : '') + m(pnl), pctStr: (pct >= 0 ? '+' : '') + pct.toFixed(1) + '%',
+        pnlColor: up ? '#34d399' : '#f87171', recFg: rc[0], recBg: rc[1], recBd: rc[2],
+      };
+    });
+    const totalValue = H.reduce((a, h) => a + h.qty * h.cur, 0);
+    const totalCost = H.reduce((a, h) => a + h.qty * h.buy, 0);
+    const totalPnl = totalValue - totalCost, totalPct = totalPnl / totalCost * 100;
+
+    // allocation
+    const colors = ['#B4894A', '#9AA0AF', '#34d399', '#fbbf24', '#f87171', '#f472b6'];
+    const sorted = [...H].map((h, i) => ({ label: h.symbol, value: h.qty * h.cur, color: colors[i % 6] })).sort((a, b) => b.value - a.value);
+    const segs = sorted.map(s => ({ ...s, frac: s.value / totalValue }));
+    const donut = this.donut(segs, 52, 17);
+    const NL = 8;
+    const donutLayers = [];
+    for (let i = 0; i < NL; i++) {
+      const t = i / (NL - 1);
+      donutLayers.push({ z: (i * 2.3).toFixed(1), segs: donut.map(sg => ({ ...sg, color: this.shade(sg.color, 0.3 + 0.7 * t) })) });
+    }
+    const legend = segs.map(s => ({ label: s.label, color: s.color, pct: (s.frac * 100).toFixed(1) + '%' }));
+
+    // equity chart
+    const eq = this.line(this.equity, 700, 232, 16);
+    const last = eq.pts[eq.pts.length - 1];
+
+    // indices
+    const indices = this.indices.map(x => {
+      const lp = this.line(x.spark, 88, 34, 5);
+      const up = x.chg >= 0;
+      const priceStr = (x.ccy === 'USD' ? '' : '') + x.price.toLocaleString('en-IN');
+      return { name: x.name, price: priceStr, chgStr: (up ? '+' : '') + x.chg.toFixed(2) + '%', color: up ? '#34d399' : '#f87171', sparkD: lp.d };
+    });
+
+    // risk
+    const avgGrowth = H.reduce((a, h) => a + h.growth * h.qty * h.cur, 0) / totalValue;
+    const riskScore = 34;
+    const risk = {
+      level: 'Balanced', score: riskScore, color: '#34d399',
+      markerX: (riskScore / 100 * 300).toFixed(0),
+      growthStr: '+' + avgGrowth.toFixed(1) + '%',
+      note: 'A balanced book of quality large-caps with steady growth potential. Main watch-out: Reliance is ~28% of the portfolio — some trimming would lower concentration risk.',
+    };
+
+    // sim
+    const months = S.simYears * 12, sim = [];
+    for (let i = 0; i <= months; i++) sim.push(totalValue * Math.pow(1 + avgGrowth / 100, i / 12));
+    const sp = this.line(sim, 680, 210, 12);
+
+    // expenses
+    const spent = S.spent, bud = this.budget.budget, remaining = bud - spent, used = spent / bud * 100;
+    const maxCat = Math.max(...Object.values(S.catAmt));
+    const cats = Object.entries(S.catAmt).sort((a, b) => b[1] - a[1]).map(([name, amt]) => {
+      const meta = this.catMeta[name] || { color: '#6b7280', icon: '#i-receipt' };
+      return { name, amtStr: m(amt), pctStr: (amt / spent * 100).toFixed(0) + '%', barW: (amt / maxCat * 100).toFixed(0) + '%', color: meta.color, bg: meta.color + '22', icon: meta.icon };
+    });
+    const recent = S.recent.map(e => {
+      const meta = this.catMeta[e.cat] || { color: '#6b7280', icon: '#i-receipt' };
+      return { desc: e.desc, cat: e.cat, date: e.date, amtStr: m(e.amt), color: meta.color, bg: meta.color + '22', icon: meta.icon };
+    });
+    const ringC = 2 * Math.PI * 56, ringPct = Math.min(used, 100);
+    const ex = {
+      usedW: ringPct.toFixed(0) + '%', usedPct: used.toFixed(0) + '%', daysLeft: 12,
+      cats, recent, ringDash: `${(ringPct / 100 * ringC).toFixed(1)} ${ringC.toFixed(1)}`, ringOff: 0,
+    };
+
+    // pf tabs + other
+    const pfTabs = [
+      this.pfTab('holdings', 'Holdings', '#i-bars'), this.pfTab('analysis', 'Risk & Growth', '#i-shield'),
+      this.pfTab('sim', 'Simulation', '#i-area'), this.pfTab('network', 'Market Network', '#i-network'),
+      this.pfTab('watchlist', 'Watchlist', '#i-eye'), this.pfTab('news', 'News', '#i-news'),
+    ];
+    const otherMap = {
+      network: ['#i-network', 'Market Network', 'An interactive D3 force-directed graph of sector correlations — drag nodes to explore how your holdings move together.'],
+      watchlist: ['#i-eye', 'Watchlist', 'Track popular Nifty stocks with live prices and quick links out to full charts.'],
+      news: ['#i-news', 'Market News & Sentiment', 'AI-tagged headlines with bullish / bearish sentiment for every stock you follow.'],
+    };
+    const other = otherMap[S.pfTab] || otherMap['network'];
+    const simTabs = [1, 3, 5, 10].map(y => ({ label: y + 'Y', go: this.setSim(y), fg: S.simYears === y ? '#fff' : '#5d6580', bg: S.simYears === y ? '#B4894A' : 'transparent' }));
+
+    // chat
+    const messages = S.messages.map(msg => {
+      const u = msg.role === 'user';
+      return {
+        content: msg.content, dir: u ? 'row-reverse' : 'row',
+        avatar: u ? '#i-user' : '#i-bot', avatarBg: u ? '#9AA0AF' : '#B4894A',
+        bubbleBg: u ? 'rgba(154,160,175,.14)' : '#22222b', bubbleBd: u ? 'rgba(154,160,175,.28)' : 'rgba(255,255,255,.07)',
+        textColor: u ? '#f4f5fb' : '#c9cfdd',
+      };
+    });
+    const prompts = ['Analyze my portfolio', 'Analyze my spending habits', 'How can I save more money?', 'Suggest stocks to buy', 'Explain P/E ratio']
+      .map(t => ({ text: t, go: this.quick(t) }));
+
+    // council
+    const r = S.coResult;
+    const co = {
+      isDebate: S.coMode === 'debate', isReview: S.coMode === 'review',
+      debateBg: S.coMode === 'debate' ? '#B4894A' : 'transparent',
+      debateFg: S.coMode === 'debate' ? '#fff' : '#98a1b6',
+      reviewBg: S.coMode === 'review' ? '#B4894A' : 'transparent',
+      reviewFg: S.coMode === 'review' ? '#fff' : '#98a1b6',
+      question: S.coQuestion, coDebate: this.setCoMode('debate'), coReview: this.setCoMode('review'),
+      loading: S.coLoading, hasResult: !!r && !S.coLoading,
+      suggestions: ['Should I invest in gold right now?', 'Is now a good time to buy index funds?', 'Should I keep an emergency fund first?'].map(t => ({ text: t, go: this.coAsk(t) })),
+      result: r ? {
+        question: r.question,
+        members: r.members.map(mm => ({
+          ...mm, confW: mm.conf + '%',
+          confColor: mm.conf >= 70 ? '#34d399' : mm.conf >= 50 ? '#fbbf24' : '#f87171',
+          posColor: mm.position.includes('Support') || mm.position.includes('buy') ? '#34d399' : mm.position.includes('Under') || mm.position.includes('Caut') ? '#fbbf24' : '#98a1b6',
+        })),
+        verdict: r.verdict,
+        consensus: r.consensus.map(text => ({ text })),
+        disagreements: r.disagreements,
+        actions: r.actions.map((text, i) => ({ n: (i + 1) + '.', text })),
+      } : null,
+    };
+
+    // form cats
+    const formCats = ['Food', 'Transport', 'Shopping', 'Entertainment', 'Housing', 'Utilities'].map(name => {
+      const meta = this.catMeta[name], sel = S.fCat === name;
+      return { name, icon: meta.icon, color: meta.color, go: this.setFCat(name), bg: sel ? meta.color + '22' : '#22222b', bd: sel ? meta.color : 'rgba(255,255,255,.07)' };
+    });
+
+    // stubs
+    const stubMap = {
+      research: ['#i-search', 'Research', 'AI Buy Signals, low-risk picks and deep price/volume analysis for every stock.'],
+      documents: ['#i-file', 'Documents', 'Upload bank statements, payslips and receipts — the Document Agent extracts transactions and insights automatically.'],
+      alerts: ['#i-bell', 'Alerts', 'Price alerts, budget warnings and portfolio risk notifications, all in one place.'],
+      settings: ['#i-settings', 'Settings', 'Profile, currency, Telegram bot linking and privacy preferences.'],
+    };
+    const st = stubMap[S.screen] || stubMap['research'];
+
+    return {
+      // nav
+      navMain: [this.navItem('dashboard', 'Dashboard', '#i-dash'), this.navItem('portfolio', 'Portfolio', '#i-wallet'), this.navItem('expenses', 'Expenses', '#i-receipt')],
+      navIntel: [this.navItem('ai-advisor', 'AI Advisor', '#i-bot'), this.navItem('council', 'AI Council', '#i-landmark'), this.navItem('research', 'Research', '#i-search')],
+      navManage: [this.navItem('documents', 'Documents', '#i-file'), this.navItem('alerts', 'Alerts', '#i-bell'), this.navItem('settings', 'Settings', '#i-settings')],
+      // 3D shell
+      toggleIso: this.toggleIso, onStageMove: this.onStageMove, onStageLeave: this.onStageLeave,
+      isoBg: S.iso ? '#B4894A' : 'var(--panel)', isoBd: S.iso ? '#B4894A' : 'var(--line)', isoFg: S.iso ? '#fff' : 'var(--ts)',
+      globeAuto: (this.props.globeAutorotate ?? true) ? 'on' : 'off',
+      // topbar
+      setINR: this.setCcy('INR'), setUSD: this.setCcy('USD'),
+      inrBg: S.currency === 'INR' ? '#B4894A' : 'transparent', inrFg: S.currency === 'INR' ? '#fff' : '#98a1b6',
+      usdBg: S.currency === 'USD' ? '#B4894A' : 'transparent', usdFg: S.currency === 'USD' ? '#fff' : '#98a1b6',
+      // screen flags
+      isDash: S.screen === 'dashboard', isPf: S.screen === 'portfolio', isEx: S.screen === 'expenses',
+      isAi: S.screen === 'ai-advisor', isCo: S.screen === 'council',
+      isStub: ['research', 'documents', 'alerts', 'settings'].includes(S.screen),
+      goAdvisor: this.go('ai-advisor'), goPortfolio: this.go('portfolio'),
+      // kpis
+      k: { value: m(totalValue), cost: m(totalCost), pnl: (totalPnl >= 0 ? '+' : '') + m(totalPnl), pnlPct: (totalPct >= 0 ? '+' : '') + totalPct.toFixed(2) + '%', income: m(this.budget.income), spent: m(spent), budget: m(bud), remaining: m(remaining) },
+      // charts
+      ch: { eq: eq.d, eqArea: eq.d + ` L 700 232 L 0 232 Z`, eqLastX: last[0].toFixed(1), eqLastY: last[1].toFixed(1), donut, donutLayers, legend, indices },
+      // portfolio
+      pfTabs, pfHoldings: S.pfTab === 'holdings', pfAnalysis: S.pfTab === 'analysis', pfSim: S.pfTab === 'sim', pfOther: ['network', 'watchlist', 'news'].includes(S.pfTab),
+      risk, simTabs,
+      pf: {
+        holdings: H, proj1: m(totalValue * (1 + avgGrowth / 100)), proj5: m(totalValue * Math.pow(1 + avgGrowth / 100, 5)),
+        simEnd: m(sim[sim.length - 1]), simLine: sp.d, simArea: sp.d + ` L 680 210 L 0 210 Z`,
+        otherIcon: other[0], otherTitle: other[1], otherDesc: other[2],
+      },
+      // expenses
+      ex,
+      // chat
+      ai: { empty: messages.length === 0 && !S.chatLoading, messages, loading: S.chatLoading, input: S.chatInput, prompts, onChatInput: this.onChatInput, onChatKey: this.onChatKey, sendChat: this.sendChat, clearChat: this.clearChat },
+      onChatInput: this.onChatInput, onChatKey: this.onChatKey, sendChat: this.sendChat, clearChat: this.clearChat,
+      // council
+      co, coDebate: co.coDebate, coReview: co.coReview, onCoInput: this.onCoInput, coRun: this.coRun,
+      // modals
+      showExpense: S.showExpense, showHolding: S.showHolding, stop: this.stop,
+      openExpense: this.openExpense, closeExpense: this.closeExpense, openHolding: this.openHolding, closeHolding: this.closeHolding,
+      addExpense: this.addExpense, onAmount: this.onAmount, onDesc: this.onDesc,
+      form: { amount: S.fAmount, desc: S.fDesc, cats: formCats },
+      // stub
+      stub: { icon: st[0], title: st[1], desc: st[2] },
+    };
+  }
+}
+</script>
+</body>
+</html>

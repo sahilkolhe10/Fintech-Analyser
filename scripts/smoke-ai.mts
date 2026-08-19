@@ -8,7 +8,7 @@ import { Annotation, StateGraph, START, END } from '@langchain/langgraph';
 import { ToolNode } from '@langchain/langgraph/prebuilt';
 import { z } from 'zod';
 
-const zenmuxApiKey = process.env.ZENMUX_API_KEY!;
+const hetznerApiKey = process.env.HETZNER_API_KEY!;
 const groqApiKey = process.env.GROQ_API_KEY!;
 const geminiApiKey = process.env.GEMINI_API_KEY!;
 
@@ -46,7 +46,7 @@ async function runGraph(llm: BaseChatModel, label: string) {
 
     const res = await graph.invoke({
         messages: [
-            new SystemMessage('You are FinManage AI. Use tools when asked.'),
+            new SystemMessage('You are KhataHouse AI. Use tools when asked.'),
             new HumanMessage('I spent 250 on lunch today. Please record it and confirm.'),
         ],
     });
@@ -68,7 +68,7 @@ await runLeg('APP FACADE (fallback chain)', async () => {
     const { geminiClient } = await import('../src/services/ai/gemini-client');
     const res = await geminiClient.generateWithTools({
         prompt: 'I spent 250 on lunch today. Please record it and confirm.',
-        systemInstruction: 'You are FinManage AI. Use the tool when asked.',
+        systemInstruction: 'You are KhataHouse AI. Use the tool when asked.',
         tools: [
             {
                 name: 'add_expense',
@@ -88,12 +88,12 @@ await runLeg('APP FACADE (fallback chain)', async () => {
     console.log(`[APP FACADE] success=${res.success} text=${res.text?.slice(0, 100)} actions=${res.actions?.length}`);
 });
 
-await runLeg('ZENMUX (direct)', () =>
+await runLeg('HETZNER (direct)', () =>
     runGraph(new ChatOpenAI({
-        apiKey: zenmuxApiKey,
-        model: 'deepseek/deepseek-v4-flash-free',
-        configuration: { baseURL: 'https://zenmux.ai/api/v1' },
-    }), 'ZENMUX')
+        apiKey: hetznerApiKey,
+        model: 'Qwen3.8-27B',
+        configuration: { baseURL: 'https://inference.hetzner.com/api/v1' },
+    }), 'HETZNER')
 );
 await runLeg('GROQ (direct)', () =>
     runGraph(new ChatGroq({ apiKey: groqApiKey, model: 'openai/gpt-oss-120b' }), 'GROQ')

@@ -115,7 +115,8 @@ Answer strictly as YOUR persona. Respond ONLY with JSON:
 
         const memberPromises = COUNCIL_MEMBERS.map(async (member) => {
             const result = await geminiClient.generateJSON<MemberVerdict>(
-                `You are ${member.name}, ${member.role} on an AI investment council.\n\nYour investment philosophy: ${member.persona}\n\n${sharedPrompt}`
+                `You are ${member.name}, ${member.role} on an AI investment council.\n\nYour investment philosophy: ${member.persona}\n\n${sharedPrompt}`,
+                'groq'
             );
             return { member, result };
         });
@@ -192,7 +193,8 @@ Respond ONLY with JSON:
 
         const memberPromises = COUNCIL_MEMBERS.map(async (member) => {
             const result = await geminiClient.generateJSON<ReviewScore>(
-                `You are ${member.name}, ${member.role} on the portfolio review board.\n\nYour philosophy: ${member.persona}\n\n${sharedPrompt}`
+                `You are ${member.name}, ${member.role} on the portfolio review board.\n\nYour philosophy: ${member.persona}\n\n${sharedPrompt}`,
+                'groq'
             );
             return { member, result };
         });
@@ -272,7 +274,7 @@ Respond ONLY with JSON:
 
 Be fair to all perspectives. The verdict must acknowledge disagreement honestly.`;
 
-        return geminiClient.generateJSON<CouncilSynthesis>(prompt);
+        return geminiClient.generateJSON<CouncilSynthesis>(prompt, 'groq');
     }
 
     private fromCache(key: string): CouncilResult | null {

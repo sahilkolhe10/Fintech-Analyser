@@ -48,8 +48,8 @@ export function AnimatedButton({
     };
 
     const variants = {
-        primary: 'bg-gradient-to-r from-primary to-primary-dark text-white hover:shadow-lg hover:shadow-primary/30',
-        secondary: 'bg-white/10 text-white hover:bg-white/20 border border-white/20',
+        primary: 'bg-primary text-white hover:shadow-[0_8px_22px_-8px_rgba(180,137,74,0.55)]',
+        secondary: 'bg-[#22222b] text-[#f4f5fb] hover:bg-white/10 border border-white/[0.14]',
         ghost: 'text-white hover:bg-white/10',
         danger: 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:shadow-lg hover:shadow-red-500/30',
     };
