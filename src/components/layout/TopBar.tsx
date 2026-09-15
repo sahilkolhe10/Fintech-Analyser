@@ -7,11 +7,26 @@ import { useAuthStore } from '@/store';
 import { SearchBar } from '@/components/ui/SearchBar';
 import { marketService } from '@/services/market';
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export function TopBar() {
     const { user, profile } = useAuthStore();
     const [currency, setCurrency] = useState<'INR' | 'USD'>('INR');
+    const searchWrapRef = useRef<HTMLDivElement>(null);
+
+    // Press "/" anywhere to jump to search — small UX enhancement.
+    useEffect(() => {
+        const onKey = (e: KeyboardEvent) => {
+            const target = e.target as HTMLElement | null;
+            const typing = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA');
+            if (e.key === '/' && !typing) {
+                e.preventDefault();
+                searchWrapRef.current?.querySelector('input')?.focus();
+            }
+        };
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+    }, []);
 
     const handleSearch = async (query: string) => {
         return marketService.searchStocks(query);
@@ -28,11 +43,11 @@ export function TopBar() {
             )}
         >
             {/* Search */}
-            <div className="flex-1 max-w-[440px] relative">
+            <div ref={searchWrapRef} className="flex-1 max-w-[440px] relative">
                 <SearchBar
                     searchFunction={handleSearch}
                     onSelect={(result) => console.log('Selected:', result)}
-                    placeholder="Search stocks, ETFs, insights…"
+                    placeholder="Search stocks, ETFs, insights…  ( press / )"
                 />
             </div>
 
@@ -70,13 +85,14 @@ export function TopBar() {
 
                 {/* User */}
                 <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center overflow-hidden">
+                    <div className="relative w-9 h-9 rounded-full bg-primary flex items-center justify-center overflow-hidden ring-1 ring-[#D8B876]/40">
                         {user?.photoURL ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img src={user.photoURL} alt="" className="w-full h-full rounded-full object-cover" />
                         ) : (
                             <User className="w-5 h-5 text-white" />
                         )}
+                        <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#1c1c24]" title="Online" />
                     </div>
                     <div className="hidden lg:block leading-tight">
                         <p className="text-[13px] font-semibold text-white">{profile?.displayName || user?.displayName || 'User'}</p>

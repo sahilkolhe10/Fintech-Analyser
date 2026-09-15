@@ -1,5 +1,10 @@
 # FinManage - AI-Powered Financial Analytics Platform 🚀
 
+> **Maintained fork by [Sahil](https://github.com/sahil0121-bot)** — based on the original
+> [RohitSwami33/Fintech-analyer](https://github.com/RohitSwami33/Fintech-analyer).
+> This fork adds UI polish, UX touches and ongoing maintenance (see
+> [UI Enhancements](#-ui-enhancements-by-sahil) below).
+
 **FinManage** is a modern, full-stack fintech dashboard built with **Next.js 14**, **Firebase**, and **TailwindCSS**. It helps users track portfolios, manage expenses, and get AI-powered financial advice.
 
 ---
@@ -61,11 +66,11 @@
 
 ## 🚀 Getting Started
 
-1. **Clone the repo**
-   ```bash
-   git clone https://github.com/RohitSwami33/Fintech-analyer.git
-   cd FinManage
-   ```
+1.  **Clone the repo**
+    ```bash
+    git clone https://github.com/sahil0121-bot/Fintech-Analyser.git
+    cd Fintech-Analyser
+    ```
 
 2. **Install dependencies**
    ```bash
@@ -174,4 +179,27 @@ Ensure your Excel sheet has columns: `Symbol`, `Quantity`, and `Buy Price` (or s
 
 ---
 
-*Built with ❤️ by Detroit Team(Rohit and Tushar)*
+## ✨ UI Enhancements (by Sahil)
+
+This fork ships a few visible UX upgrades over the original:
+
+- **Sidebar** — version pill (`v2.1`) next to the KhataHouse logo + "Enhanced UI by Sahil" footer credit.
+- **Top bar** — press `/` anywhere to jump to stock search; gold-ring avatar with online status dot.
+- **Cards** — subtle gold top-highlight on every `GlassCard` for a more premium feel.
+- **Loading screen** — friendlier loading copy.
+
+---
+
+## 👥 Contributors
+
+| Name | Role | GitHub |
+|---|---|---|
+| Rohit Swami | Original author — core platform, agents, infra | [@RohitSwami33](https://github.com/RohitSwami33) |
+| Tushar | Co-author — core platform (Detroit Team) | — |
+| **Sahil** | **Maintainer of this fork — UI/UX enhancements, docs, upkeep** | [@sahil0121-bot](https://github.com/sahil0121-bot) |
+
+*Original project: [RohitSwami33/Fintech-analyer](https://github.com/RohitSwami33/Fintech-analyer) by Detroit Team (Rohit and Tushar). Fork maintained with ❤️ by Sahil.*
+
+---
+
+*Built with ❤️ by Detroit Team (Rohit and Tushar) · UI enhanced & maintained by [Sahil](https://github.com/sahil0121-bot)*

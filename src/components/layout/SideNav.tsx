@@ -73,8 +73,11 @@ export function SideNav() {
                             <span className="block text-[15.5px] font-bold tracking-tight text-white">
                                 KhataHouse
                             </span>
-                            <span className="block text-[10px] font-medium tracking-wide text-[#5d6580]">
+                            <span className="flex items-center gap-1.5 text-[10px] font-medium tracking-wide text-[#5d6580]">
                                 Wealth OS
+                                <span className="px-1.5 py-px rounded-md bg-[#D8B876]/15 border border-[#D8B876]/30 text-[#D8B876] text-[9px] font-bold tracking-wider">
+                                    v2.1
+                                </span>
                             </span>
                         </div>
                     )}
@@ -167,6 +170,11 @@ export function SideNav() {
                     >
                         {sidebarOpen ? <ChevronLeft className="w-4 h-4 text-[#98a1b6]" /> : <ChevronRight className="w-4 h-4 text-[#98a1b6]" />}
                     </button>
+                    {sidebarOpen && (
+                        <p className="pt-1 text-center text-[10px] tracking-wide text-[#5d6580]">
+                            Enhanced UI by <span className="text-[#D8B876] font-semibold">Sahil</span>
+                        </p>
+                    )}
                 </div>
             </div>
         </aside>

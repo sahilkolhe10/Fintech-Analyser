@@ -28,6 +28,7 @@ export function GlassCard({ children, className, hover = true, glow = false, onC
             )}
         >
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none" />
+            <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-[#D8B876]/50 to-transparent pointer-events-none" />
             <div className="relative z-10">{children}</div>
         </div>
     );

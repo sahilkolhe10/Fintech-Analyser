@@ -50,7 +50,8 @@ export default function RootPage() {
                     <span className="text-white font-bold text-2xl">K</span>
                 </div>
                 <div className="w-8 h-8 rounded-full border-4 border-primary border-t-transparent animate-spin" />
-                <p className="text-gray-400">Loading KhataHouse...</p>
+                <p className="text-gray-400">Loading KhataHouse…</p>
+                <p className="text-xs text-gray-600">Enhanced experience by Sahil ✨</p>
             </div>
         </div>
     );
